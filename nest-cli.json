@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/ppaz-api-gateway/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/ppaz-api-gateway/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/ppaz-api-gateway",
+  "projects": {
+    "ppaz-api-gateway": {
+      "type": "application",
+      "root": "apps/ppaz-api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/ppaz-api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ppaz-api-gateway/tsconfig.app.json"
+      }
+    },
+    "ppp_compañias": {
+      "type": "application",
+      "root": "apps/ppp_compañias",
+      "entryFile": "main",
+      "sourceRoot": "apps/ppp_compañias/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ppp_compañias/tsconfig.app.json"
+      }
+    },
+    "ppp_core": {
+      "type": "application",
+      "root": "apps/ppp_core",
+      "entryFile": "main",
+      "sourceRoot": "apps/ppp_core/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ppp_core/tsconfig.app.json"
+      }
+    }
+  }
+}
