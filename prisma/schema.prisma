@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/* =========================
+   ENUMS
+========================= */
+enum CartaEstado {
+  draft
+  submitted
+  reviewing
+  approved
+  rejected
+  cancelled
+}
+
+/* =========================
+   ROLES & RBAC
+========================= */
+model Rol {
+  id        String       @id @default(uuid()) @db.Uuid
+  nombre    String       @db.VarChar(255)
+  descripcion String?    @db.VarChar(255)
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  usuarios  UsuarioRol[]
+
+  @@map("rol")
+}
+
+model Usuario {
+  id         String       @id @default(uuid()) @db.Uuid
+  nombres    String       @db.VarChar(120)
+  apellidos  String       @db.VarChar(120)
+  email      String       @unique @db.VarChar(150)
+  telefono   String?      @db.VarChar(20)
+  contraseña String       @db.VarChar(255)
+  activo     Boolean      @default(true)
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+
+  // Relaciones
+  alumno         Alumno?
+  roles          UsuarioRol[]
+  cartasAsignadas CartaPresentacion[] @relation("CartaSecretaria")
+
+  @@map("usuario")
+}
+
+model UsuarioRol {
+  usuarioId String @db.Uuid
+  rolId     String @db.Uuid
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  rol     Rol     @relation(fields: [rolId], references: [id], onDelete: Restrict)
+
+  @@id([usuarioId, rolId])
+  @@map("usuario_rol")
+}
+
+/* =========================
+   ESTRUCTURA ACADÉMICA
+========================= */
+model Facultad {
+  id          String   @id @default(uuid()) @db.Uuid
+  nombre      String   @db.VarChar(255)
+  codigo      String   @unique @db.VarChar(255)
+  descripcion String?  @db.VarChar(255)
+  estado      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  escuelas    Escuela[]
+
+  @@map("facultad")
+}
+
+model Escuela {
+  id          String   @id @default(uuid()) @db.Uuid
+  idFacultad  String   @map("id_facultad") @db.Uuid
+  nombre      String   @db.VarChar(255)
+  codigo      String   @unique @db.VarChar(255)
+  descripcion String?  @db.VarChar(255)
+  estado      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  facultad Facultad @relation(fields: [idFacultad], references: [id], onDelete: Restrict)
+  alumnos  Alumno[]
+
+  @@map("escuela")
+}
+
+/* =========================
+   ALUMNOS
+========================= */
+model Alumno {
+  id         String   @id @default(uuid()) @db.Uuid
+  usuarioId  String   @unique @map("usuario_id") @db.Uuid
+  idEscuela  String   @map("id_escuela") @db.Uuid
+  codigo     String   @unique @db.VarChar(30)
+  ciclo      String   @db.VarChar(20)
+  año        String   @db.VarChar(20)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  escuela Escuela @relation(fields: [idEscuela], references: [id], onDelete: Restrict)
+
+  cartasPresentacion CartaPresentacion[]
+
+  @@map("alumno")
+}
+
+/* =========================
+   EMPRESAS
+========================= */
+model Empresa {
+  id                   String   @id @default(uuid()) @db.Uuid
+  nombre               String   @db.VarChar(255)
+  nombreRepresentante  String   @map("nombre_representante") @db.VarChar(255)
+  ruc                  String   @unique @db.VarChar(11)
+  sector               String   @db.VarChar(120)
+  gradoAcademico       String   @map("grado_academico") @db.VarChar(120)
+  cargoRepresentante   String   @map("cargo_representante") @db.VarChar(120)
+  telefono             String   @db.VarChar(20)
+  areaPractica         String   @map("area_practica") @db.VarChar(120)
+  direccion            String   @db.VarChar(255)
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  cartasPresentacion CartaPresentacion[]
+
+  @@map("empresa")
+}
+
+/* =========================
+   CARTAS DE PRESENTACIÓN
+========================= */
+model CartaPresentacion {
+  id            String       @id @default(uuid()) @db.Uuid
+  idAlumno      String       @map("id_alumno")  @db.Uuid
+  idEmpresa     String       @map("id_empresa") @db.Uuid
+  posicion      String       @db.VarChar(255)
+  fechaInicio   DateTime     @map("fecha_inicio") @db.Date
+  secretariaId  String?      @map("secretaria_id") @db.Uuid
+  motivoRechazo String?      @map("motivo_rechazo") @db.VarChar(255)
+  estado        CartaEstado
+  submittedAt   DateTime?    @map("submitted_at")
+  reviewedAt    DateTime?    @map("reviewed_at")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  alumno    Alumno  @relation(fields: [idAlumno], references: [id], onDelete: Restrict)
+  empresa   Empresa @relation(fields: [idEmpresa], references: [id], onDelete: Restrict)
+  secretaria Usuario? @relation("CartaSecretaria", fields: [secretariaId], references: [id])
+
+  @@index([idAlumno])
+  @@index([idEmpresa])
+  @@index([estado])
+  @@map("carta_presentacion")
+}

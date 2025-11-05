@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # PostgreSQL para ppp_core
+  # ============================================
+  postgres_core:
+    image: postgres:15-alpine
+    container_name: pnest_core_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pnest_core_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_core_data:/var/lib/postgresql/data
+    networks:
+      - pnest_network
+
+  # ============================================
+  # PostgreSQL para ppp_compañias (separado)
+  # ============================================
+  postgres_companias:
+    image: postgres:15-alpine
+    container_name: pnest_companias_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pnest_companias_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_companias_data:/var/lib/postgresql/data
+    networks:
+      - pnest_network
+
+  # ============================================
+  # pgAdmin - Interfaz web para PostgreSQL
+  # ============================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pnest_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pnest.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - pnest_network
+    depends_on:
+      - postgres_core
+      - postgres_companias
+
+volumes:
+  postgres_core_data:
+    driver: local
+  postgres_companias_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  pnest_network:
+    driver: bridge
