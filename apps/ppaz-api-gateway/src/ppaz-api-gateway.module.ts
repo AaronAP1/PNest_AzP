@@ -1,9 +1,29 @@
 import { Module } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PpazApiGatewayController } from './ppaz-api-gateway.controller';
 import { PpazApiGatewayService } from './ppaz-api-gateway.service';
 
 @Module({
-  imports: [],
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'PPP_CORE_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: 'localhost',
+          port: 3001,
+        },
+      },
+      {
+        name: 'PPP_COMPANIAS_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: 'localhost',
+          port: 3002,
+        },
+      },
+    ]),
+  ],
   controllers: [PpazApiGatewayController],
   providers: [PpazApiGatewayService],
 })
