@@ -11,11 +11,11 @@ datasource db {
    ROLES & RBAC
 ========================= */
 model Rol {
-  id        String       @id @default(uuid()) @db.Uuid
-  nombre    String       @db.VarChar(255)
-  descripcion String?    @db.VarChar(255)
-  createdAt DateTime     @default(now()) @map("created_at")
-  updatedAt DateTime     @updatedAt @map("updated_at")
+  id          String       @id @default(uuid()) @db.Uuid
+  nombre      String       @db.VarChar(100)
+  descripcion String?      @db.Text
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
 
   usuarios  UsuarioRol[]
 
@@ -57,8 +57,8 @@ model UsuarioRol {
 model Facultad {
   id          String   @id @default(uuid()) @db.Uuid
   nombre      String   @db.VarChar(255)
-  codigo      String   @unique @db.VarChar(255)
-  descripcion String?  @db.VarChar(255)
+  codigo      String   @unique @db.VarChar(50)
+  descripcion String?  @db.Text
   estado      Boolean  @default(true)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
@@ -72,16 +72,32 @@ model Escuela {
   id          String   @id @default(uuid()) @db.Uuid
   idFacultad  String   @map("id_facultad") @db.Uuid
   nombre      String   @db.VarChar(255)
-  codigo      String   @unique @db.VarChar(255)
-  descripcion String?  @db.VarChar(255)
+  codigo      String   @unique @db.VarChar(50)
+  descripcion String?  @db.Text
   estado      Boolean  @default(true)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  facultad Facultad @relation(fields: [idFacultad], references: [id], onDelete: Restrict)
-  alumnos  Alumno[]
+  facultad     Facultad     @relation(fields: [idFacultad], references: [id], onDelete: Restrict)
+  alumnos      Alumno[]
+  secretarias  Secretaria[]
 
   @@map("escuela")
+}
+
+/* =========================
+   SECRETARIAS
+========================= */
+model Secretaria {
+  id        String   @id @default(uuid()) @db.Uuid
+  nombre    String   @db.VarChar(255)
+  idEscuela String   @map("id_escuela") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  escuela Escuela @relation(fields: [idEscuela], references: [id], onDelete: Restrict)
+
+  @@map("secretaria")
 }
 
 /* =========================
@@ -92,8 +108,8 @@ model Alumno {
   usuarioId  String   @unique @map("usuario_id") @db.Uuid
   idEscuela  String   @map("id_escuela") @db.Uuid
   codigo     String   @unique @db.VarChar(30)
-  ciclo      String   @db.VarChar(20)
-  año        String   @db.VarChar(20)
+  ciclo      String   @db.VarChar(10)
+  año        String   @db.VarChar(4)
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 

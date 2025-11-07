@@ -27,13 +27,13 @@ model Empresa {
   id                   String   @id @default(uuid()) @db.Uuid
   nombre               String   @db.VarChar(255)
   nombreRepresentante  String   @map("nombre_representante") @db.VarChar(255)
-  ruc                  String   @unique @db.VarChar(11)
-  sector               String   @db.VarChar(120)
-  gradoAcademico       String   @map("grado_academico") @db.VarChar(120)
-  cargoRepresentante   String   @map("cargo_representante") @db.VarChar(120)
-  telefono             String   @db.VarChar(20)
-  areaPractica         String   @map("area_practica") @db.VarChar(120)
-  direccion            String   @db.VarChar(255)
+  ruc                  String   @unique @db.Char(11)
+  sector               String   @db.VarChar(100)
+  gradoAcademico       String   @map("grado_academico") @db.VarChar(100)
+  cargoRepresentante   String   @map("cargo_representante") @db.VarChar(100)
+  telefono             String   @db.VarChar(15)
+  areaPractica         String   @map("area_practica") @db.VarChar(100)
+  direccion            String   @db.Text
   createdAt            DateTime @default(now()) @map("created_at")
   updatedAt            DateTime @updatedAt @map("updated_at")
 
@@ -43,28 +43,64 @@ model Empresa {
 }
 
 /* =========================
+   TIPOS DE DOCUMENTO
+========================= */
+model TipoDocumento {
+  id          String   @id @default(uuid()) @db.Uuid
+  nombre      String   @db.VarChar(100)
+  descripcion String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  documentos Documento[]
+
+  @@map("tipo_documento")
+}
+
+/* =========================
+   DOCUMENTOS
+========================= */
+model Documento {
+  id              String   @id @default(uuid()) @db.Uuid
+  idTipoDocumento String   @map("id_tipo_documento") @db.Uuid
+  nombreArchivo   String   @map("nombre_archivo") @db.VarChar(255)
+  rutaArchivo     String   @map("ruta_archivo") @db.Text
+  subidoPor       String?  @map("subido_por") @db.Uuid  // ID del usuario que subió (referencia a ppp_core)
+  generadoPor     String?  @map("generado_por") @db.Uuid  // ID del usuario que generó (referencia a ppp_core)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  tipoDocumento TipoDocumento @relation(fields: [idTipoDocumento], references: [id], onDelete: Restrict)
+  cartas        CartaPresentacion[]
+
+  @@map("documento")
+}
+
+/* =========================
    CARTAS DE PRESENTACIÓN
 ========================= */
 model CartaPresentacion {
   id            String       @id @default(uuid()) @db.Uuid
-  idAlumno      String       @map("id_alumno")  @db.Uuid  // Solo el UUID, NO foreign key
+  idUsuario     String       @map("id_usuario") @db.Uuid      // Referencia a Usuario (ppp_core)
   idEmpresa     String       @map("id_empresa") @db.Uuid
+  idSecretaria  String?      @map("id_secretaria") @db.Uuid   // Referencia a Secretaria (ppp_core)
+  documentoId   String?      @map("documento_id") @db.Uuid    // Relación con Documento
   posicion      String       @db.VarChar(255)
   fechaInicio   DateTime     @map("fecha_inicio") @db.Date
-  secretariaId  String?      @map("secretaria_id") @db.Uuid  // Solo el UUID, NO foreign key
-  motivoRechazo String?      @map("motivo_rechazo") @db.VarChar(255)
-  estado        CartaEstado
-  submittedAt   DateTime?    @map("submitted_at")
-  reviewedAt    DateTime?    @map("reviewed_at")
+  motivoRechazo String?      @map("motivo_rechazo") @db.Text
+  estado        CartaEstado  @default(draft)
+  submittedAt   DateTime?    @map("submitted_at") @db.Timestamptz(6)
+  reviewedAt    DateTime?    @map("reviewed_at") @db.Timestamptz(6)
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
 
-  // Solo relación con Empresa (que está en esta BD)
-  // idAlumno y secretariaId son solo referencias a la otra BD
-  empresa   Empresa @relation(fields: [idEmpresa], references: [id], onDelete: Restrict)
+  // Relaciones locales (en esta BD)
+  empresa   Empresa    @relation(fields: [idEmpresa], references: [id], onDelete: Restrict)
+  documento Documento? @relation(fields: [documentoId], references: [id], onDelete: SetNull)
 
-  @@index([idAlumno])
+  @@index([idUsuario])
   @@index([idEmpresa])
+  @@index([idSecretaria])
   @@index([estado])
   @@map("carta_presentacion")
 }
