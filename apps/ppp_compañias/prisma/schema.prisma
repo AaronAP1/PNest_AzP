@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client-companias"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_COMPANIAS")
+}
+
+/* =========================
+   ENUMS
+========================= */
+enum CartaEstado {
+  draft
+  submitted
+  reviewing
+  approved
+  rejected
+  cancelled
+}
+
+/* =========================
+   EMPRESAS
+========================= */
+model Empresa {
+  id                   String   @id @default(uuid()) @db.Uuid
+  nombre               String   @db.VarChar(255)
+  nombreRepresentante  String   @map("nombre_representante") @db.VarChar(255)
+  ruc                  String   @unique @db.VarChar(11)
+  sector               String   @db.VarChar(120)
+  gradoAcademico       String   @map("grado_academico") @db.VarChar(120)
+  cargoRepresentante   String   @map("cargo_representante") @db.VarChar(120)
+  telefono             String   @db.VarChar(20)
+  areaPractica         String   @map("area_practica") @db.VarChar(120)
+  direccion            String   @db.VarChar(255)
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  cartasPresentacion CartaPresentacion[]
+
+  @@map("empresa")
+}
+
+/* =========================
+   CARTAS DE PRESENTACIÓN
+========================= */
+model CartaPresentacion {
+  id            String       @id @default(uuid()) @db.Uuid
+  idAlumno      String       @map("id_alumno")  @db.Uuid  // Solo el UUID, NO foreign key
+  idEmpresa     String       @map("id_empresa") @db.Uuid
+  posicion      String       @db.VarChar(255)
+  fechaInicio   DateTime     @map("fecha_inicio") @db.Date
+  secretariaId  String?      @map("secretaria_id") @db.Uuid  // Solo el UUID, NO foreign key
+  motivoRechazo String?      @map("motivo_rechazo") @db.VarChar(255)
+  estado        CartaEstado
+  submittedAt   DateTime?    @map("submitted_at")
+  reviewedAt    DateTime?    @map("reviewed_at")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  // Solo relación con Empresa (que está en esta BD)
+  // idAlumno y secretariaId son solo referencias a la otra BD
+  empresa   Empresa @relation(fields: [idEmpresa], references: [id], onDelete: Restrict)
+
+  @@index([idAlumno])
+  @@index([idEmpresa])
+  @@index([estado])
+  @@map("carta_presentacion")
+}

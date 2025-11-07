@@ -4,19 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-/* =========================
-   ENUMS
-========================= */
-enum CartaEstado {
-  draft
-  submitted
-  reviewing
-  approved
-  rejected
-  cancelled
+  url      = env("DATABASE_URL_CORE")
 }
 
 /* =========================
@@ -48,7 +36,6 @@ model Usuario {
   // Relaciones
   alumno         Alumno?
   roles          UsuarioRol[]
-  cartasAsignadas CartaPresentacion[] @relation("CartaSecretaria")
 
   @@map("usuario")
 }
@@ -113,56 +100,5 @@ model Alumno {
   usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
   escuela Escuela @relation(fields: [idEscuela], references: [id], onDelete: Restrict)
 
-  cartasPresentacion CartaPresentacion[]
-
   @@map("alumno")
-}
-
-/* =========================
-   EMPRESAS
-========================= */
-model Empresa {
-  id                   String   @id @default(uuid()) @db.Uuid
-  nombre               String   @db.VarChar(255)
-  nombreRepresentante  String   @map("nombre_representante") @db.VarChar(255)
-  ruc                  String   @unique @db.VarChar(11)
-  sector               String   @db.VarChar(120)
-  gradoAcademico       String   @map("grado_academico") @db.VarChar(120)
-  cargoRepresentante   String   @map("cargo_representante") @db.VarChar(120)
-  telefono             String   @db.VarChar(20)
-  areaPractica         String   @map("area_practica") @db.VarChar(120)
-  direccion            String   @db.VarChar(255)
-  createdAt            DateTime @default(now()) @map("created_at")
-  updatedAt            DateTime @updatedAt @map("updated_at")
-
-  cartasPresentacion CartaPresentacion[]
-
-  @@map("empresa")
-}
-
-/* =========================
-   CARTAS DE PRESENTACIÓN
-========================= */
-model CartaPresentacion {
-  id            String       @id @default(uuid()) @db.Uuid
-  idAlumno      String       @map("id_alumno")  @db.Uuid
-  idEmpresa     String       @map("id_empresa") @db.Uuid
-  posicion      String       @db.VarChar(255)
-  fechaInicio   DateTime     @map("fecha_inicio") @db.Date
-  secretariaId  String?      @map("secretaria_id") @db.Uuid
-  motivoRechazo String?      @map("motivo_rechazo") @db.VarChar(255)
-  estado        CartaEstado
-  submittedAt   DateTime?    @map("submitted_at")
-  reviewedAt    DateTime?    @map("reviewed_at")
-  createdAt     DateTime     @default(now()) @map("created_at")
-  updatedAt     DateTime     @updatedAt @map("updated_at")
-
-  alumno    Alumno  @relation(fields: [idAlumno], references: [id], onDelete: Restrict)
-  empresa   Empresa @relation(fields: [idEmpresa], references: [id], onDelete: Restrict)
-  secretaria Usuario? @relation("CartaSecretaria", fields: [secretariaId], references: [id])
-
-  @@index([idAlumno])
-  @@index([idEmpresa])
-  @@index([estado])
-  @@map("carta_presentacion")
 }
