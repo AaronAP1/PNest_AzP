@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { FacultadesController } from './facultades.controller';
+import { SecretariasController } from './secretarias.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
@@ -15,6 +15,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       },
     ]),
   ],
-  controllers: [FacultadesController],
+  controllers: [SecretariasController],
 })
-export class FacultadesModule {}
+export class SecretariasModule {}
