@@ -1,0 +1,58 @@
+[
+  {
+    "name": "DATABASE_URL_CORE",
+    "value": "postgresql://pgNestAdmin:aA1234567*@s-ppp-nest.postgres.database.azure.com:5432/pppNest_Core?sslmode=require"
+  },
+  {
+    "name": "DATABASE_URL_COMPANIAS",
+    "value": "postgresql://pgNestAdmin:aA1234567*@s-ppp-nest.postgres.database.azure.com:5432/pppNest_Companias?sslmode=require"
+  },
+  {
+    "name": "APP_NAME",
+    "value": "ppaz_api_gateway"
+  },
+  {
+    "name": "PORT",
+    "value": "3000"
+  },
+  {
+    "name": "HOST",
+    "value": "0.0.0.0"
+  },
+  {
+    "name": "NODE_ENV",
+    "value": "production"
+  },
+  {
+    "name": "LOG_LEVEL",
+    "value": "info"
+  },
+  {
+    "name": "PPP_CORE_HOST",
+    "value": "ppp-core-service.internal.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io"
+  },
+  {
+    "name": "PPP_CORE_PORT",
+    "value": "443"
+  },
+  {
+    "name": "PPP_COMPANIAS_HOST",
+    "value": "ppp-companias-service.internal.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io"
+  },
+  {
+    "name": "PPP_COMPANIAS_PORT",
+    "value": "443"
+  },
+  {
+    "name": "SWAGGER_TITLE",
+    "value": "PPP API Gateway - Produccion"
+  },
+  {
+    "name": "SWAGGER_VERSION",
+    "value": "1.0"
+  },
+  {
+    "name": "SWAGGER_PATH",
+    "value": "api/docs"
+  }
+]

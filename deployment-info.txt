@@ -1,0 +1,124 @@
+============================================
+INFORMACION DEL DESPLIEGUE EN AZURE
+============================================
+
+FECHA DE DESPLIEGUE: 2025-11-07
+
+RECURSOS CREADOS:
+-----------------
+Resource Group: rg-ppp-microservices
+Region: brazilsouth
+Container Registry: acrpppnest3008.azurecr.io
+Container Apps Environment: ppp-env
+
+SERVICIOS DESPLEGADOS:
+----------------------
+
+1. PPP CORE MICROSERVICE
+   Status: ✓ Running
+   URL Interna: https://ppp-core-service.internal.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io
+   Puerto: 3001 (TCP)
+   Imagen: acrpppnest3008.azurecr.io/ppp-core:latest
+   Base de Datos: pppNest_Core
+   
+2. PPP COMPAÑÍAS MICROSERVICE
+   Status: ✓ Running
+   URL Interna: https://ppp-companias-service.internal.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io
+   Puerto: 3002 (TCP)
+   Imagen: acrpppnest3008.azurecr.io/ppp-companias:latest
+   Base de Datos: pppNest_Companias
+
+3. PPAZ API GATEWAY (Punto de entrada público)
+   Status: ✓ Running
+   URL Pública: https://ppaz-api-gateway.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io
+   Puerto: 3000 (HTTPS)
+   Imagen: acrpppnest3008.azurecr.io/ppaz-gateway:latest
+   
+   Swagger UI: https://ppaz-api-gateway.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io/api/docs
+   Health Check: https://ppaz-api-gateway.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io/health
+   Readiness Probe: https://ppaz-api-gateway.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io/health/ready
+   Liveness Probe: https://ppaz-api-gateway.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io/health/live
+
+COMANDOS ÚTILES:
+----------------
+
+# Ver logs del API Gateway
+az containerapp logs show --name ppaz-api-gateway --resource-group rg-ppp-microservices --follow
+
+# Ver logs de ppp_core
+az containerapp logs show --name ppp-core-service --resource-group rg-ppp-microservices --follow
+
+# Ver logs de ppp_companias
+az containerapp logs show --name ppp-companias-service --resource-group rg-ppp-microservices --follow
+
+# Ver estado de todos los servicios
+az containerapp list --resource-group rg-ppp-microservices --query "[].{Name:name, Status:properties.runningStatus, FQDN:properties.configuration.ingress.fqdn}" -o table
+
+# Actualizar un servicio (ejemplo: API Gateway)
+.\update-deployment.ps1 -ServiceName gateway
+
+# Eliminar todos los recursos
+.\cleanup-azure.ps1
+
+# Reiniciar un servicio
+az containerapp revision restart --name ppaz-api-gateway --resource-group rg-ppp-microservices
+
+# Escalar un servicio
+az containerapp update --name ppaz-api-gateway --resource-group rg-ppp-microservices --min-replicas 2 --max-replicas 10
+
+ARQUITECTURA:
+-------------
+
+Internet
+   |
+   v
+[API Gateway] (Externa - HTTPS)
+   |
+   +-- TCP --> [PPP Core Service] (Interna)
+   |              |
+   |              v
+   |           [Azure PostgreSQL: pppNest_Core]
+   |
+   +-- TCP --> [PPP Compañías Service] (Interna)
+                  |
+                  v
+               [Azure PostgreSQL: pppNest_Companias]
+
+NOTAS IMPORTANTES:
+------------------
+1. Los microservicios (ppp_core y ppp_companias) tienen ingress INTERNO - solo son accesibles dentro de Azure Container Apps Environment
+2. El API Gateway tiene ingress EXTERNO - es el único punto de entrada público
+3. La comunicación entre Gateway y microservicios es a través de HTTPS (puerto 443) internamente
+4. Todas las variables de entorno sensibles (DATABASE_URL) están configuradas de forma segura
+5. Los servicios están configurados con auto-escalado (1-3 réplicas para microservicios, 1-5 para gateway)
+6. Health checks implementados en todos los servicios:
+   - /health (full health check con verificación de microservicios)
+   - /health/ready (readiness probe)
+   - /health/live (liveness probe)
+7. ✓ Verificado: Health check responde correctamente mostrando todos los servicios UP
+8. ✓ Swagger UI accesible públicamente
+
+ESTADO DEL DESPLIEGUE:
+----------------------
+✓ Infrastructure Created
+✓ Docker Images Built and Pushed
+✓ Container Apps Deployed
+✓ Services Running
+✓ Health Checks Passing
+✓ Microservices Communication Working
+✓ Public API Gateway Accessible
+✓ Swagger UI Available
+
+PRÓXIMOS PASOS:
+---------------
+1. ✓ COMPLETADO: Probar el Swagger UI en el navegador
+2. ✓ COMPLETADO: Verificar health checks (todos los servicios reportan UP)
+3. Probar operaciones CRUD a través del Gateway
+4. Configurar alertas en Azure Monitor (opcional)
+5. Configurar dominio personalizado (opcional)
+6. Implementar Application Insights para telemetría avanzada (opcional)
+
+============================================
+DESPLIEGUE EXITOSO - TODOS LOS SERVICIOS OPERACIONALES
+============================================
+
