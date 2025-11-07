@@ -130,17 +130,8 @@ export class DocumentosService {
   async remove(id: string) {
     await this.findOne(id); // Validates existence
 
-    // Check if documento is being used in carta_presentacion
-    const cartasCount = await this.prisma.cartaPresentacion.count({
-      where: { documentoId: id },
-    });
-
-    if (cartasCount > 0) {
-      throw new BadRequestException(
-        `No se puede eliminar el documento porque está siendo usado en ${cartasCount} carta(s) de presentación`,
-      );
-    }
-
+    // Note: The database has onDelete: SetNull configured for the relation,
+    // so deleting a documento will set documentoId to null in related cartas
     return await this.prisma.documento.delete({
       where: { id },
     });
