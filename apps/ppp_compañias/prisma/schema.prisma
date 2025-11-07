@@ -81,7 +81,7 @@ model Documento {
 ========================= */
 model CartaPresentacion {
   id            String       @id @default(uuid()) @db.Uuid
-  idUsuario     String       @map("id_usuario") @db.Uuid      // Referencia a Usuario (ppp_core)
+  idAlumno      String       @map("id_alumno") @db.Uuid      // Referencia a Alumno (ppp_core)
   idEmpresa     String       @map("id_empresa") @db.Uuid
   idSecretaria  String?      @map("id_secretaria") @db.Uuid   // Referencia a Secretaria (ppp_core)
   documentoId   String?      @map("documento_id") @db.Uuid    // Relación con Documento
@@ -98,7 +98,7 @@ model CartaPresentacion {
   empresa   Empresa    @relation(fields: [idEmpresa], references: [id], onDelete: Restrict)
   documento Documento? @relation(fields: [documentoId], references: [id], onDelete: SetNull)
 
-  @@index([idUsuario])
+  @@index([idAlumno])
   @@index([idEmpresa])
   @@index([idSecretaria])
   @@index([estado])
