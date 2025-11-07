@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PpazApiGatewayController } from './ppaz-api-gateway.controller';
 import { PpazApiGatewayService } from './ppaz-api-gateway.service';
@@ -10,27 +11,44 @@ import { SecretariasModule } from './modules/secretarias/secretarias.module';
 import { AlumnosModule } from './modules/alumnos/alumnos.module';
 import { EmpresasModule } from './modules/empresas/empresas.module';
 import { CartasPresentacionModule } from './modules/cartas-presentacion/cartas-presentacion.module';
+import { configValidationSchema } from './config/config.validation';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env', '.env.local'],
+      validationSchema: configValidationSchema,
+      validationOptions: {
+        abortEarly: false,
+      },
+    }),
+    ClientsModule.registerAsync([
       {
         name: 'PPP_CORE_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 3001,
-        },
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get<string>('PPP_CORE_HOST'),
+            port: configService.get<number>('PPP_CORE_PORT'),
+          },
+        }),
+        inject: [ConfigService],
       },
       {
         name: 'PPP_COMPANIAS_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 3002,
-        },
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get<string>('PPP_COMPANIAS_HOST'),
+            port: configService.get<number>('PPP_COMPANIAS_PORT'),
+          },
+        }),
+        inject: [ConfigService],
       },
     ]),
+    HealthModule,
     UsuariosModule,
     RolesModule,
     FacultadesModule,

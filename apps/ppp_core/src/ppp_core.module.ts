@@ -9,14 +9,21 @@ import { FacultadesModule } from './modules/facultades/facultades.module';
 import { EscuelasModule } from './modules/escuelas/escuelas.module';
 import { SecretariasModule } from './modules/secretarias/secretarias.module';
 import { AlumnosModule } from './modules/alumnos/alumnos.module';
+import { configValidationSchema } from './config/config.validation';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ['.env', '.env.local'],
+      validationSchema: configValidationSchema,
+      validationOptions: {
+        abortEarly: false,
+      },
     }),
     PrismaModule,
+    HealthModule,
     UsuariosModule,
     RolesModule,
     FacultadesModule,
