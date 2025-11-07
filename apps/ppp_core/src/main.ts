@@ -2,31 +2,45 @@ import { NestFactory } from '@nestjs/core';
 import { PppCoreModule } from './ppp_core.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  const appContext = await NestFactory.createApplicationContext(PppCoreModule);
-  const configService = appContext.get(ConfigService);
   const logger = new Logger('Bootstrap');
 
-  const port = configService.get<number>('PORT', 3001);
-  const host = configService.get<string>('HOST', 'localhost');
+  // Crear aplicación híbrida (HTTP + Microservice patterns)
+  const app = await NestFactory.create(PppCoreModule);
+  
+  const configService = app.get(ConfigService);
+  const httpPort = configService.get<number>('PORT', 3001); // HTTP para Azure
+  const tcpPort = configService.get<number>('TCP_PORT', 3011); // TCP para dev local
+  const host = configService.get<string>('HOST', '0.0.0.0');
   const appName = configService.get<string>('APP_NAME', 'ppp_core');
 
-  await appContext.close();
-
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    PppCoreModule,
-    {
-      transport: Transport.TCP,
-      options: {
-        host,
-        port,
-      }
-    }
+  // Configurar validación global
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+    }),
   );
+
+  // Habilitar CORS para comunicación con API Gateway
+  app.enableCors();
+
+  // Conectar microservice TCP en puerto diferente (solo para dev local)
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.TCP,
+    options: {
+      host,
+      port: tcpPort, // Puerto diferente para TCP
+    },
+  });
+
+  await app.startAllMicroservices();
+  await app.listen(httpPort, host); // HTTP en puerto principal
   
-  await app.listen();
-  logger.log(`🚀 ${appName} microservice is running on ${host}:${port}`);
+  logger.log(`🚀 ${appName} HTTP server is running on http://${host}:${httpPort}`);
+  logger.log(`🔗 ${appName} TCP microservice patterns enabled on port ${tcpPort}`);
 }
 bootstrap();

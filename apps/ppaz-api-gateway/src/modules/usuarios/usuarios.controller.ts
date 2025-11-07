@@ -1,16 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 
 @ApiTags('usuarios')
 @Controller('usuarios')
 export class UsuariosController {
+  private readonly coreServiceUrl: string;
+
   constructor(
-    @Inject('PPP_CORE_SERVICE') private readonly coreClient: ClientProxy,
-  ) {}
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {
+    const host = this.configService.get<string>('PPP_CORE_HOST');
+    const port = this.configService.get<number>('PPP_CORE_PORT');
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+    
+    // En Azure, usar HTTPS con el FQDN interno
+    // En desarrollo, usar HTTP con host:port
+    if (isProduction) {
+      this.coreServiceUrl = `https://${host}`;
+    } else {
+      this.coreServiceUrl = `http://${host}:${port}`;
+    }
+  }
 
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo usuario', description: 'Registra un nuevo usuario en el sistema con roles asignados' })
@@ -18,14 +35,18 @@ export class UsuariosController {
   @ApiResponse({ status: 201, description: 'Usuario creado exitosamente' })
   @ApiResponse({ status: 400, description: 'Datos de entrada inválidos' })
   create(@Body() createUsuarioDto: CreateUsuarioDto): Observable<any> {
-    return this.coreClient.send({ cmd: 'create_usuario' }, createUsuarioDto);
+    return this.httpService
+      .post(`${this.coreServiceUrl}/usuarios`, createUsuarioDto)
+      .pipe(map((response) => response.data));
   }
 
   @Get()
   @ApiOperation({ summary: 'Listar todos los usuarios', description: 'Obtiene la lista completa de usuarios con sus roles' })
   @ApiResponse({ status: 200, description: 'Lista de usuarios obtenida exitosamente' })
   findAll(): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_all_usuarios' }, {});
+    return this.httpService
+      .get(`${this.coreServiceUrl}/usuarios`)
+      .pipe(map((response) => response.data));
   }
 
   @Get(':id')
@@ -34,7 +55,9 @@ export class UsuariosController {
   @ApiResponse({ status: 200, description: 'Usuario encontrado' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   findOne(@Param('id') id: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_one_usuario' }, id);
+    return this.httpService
+      .get(`${this.coreServiceUrl}/usuarios/${id}`)
+      .pipe(map((response) => response.data));
   }
 
   @Get('email/:email')
@@ -43,7 +66,9 @@ export class UsuariosController {
   @ApiResponse({ status: 200, description: 'Usuario encontrado' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   findByEmail(@Param('email') email: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_usuario_by_email' }, email);
+    return this.httpService
+      .get(`${this.coreServiceUrl}/usuarios/email/${email}`)
+      .pipe(map((response) => response.data));
   }
 
   @Patch(':id')
@@ -56,10 +81,9 @@ export class UsuariosController {
     @Param('id') id: string,
     @Body() updateUsuarioDto: UpdateUsuarioDto,
   ): Observable<any> {
-    return this.coreClient.send(
-      { cmd: 'update_usuario' },
-      { id, data: updateUsuarioDto },
-    );
+    return this.httpService
+      .patch(`${this.coreServiceUrl}/usuarios/${id}`, updateUsuarioDto)
+      .pipe(map((response) => response.data));
   }
 
   @Delete(':id')
@@ -68,6 +92,8 @@ export class UsuariosController {
   @ApiResponse({ status: 200, description: 'Usuario eliminado exitosamente' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   remove(@Param('id') id: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'remove_usuario' }, id);
+    return this.httpService
+      .delete(`${this.coreServiceUrl}/usuarios/${id}`)
+      .pipe(map((response) => response.data));
   }
 }

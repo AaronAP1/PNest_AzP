@@ -1,20 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { HttpModule } from '@nestjs/axios';
+import { ConfigModule } from '@nestjs/config';
 import { RolesController } from './roles.controller';
 
 @Module({
-  imports: [
-    ClientsModule.register([
-      {
-        name: 'PPP_CORE_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 3001,
-        },
-      },
-    ]),
-  ],
+  imports: [HttpModule, ConfigModule],
   controllers: [RolesController],
 })
 export class RolesModule {}

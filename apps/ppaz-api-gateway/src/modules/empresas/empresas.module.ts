@@ -1,20 +1,10 @@
 import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
+import { ConfigModule } from '@nestjs/config';
 import { EmpresasController } from './empresas.controller';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
-  imports: [
-    ClientsModule.register([
-      {
-        name: 'PPP_COMPANIAS_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 3002,
-        },
-      },
-    ]),
-  ],
+  imports: [HttpModule, ConfigModule],
   controllers: [EmpresasController],
 })
 export class EmpresasModule {}

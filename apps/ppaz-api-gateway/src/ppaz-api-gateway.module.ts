@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigModule } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 import { PpazApiGatewayController } from './ppaz-api-gateway.controller';
 import { PpazApiGatewayService } from './ppaz-api-gateway.service';
 import { UsuariosModule } from './modules/usuarios/usuarios.module';
@@ -24,42 +24,23 @@ import { HealthModule } from './health/health.module';
         abortEarly: false,
       },
     }),
-    ClientsModule.registerAsync([
-      {
-        name: 'PPP_CORE_SERVICE',
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
-          options: {
-            host: configService.get<string>('PPP_CORE_HOST'),
-            port: configService.get<number>('PPP_CORE_PORT'),
-          },
-        }),
-        inject: [ConfigService],
-      },
-      {
-        name: 'PPP_COMPANIAS_SERVICE',
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
-          options: {
-            host: configService.get<string>('PPP_COMPANIAS_HOST'),
-            port: configService.get<number>('PPP_COMPANIAS_PORT'),
-          },
-        }),
-        inject: [ConfigService],
-      },
-    ]),
+    HttpModule.register({
+      timeout: 10000,
+      maxRedirects: 5,
+    }),
     HealthModule,
     UsuariosModule,
-    RolesModule,
-    FacultadesModule,
-    EscuelasModule,
-    SecretariasModule,
-    AlumnosModule,
-    EmpresasModule,
-    CartasPresentacionModule,
+    // Temporalmente deshabilitados - solo usuarios está migrado a HTTP
+    // RolesModule,
+    // FacultadesModule,
+    // EscuelasModule,
+    // SecretariasModule,
+    // AlumnosModule,
+    // EmpresasModule,
+    // CartasPresentacionModule,
   ],
-  controllers: [PpazApiGatewayController],
+  controllers: [], // PpazApiGatewayController temporalmente deshabilitado
   providers: [PpazApiGatewayService],
-  exports: [ClientsModule],
 })
 export class PpazApiGatewayModule {}
+
