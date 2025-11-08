@@ -1,16 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CreateSecretariaDto } from './dto/create-secretaria.dto';
 import { UpdateSecretariaDto } from './dto/update-secretaria.dto';
 
 @ApiTags('secretarias')
 @Controller('secretarias')
 export class SecretariasController {
+  private readonly coreServiceUrl: string;
+
   constructor(
-    @Inject('PPP_CORE_SERVICE') private readonly coreClient: ClientProxy,
-  ) {}
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {
+    const host = this.configService.get<string>('PPP_CORE_HOST');
+    const port = this.configService.get<number>('PPP_CORE_PORT');
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+    
+    this.coreServiceUrl = isProduction 
+      ? `https://${host}` 
+      : `http://${host}:${port}`;
+  }
 
   @Post()
   @ApiOperation({ summary: 'Crear una nueva secretaria', description: 'Registra una secretaria asociada a una escuela' })
@@ -18,14 +31,18 @@ export class SecretariasController {
   @ApiResponse({ status: 201, description: 'Secretaria creada exitosamente' })
   @ApiResponse({ status: 400, description: 'Datos inválidos o escuela no existe' })
   create(@Body() createSecretariaDto: CreateSecretariaDto): Observable<any> {
-    return this.coreClient.send({ cmd: 'create_secretaria' }, createSecretariaDto);
+    return this.httpService
+      .post(`${this.coreServiceUrl}/secretarias`, createSecretariaDto)
+      .pipe(map((response) => response.data));
   }
 
   @Get()
   @ApiOperation({ summary: 'Listar todas las secretarias', description: 'Obtiene todas las secretarias con información de su escuela y facultad' })
   @ApiResponse({ status: 200, description: 'Lista de secretarias obtenida exitosamente' })
   findAll(): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_all_secretarias' }, {});
+    return this.httpService
+      .get(`${this.coreServiceUrl}/secretarias`)
+      .pipe(map((response) => response.data));
   }
 
   @Get(':id')
@@ -34,7 +51,9 @@ export class SecretariasController {
   @ApiResponse({ status: 200, description: 'Secretaria encontrada' })
   @ApiResponse({ status: 404, description: 'Secretaria no encontrada' })
   findOne(@Param('id') id: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_one_secretaria' }, id);
+    return this.httpService
+      .get(`${this.coreServiceUrl}/secretarias/${id}`)
+      .pipe(map((response) => response.data));
   }
 
   @Get('escuela/:idEscuela')
@@ -42,7 +61,9 @@ export class SecretariasController {
   @ApiParam({ name: 'idEscuela', description: 'UUID de la escuela', type: 'string' })
   @ApiResponse({ status: 200, description: 'Lista de secretarias obtenida' })
   findByEscuela(@Param('idEscuela') idEscuela: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_secretarias_by_escuela' }, idEscuela);
+    return this.httpService
+      .get(`${this.coreServiceUrl}/secretarias/escuela/${idEscuela}`)
+      .pipe(map((response) => response.data));
   }
 
   @Patch(':id')
@@ -52,7 +73,9 @@ export class SecretariasController {
   @ApiResponse({ status: 200, description: 'Secretaria actualizada exitosamente' })
   @ApiResponse({ status: 404, description: 'Secretaria no encontrada' })
   update(@Param('id') id: string, @Body() updateSecretariaDto: UpdateSecretariaDto): Observable<any> {
-    return this.coreClient.send({ cmd: 'update_secretaria' }, { id, updateSecretariaDto });
+    return this.httpService
+      .patch(`${this.coreServiceUrl}/secretarias/${id}`, updateSecretariaDto)
+      .pipe(map((response) => response.data));
   }
 
   @Delete(':id')
@@ -61,6 +84,8 @@ export class SecretariasController {
   @ApiResponse({ status: 200, description: 'Secretaria eliminada exitosamente' })
   @ApiResponse({ status: 404, description: 'Secretaria no encontrada' })
   remove(@Param('id') id: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'remove_secretaria' }, id);
+    return this.httpService
+      .delete(`${this.coreServiceUrl}/secretarias/${id}`)
+      .pipe(map((response) => response.data));
   }
 }

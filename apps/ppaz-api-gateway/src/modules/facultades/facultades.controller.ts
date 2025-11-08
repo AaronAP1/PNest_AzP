@@ -1,16 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CreateFacultadDto } from './dto/create-facultad.dto';
 import { UpdateFacultadDto } from './dto/update-facultad.dto';
 
 @ApiTags('facultades')
 @Controller('facultades')
 export class FacultadesController {
+  private readonly coreServiceUrl: string;
+
   constructor(
-    @Inject('PPP_CORE_SERVICE') private readonly coreClient: ClientProxy,
-  ) {}
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {
+    const host = this.configService.get<string>('PPP_CORE_HOST');
+    const port = this.configService.get<number>('PPP_CORE_PORT');
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+    
+    this.coreServiceUrl = isProduction 
+      ? `https://${host}` 
+      : `http://${host}:${port}`;
+  }
 
   @Post()
   @ApiOperation({ summary: 'Crear una nueva facultad', description: 'Registra una nueva facultad en el sistema' })
@@ -19,14 +32,18 @@ export class FacultadesController {
   @ApiResponse({ status: 400, description: 'Datos de entrada inválidos' })
   @ApiResponse({ status: 409, description: 'Ya existe una facultad con ese código' })
   create(@Body() createFacultadDto: CreateFacultadDto): Observable<any> {
-    return this.coreClient.send({ cmd: 'create_facultad' }, createFacultadDto);
+    return this.httpService
+      .post(`${this.coreServiceUrl}/facultades`, createFacultadDto)
+      .pipe(map((response) => response.data));
   }
 
   @Get()
   @ApiOperation({ summary: 'Listar todas las facultades', description: 'Obtiene la lista completa de facultades con el conteo de escuelas' })
   @ApiResponse({ status: 200, description: 'Lista de facultades obtenida exitosamente' })
   findAll(): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_all_facultades' }, {});
+    return this.httpService
+      .get(`${this.coreServiceUrl}/facultades`)
+      .pipe(map((response) => response.data));
   }
 
   @Get(':id')
@@ -35,7 +52,9 @@ export class FacultadesController {
   @ApiResponse({ status: 200, description: 'Facultad encontrada' })
   @ApiResponse({ status: 404, description: 'Facultad no encontrada' })
   findOne(@Param('id') id: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_one_facultad' }, id);
+    return this.httpService
+      .get(`${this.coreServiceUrl}/facultades/${id}`)
+      .pipe(map((response) => response.data));
   }
 
   @Patch(':id')
@@ -46,7 +65,9 @@ export class FacultadesController {
   @ApiResponse({ status: 404, description: 'Facultad no encontrada' })
   @ApiResponse({ status: 409, description: 'Ya existe una facultad con ese código' })
   update(@Param('id') id: string, @Body() updateFacultadDto: UpdateFacultadDto): Observable<any> {
-    return this.coreClient.send({ cmd: 'update_facultad' }, { id, updateFacultadDto });
+    return this.httpService
+      .patch(`${this.coreServiceUrl}/facultades/${id}`, updateFacultadDto)
+      .pipe(map((response) => response.data));
   }
 
   @Delete(':id')
@@ -56,6 +77,8 @@ export class FacultadesController {
   @ApiResponse({ status: 404, description: 'Facultad no encontrada' })
   @ApiResponse({ status: 400, description: 'No se puede eliminar la facultad porque tiene escuelas asociadas' })
   remove(@Param('id') id: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'remove_facultad' }, id);
+    return this.httpService
+      .delete(`${this.coreServiceUrl}/facultades/${id}`)
+      .pipe(map((response) => response.data));
   }
 }

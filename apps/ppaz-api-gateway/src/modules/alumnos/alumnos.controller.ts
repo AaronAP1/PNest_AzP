@@ -1,16 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CreateAlumnoDto } from './dto/create-alumno.dto';
 import { UpdateAlumnoDto } from './dto/update-alumno.dto';
 
 @ApiTags('alumnos')
 @Controller('alumnos')
 export class AlumnosController {
+  private readonly coreServiceUrl: string;
+
   constructor(
-    @Inject('PPP_CORE_SERVICE') private readonly coreClient: ClientProxy,
-  ) {}
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {
+    const host = this.configService.get<string>('PPP_CORE_HOST');
+    const port = this.configService.get<number>('PPP_CORE_PORT');
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+    
+    this.coreServiceUrl = isProduction 
+      ? `https://${host}` 
+      : `http://${host}:${port}`;
+  }
 
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo alumno', description: 'Registra un alumno vinculado a un usuario y escuela' })
@@ -19,14 +32,18 @@ export class AlumnosController {
   @ApiResponse({ status: 400, description: 'Datos inválidos, usuario o escuela no existe' })
   @ApiResponse({ status: 409, description: 'El código o usuario ya está registrado' })
   create(@Body() createAlumnoDto: CreateAlumnoDto): Observable<any> {
-    return this.coreClient.send({ cmd: 'create_alumno' }, createAlumnoDto);
+    return this.httpService
+      .post(`${this.coreServiceUrl}/alumnos`, createAlumnoDto)
+      .pipe(map((response) => response.data));
   }
 
   @Get()
   @ApiOperation({ summary: 'Listar todos los alumnos', description: 'Obtiene todos los alumnos con información de usuario y escuela' })
   @ApiResponse({ status: 200, description: 'Lista de alumnos obtenida exitosamente' })
   findAll(): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_all_alumnos' }, {});
+    return this.httpService
+      .get(`${this.coreServiceUrl}/alumnos`)
+      .pipe(map((response) => response.data));
   }
 
   @Get(':id')
@@ -35,7 +52,9 @@ export class AlumnosController {
   @ApiResponse({ status: 200, description: 'Alumno encontrado' })
   @ApiResponse({ status: 404, description: 'Alumno no encontrado' })
   findOne(@Param('id') id: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_one_alumno' }, id);
+    return this.httpService
+      .get(`${this.coreServiceUrl}/alumnos/${id}`)
+      .pipe(map((response) => response.data));
   }
 
   @Get('usuario/:usuarioId')
@@ -44,7 +63,9 @@ export class AlumnosController {
   @ApiResponse({ status: 200, description: 'Alumno encontrado' })
   @ApiResponse({ status: 404, description: 'Alumno no encontrado' })
   findByUsuario(@Param('usuarioId') usuarioId: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_alumno_by_usuario' }, usuarioId);
+    return this.httpService
+      .get(`${this.coreServiceUrl}/alumnos/usuario/${usuarioId}`)
+      .pipe(map((response) => response.data));
   }
 
   @Get('codigo/:codigo')
@@ -53,7 +74,9 @@ export class AlumnosController {
   @ApiResponse({ status: 200, description: 'Alumno encontrado' })
   @ApiResponse({ status: 404, description: 'Alumno no encontrado' })
   findByCodigo(@Param('codigo') codigo: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_alumno_by_codigo' }, codigo);
+    return this.httpService
+      .get(`${this.coreServiceUrl}/alumnos/codigo/${codigo}`)
+      .pipe(map((response) => response.data));
   }
 
   @Get('escuela/:idEscuela')
@@ -61,7 +84,9 @@ export class AlumnosController {
   @ApiParam({ name: 'idEscuela', description: 'UUID de la escuela', type: 'string' })
   @ApiResponse({ status: 200, description: 'Lista de alumnos obtenida' })
   findByEscuela(@Param('idEscuela') idEscuela: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_alumnos_by_escuela' }, idEscuela);
+    return this.httpService
+      .get(`${this.coreServiceUrl}/alumnos/escuela/${idEscuela}`)
+      .pipe(map((response) => response.data));
   }
 
   @Patch(':id')
@@ -71,7 +96,9 @@ export class AlumnosController {
   @ApiResponse({ status: 200, description: 'Alumno actualizado exitosamente' })
   @ApiResponse({ status: 404, description: 'Alumno no encontrado' })
   update(@Param('id') id: string, @Body() updateAlumnoDto: UpdateAlumnoDto): Observable<any> {
-    return this.coreClient.send({ cmd: 'update_alumno' }, { id, updateAlumnoDto });
+    return this.httpService
+      .patch(`${this.coreServiceUrl}/alumnos/${id}`, updateAlumnoDto)
+      .pipe(map((response) => response.data));
   }
 
   @Delete(':id')
@@ -80,6 +107,8 @@ export class AlumnosController {
   @ApiResponse({ status: 200, description: 'Alumno eliminado exitosamente' })
   @ApiResponse({ status: 404, description: 'Alumno no encontrado' })
   remove(@Param('id') id: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'remove_alumno' }, id);
+    return this.httpService
+      .delete(`${this.coreServiceUrl}/alumnos/${id}`)
+      .pipe(map((response) => response.data));
   }
 }

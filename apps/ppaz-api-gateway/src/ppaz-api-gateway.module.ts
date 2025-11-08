@@ -30,12 +30,12 @@ import { HealthModule } from './health/health.module';
     }),
     HealthModule,
     UsuariosModule,
-    // Temporalmente deshabilitados - solo usuarios está migrado a HTTP
-    // RolesModule,
-    // FacultadesModule,
-    // EscuelasModule,
-    // SecretariasModule,
-    // AlumnosModule,
+    RolesModule,
+    FacultadesModule,
+    EscuelasModule,
+    SecretariasModule,
+    AlumnosModule,
+    // Módulos ppp_compañias (pendientes)
     // EmpresasModule,
     // CartasPresentacionModule,
   ],

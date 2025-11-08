@@ -1,16 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CreateEscuelaDto } from './dto/create-escuela.dto';
 import { UpdateEscuelaDto } from './dto/update-escuela.dto';
 
 @ApiTags('escuelas')
 @Controller('escuelas')
 export class EscuelasController {
+  private readonly coreServiceUrl: string;
+
   constructor(
-    @Inject('PPP_CORE_SERVICE') private readonly coreClient: ClientProxy,
-  ) {}
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {
+    const host = this.configService.get<string>('PPP_CORE_HOST');
+    const port = this.configService.get<number>('PPP_CORE_PORT');
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+    
+    this.coreServiceUrl = isProduction 
+      ? `https://${host}` 
+      : `http://${host}:${port}`;
+  }
 
   @Post()
   @ApiOperation({ summary: 'Crear una nueva escuela', description: 'Registra una nueva escuela profesional asociada a una facultad' })
@@ -19,14 +32,18 @@ export class EscuelasController {
   @ApiResponse({ status: 400, description: 'Datos inválidos o facultad no existe' })
   @ApiResponse({ status: 409, description: 'Ya existe una escuela con ese código' })
   create(@Body() createEscuelaDto: CreateEscuelaDto): Observable<any> {
-    return this.coreClient.send({ cmd: 'create_escuela' }, createEscuelaDto);
+    return this.httpService
+      .post(`${this.coreServiceUrl}/escuelas`, createEscuelaDto)
+      .pipe(map((response) => response.data));
   }
 
   @Get()
   @ApiOperation({ summary: 'Listar todas las escuelas', description: 'Obtiene todas las escuelas con información de su facultad' })
   @ApiResponse({ status: 200, description: 'Lista de escuelas obtenida exitosamente' })
   findAll(): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_all_escuelas' }, {});
+    return this.httpService
+      .get(`${this.coreServiceUrl}/escuelas`)
+      .pipe(map((response) => response.data));
   }
 
   @Get(':id')
@@ -35,7 +52,9 @@ export class EscuelasController {
   @ApiResponse({ status: 200, description: 'Escuela encontrada' })
   @ApiResponse({ status: 404, description: 'Escuela no encontrada' })
   findOne(@Param('id') id: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_one_escuela' }, id);
+    return this.httpService
+      .get(`${this.coreServiceUrl}/escuelas/${id}`)
+      .pipe(map((response) => response.data));
   }
 
   @Get('facultad/:idFacultad')
@@ -44,7 +63,9 @@ export class EscuelasController {
   @ApiResponse({ status: 200, description: 'Lista de escuelas obtenida' })
   @ApiResponse({ status: 404, description: 'Facultad no encontrada' })
   findByFacultad(@Param('idFacultad') idFacultad: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'find_escuelas_by_facultad' }, idFacultad);
+    return this.httpService
+      .get(`${this.coreServiceUrl}/escuelas/facultad/${idFacultad}`)
+      .pipe(map((response) => response.data));
   }
 
   @Patch(':id')
@@ -54,7 +75,9 @@ export class EscuelasController {
   @ApiResponse({ status: 200, description: 'Escuela actualizada exitosamente' })
   @ApiResponse({ status: 404, description: 'Escuela no encontrada' })
   update(@Param('id') id: string, @Body() updateEscuelaDto: UpdateEscuelaDto): Observable<any> {
-    return this.coreClient.send({ cmd: 'update_escuela' }, { id, updateEscuelaDto });
+    return this.httpService
+      .patch(`${this.coreServiceUrl}/escuelas/${id}`, updateEscuelaDto)
+      .pipe(map((response) => response.data));
   }
 
   @Delete(':id')
@@ -64,6 +87,8 @@ export class EscuelasController {
   @ApiResponse({ status: 404, description: 'Escuela no encontrada' })
   @ApiResponse({ status: 400, description: 'No se puede eliminar porque tiene alumnos asociados' })
   remove(@Param('id') id: string): Observable<any> {
-    return this.coreClient.send({ cmd: 'remove_escuela' }, id);
+    return this.httpService
+      .delete(`${this.coreServiceUrl}/escuelas/${id}`)
+      .pipe(map((response) => response.data));
   }
 }

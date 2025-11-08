@@ -1,13 +1,55 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { AlumnosService } from './alumnos.service';
 import { CreateAlumnoDto } from './dto/create-alumno.dto';
 import { UpdateAlumnoDto } from './dto/update-alumno.dto';
 
-@Controller()
+@Controller('alumnos')
 export class AlumnosController {
   constructor(private readonly alumnosService: AlumnosService) {}
 
+  // HTTP REST Endpoints (Azure Container Apps)
+  @Post()
+  createHttp(@Body() createAlumnoDto: CreateAlumnoDto) {
+    return this.alumnosService.create(createAlumnoDto);
+  }
+
+  @Get()
+  findAllHttp() {
+    return this.alumnosService.findAll();
+  }
+
+  @Get(':id')
+  findOneHttp(@Param('id') id: string) {
+    return this.alumnosService.findOne(id);
+  }
+
+  @Get('usuario/:usuarioId')
+  findByUsuarioHttp(@Param('usuarioId') usuarioId: string) {
+    return this.alumnosService.findByUsuario(usuarioId);
+  }
+
+  @Get('codigo/:codigo')
+  findByCodigoHttp(@Param('codigo') codigo: string) {
+    return this.alumnosService.findByCodigo(codigo);
+  }
+
+  @Get('escuela/:idEscuela')
+  findByEscuelaHttp(@Param('idEscuela') idEscuela: string) {
+    return this.alumnosService.findByEscuela(idEscuela);
+  }
+
+  @Patch(':id')
+  updateHttp(@Param('id') id: string, @Body() updateAlumnoDto: UpdateAlumnoDto) {
+    return this.alumnosService.update(id, updateAlumnoDto);
+  }
+
+  @Delete(':id')
+  removeHttp(@Param('id') id: string) {
+    return this.alumnosService.remove(id);
+  }
+
+  // Microservice Patterns (Local Development)
   @MessagePattern({ cmd: 'create_alumno' })
   create(@Payload() createAlumnoDto: CreateAlumnoDto) {
     return this.alumnosService.create(createAlumnoDto);

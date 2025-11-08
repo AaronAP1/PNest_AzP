@@ -1,12 +1,34 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { RolesService } from './roles.service';
 import { CreateRolDto } from './dto/create-rol.dto';
 
-@Controller()
+@Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
+  // HTTP REST Endpoints (Azure Container Apps)
+  @Post()
+  createHttp(@Body() createRolDto: CreateRolDto) {
+    return this.rolesService.create(createRolDto);
+  }
+
+  @Get()
+  findAllHttp() {
+    return this.rolesService.findAll();
+  }
+
+  @Get(':id')
+  findOneHttp(@Param('id') id: string) {
+    return this.rolesService.findOne(id);
+  }
+
+  @Delete(':id')
+  removeHttp(@Param('id') id: string) {
+    return this.rolesService.remove(id);
+  }
+
+  // Microservice Patterns (Local Development)
   @MessagePattern({ cmd: 'create_rol' })
   create(@Payload() createRolDto: CreateRolDto) {
     return this.rolesService.create(createRolDto);
