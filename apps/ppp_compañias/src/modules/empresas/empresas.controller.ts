@@ -1,12 +1,49 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { EmpresasService } from './empresas.service';
 import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
 
-@Controller()
+@Controller('empresas')
 export class EmpresasController {
   constructor(private readonly empresasService: EmpresasService) {}
 
+  // HTTP REST Endpoints (Azure Container Apps)
+  @Post()
+  createHttp(@Body() createEmpresaDto: CreateEmpresaDto) {
+    return this.empresasService.create(createEmpresaDto);
+  }
+
+  @Get()
+  findAllHttp() {
+    return this.empresasService.findAll();
+  }
+
+  @Get(':id')
+  findOneHttp(@Param('id') id: string) {
+    return this.empresasService.findOne(id);
+  }
+
+  @Get('ruc/:ruc')
+  findByRucHttp(@Param('ruc') ruc: string) {
+    return this.empresasService.findByRuc(ruc);
+  }
+
+  @Get('sector/:sector')
+  findBySectorHttp(@Param('sector') sector: string) {
+    return this.empresasService.findBySector(sector);
+  }
+
+  @Patch(':id')
+  updateHttp(@Param('id') id: string, @Body() updateEmpresaDto: UpdateEmpresaDto) {
+    return this.empresasService.update(id, updateEmpresaDto);
+  }
+
+  @Delete(':id')
+  removeHttp(@Param('id') id: string) {
+    return this.empresasService.remove(id);
+  }
+
+  // Microservice Patterns (Local Development)
   @MessagePattern({ cmd: 'create_empresa' })
   create(@Payload() createEmpresaDto: CreateEmpresaDto) {
     return this.empresasService.create(createEmpresaDto);

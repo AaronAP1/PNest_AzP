@@ -1,16 +1,26 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Put } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CreateCartaPresentacionDto } from './dto/create-carta-presentacion.dto';
 import { UpdateCartaPresentacionDto } from './dto/update-carta-presentacion.dto';
 
 @ApiTags('cartas')
 @Controller('cartas')
 export class CartasPresentacionController {
+  private readonly companiasServiceUrl: string;
+
   constructor(
-    @Inject('PPP_COMPANIAS_SERVICE') private readonly companiasClient: ClientProxy,
-  ) {}
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {
+    const host = this.configService.get<string>('PPP_COMPANIAS_HOST');
+    const port = this.configService.get<number>('PPP_COMPANIAS_PORT');
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+    this.companiasServiceUrl = isProduction ? `https://${host}` : `http://${host}:${port}`;
+  }
 
   @Post()
   @ApiOperation({ summary: 'Crear carta de presentación', description: 'Crea una nueva solicitud de carta de presentación' })
@@ -18,14 +28,16 @@ export class CartasPresentacionController {
   @ApiResponse({ status: 201, description: 'Carta creada exitosamente' })
   @ApiResponse({ status: 400, description: 'Alumno, empresa o secretaria no existe' })
   create(@Body() createCartaDto: CreateCartaPresentacionDto): Observable<any> {
-    return this.companiasClient.send({ cmd: 'create_carta_presentacion' }, createCartaDto);
+    return this.httpService.post(`${this.companiasServiceUrl}/cartas-presentacion`, createCartaDto)
+      .pipe(map((response) => response.data));
   }
 
   @Get()
   @ApiOperation({ summary: 'Listar todas las cartas', description: 'Obtiene todas las cartas de presentación registradas' })
   @ApiResponse({ status: 200, description: 'Lista de cartas obtenida exitosamente' })
   findAll(): Observable<any> {
-    return this.companiasClient.send({ cmd: 'find_all_cartas_presentacion' }, {});
+    return this.httpService.get(`${this.companiasServiceUrl}/cartas-presentacion`)
+      .pipe(map((response) => response.data));
   }
 
   @Get(':id')
@@ -34,7 +46,8 @@ export class CartasPresentacionController {
   @ApiResponse({ status: 200, description: 'Carta encontrada' })
   @ApiResponse({ status: 404, description: 'Carta no encontrada' })
   findOne(@Param('id') id: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'find_one_carta_presentacion' }, id);
+    return this.httpService.get(`${this.companiasServiceUrl}/cartas-presentacion/${id}`)
+      .pipe(map((response) => response.data));
   }
 
   @Get('alumno/:idAlumno')
@@ -42,7 +55,8 @@ export class CartasPresentacionController {
   @ApiParam({ name: 'idAlumno', description: 'UUID del alumno', type: 'string' })
   @ApiResponse({ status: 200, description: 'Lista de cartas del alumno' })
   findByAlumno(@Param('idAlumno') idAlumno: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'find_cartas_by_alumno' }, idAlumno);
+    return this.httpService.get(`${this.companiasServiceUrl}/cartas-presentacion/alumno/${idAlumno}`)
+      .pipe(map((response) => response.data));
   }
 
   @Get('empresa/:idEmpresa')
@@ -50,7 +64,8 @@ export class CartasPresentacionController {
   @ApiParam({ name: 'idEmpresa', description: 'UUID de la empresa', type: 'string' })
   @ApiResponse({ status: 200, description: 'Lista de cartas de la empresa' })
   findByEmpresa(@Param('idEmpresa') idEmpresa: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'find_cartas_by_empresa' }, idEmpresa);
+    return this.httpService.get(`${this.companiasServiceUrl}/cartas-presentacion/empresa/${idEmpresa}`)
+      .pipe(map((response) => response.data));
   }
 
   @Get('estado/:estado')
@@ -58,7 +73,8 @@ export class CartasPresentacionController {
   @ApiParam({ name: 'estado', description: 'Estado de la carta', enum: ['draft', 'submitted', 'reviewing', 'approved', 'rejected', 'cancelled'] })
   @ApiResponse({ status: 200, description: 'Lista de cartas filtradas' })
   findByEstado(@Param('estado') estado: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'find_cartas_by_estado' }, estado);
+    return this.httpService.get(`${this.companiasServiceUrl}/cartas-presentacion/estado/${estado}`)
+      .pipe(map((response) => response.data));
   }
 
   @Patch(':id')
@@ -68,7 +84,8 @@ export class CartasPresentacionController {
   @ApiResponse({ status: 200, description: 'Carta actualizada exitosamente' })
   @ApiResponse({ status: 404, description: 'Carta no encontrada' })
   update(@Param('id') id: string, @Body() updateCartaDto: UpdateCartaPresentacionDto): Observable<any> {
-    return this.companiasClient.send({ cmd: 'update_carta_presentacion' }, { id, updateCartaPresentacionDto: updateCartaDto });
+    return this.httpService.patch(`${this.companiasServiceUrl}/cartas-presentacion/${id}`, updateCartaDto)
+      .pipe(map((response) => response.data));
   }
 
   @Put(':id/enviar')
@@ -77,7 +94,8 @@ export class CartasPresentacionController {
   @ApiResponse({ status: 200, description: 'Carta enviada exitosamente' })
   @ApiResponse({ status: 400, description: 'La carta ya fue enviada o estado inválido' })
   submit(@Param('id') id: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'submit_carta_presentacion' }, id);
+    return this.httpService.post(`${this.companiasServiceUrl}/cartas-presentacion/${id}/submit`, {})
+      .pipe(map((response) => response.data));
   }
 
   @Put(':id/revisar')
@@ -85,7 +103,8 @@ export class CartasPresentacionController {
   @ApiParam({ name: 'id', description: 'UUID de la carta', type: 'string' })
   @ApiResponse({ status: 200, description: 'Carta marcada en revisión' })
   review(@Param('id') id: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'review_carta_presentacion' }, id);
+    return this.httpService.post(`${this.companiasServiceUrl}/cartas-presentacion/${id}/review`, {})
+      .pipe(map((response) => response.data));
   }
 
   @Put(':id/aprobar')
@@ -93,7 +112,8 @@ export class CartasPresentacionController {
   @ApiParam({ name: 'id', description: 'UUID de la carta', type: 'string' })
   @ApiResponse({ status: 200, description: 'Carta aprobada exitosamente' })
   approve(@Param('id') id: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'approve_carta_presentacion' }, id);
+    return this.httpService.post(`${this.companiasServiceUrl}/cartas-presentacion/${id}/approve`, {})
+      .pipe(map((response) => response.data));
   }
 
   @Put(':id/rechazar')
@@ -102,7 +122,8 @@ export class CartasPresentacionController {
   @ApiBody({ schema: { properties: { motivoRechazo: { type: 'string', example: 'Falta documentación' } } } })
   @ApiResponse({ status: 200, description: 'Carta rechazada' })
   reject(@Param('id') id: string, @Body() body: { motivoRechazo: string }): Observable<any> {
-    return this.companiasClient.send({ cmd: 'reject_carta_presentacion' }, { id, motivoRechazo: body.motivoRechazo });
+    return this.httpService.post(`${this.companiasServiceUrl}/cartas-presentacion/${id}/reject`, body)
+      .pipe(map((response) => response.data));
   }
 
   @Put(':id/cancelar')
@@ -111,7 +132,8 @@ export class CartasPresentacionController {
   @ApiResponse({ status: 200, description: 'Carta cancelada' })
   @ApiResponse({ status: 400, description: 'No se puede cancelar una carta aprobada' })
   cancel(@Param('id') id: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'cancel_carta_presentacion' }, id);
+    return this.httpService.post(`${this.companiasServiceUrl}/cartas-presentacion/${id}/cancel`, {})
+      .pipe(map((response) => response.data));
   }
 
   @Delete(':id')
@@ -120,6 +142,7 @@ export class CartasPresentacionController {
   @ApiResponse({ status: 200, description: 'Carta eliminada exitosamente' })
   @ApiResponse({ status: 400, description: 'Solo se pueden eliminar cartas en draft o cancelled' })
   remove(@Param('id') id: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'remove_carta_presentacion' }, id);
+    return this.httpService.delete(`${this.companiasServiceUrl}/cartas-presentacion/${id}`)
+      .pipe(map((response) => response.data));
   }
 }

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PppCompañiasController } from './ppp_compañias.controller';
 import { PppCompañiasService } from './ppp_compañias.service';
-import { PrismaCompaniasService } from './prisma/prisma.service';
+import { PrismaCompaniasModule } from './prisma/prisma.module';
 import { TipoDocumentosModule } from './modules/tipo-documentos/tipo-documentos.module';
 import { DocumentosModule } from './modules/documentos/documentos.module';
 import { EmpresasModule } from './modules/empresas/empresas.module';
@@ -20,6 +20,7 @@ import { HealthModule } from './health/health.module';
         abortEarly: false,
       },
     }),
+    PrismaCompaniasModule,
     HealthModule,
     TipoDocumentosModule,
     DocumentosModule,
@@ -27,7 +28,6 @@ import { HealthModule } from './health/health.module';
     CartasPresentacionModule,
   ],
   controllers: [PppCompañiasController],
-  providers: [PppCompañiasService, PrismaCompaniasService],
-  exports: [PrismaCompaniasService],
+  providers: [PppCompañiasService],
 })
 export class PppCompañiasModule {}

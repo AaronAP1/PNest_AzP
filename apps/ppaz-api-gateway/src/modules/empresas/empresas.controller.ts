@@ -1,16 +1,26 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 
 @ApiTags('empresas')
 @Controller('empresas')
 export class EmpresasController {
+  private readonly companiasServiceUrl: string;
+
   constructor(
-    @Inject('PPP_COMPANIAS_SERVICE') private readonly companiasClient: ClientProxy,
-  ) {}
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {
+    const host = this.configService.get<string>('PPP_COMPANIAS_HOST');
+    const port = this.configService.get<number>('PPP_COMPANIAS_PORT');
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+    this.companiasServiceUrl = isProduction ? `https://${host}` : `http://${host}:${port}`;
+  }
 
   @Post()
   @ApiOperation({ summary: 'Crear nueva empresa', description: 'Registra una nueva empresa para prácticas profesionales' })
@@ -18,14 +28,16 @@ export class EmpresasController {
   @ApiResponse({ status: 201, description: 'Empresa creada exitosamente' })
   @ApiResponse({ status: 409, description: 'Ya existe una empresa con ese RUC' })
   create(@Body() createEmpresaDto: CreateEmpresaDto): Observable<any> {
-    return this.companiasClient.send({ cmd: 'create_empresa' }, createEmpresaDto);
+    return this.httpService.post(`${this.companiasServiceUrl}/empresas`, createEmpresaDto)
+      .pipe(map((response) => response.data));
   }
 
   @Get()
   @ApiOperation({ summary: 'Listar todas las empresas', description: 'Obtiene la lista completa de empresas registradas' })
   @ApiResponse({ status: 200, description: 'Lista de empresas obtenida exitosamente' })
   findAll(): Observable<any> {
-    return this.companiasClient.send({ cmd: 'find_all_empresas' }, {});
+    return this.httpService.get(`${this.companiasServiceUrl}/empresas`)
+      .pipe(map((response) => response.data));
   }
 
   @Get(':id')
@@ -34,7 +46,8 @@ export class EmpresasController {
   @ApiResponse({ status: 200, description: 'Empresa encontrada' })
   @ApiResponse({ status: 404, description: 'Empresa no encontrada' })
   findOne(@Param('id') id: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'find_one_empresa' }, id);
+    return this.httpService.get(`${this.companiasServiceUrl}/empresas/${id}`)
+      .pipe(map((response) => response.data));
   }
 
   @Get('ruc/:ruc')
@@ -43,7 +56,8 @@ export class EmpresasController {
   @ApiResponse({ status: 200, description: 'Empresa encontrada' })
   @ApiResponse({ status: 404, description: 'Empresa no encontrada' })
   findByRuc(@Param('ruc') ruc: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'find_empresa_by_ruc' }, ruc);
+    return this.httpService.get(`${this.companiasServiceUrl}/empresas/ruc/${ruc}`)
+      .pipe(map((response) => response.data));
   }
 
   @Get('sector/:sector')
@@ -51,7 +65,8 @@ export class EmpresasController {
   @ApiParam({ name: 'sector', description: 'Sector económico', type: 'string', example: 'Tecnología' })
   @ApiResponse({ status: 200, description: 'Lista de empresas obtenida' })
   findBySector(@Param('sector') sector: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'find_empresas_by_sector' }, sector);
+    return this.httpService.get(`${this.companiasServiceUrl}/empresas/sector/${sector}`)
+      .pipe(map((response) => response.data));
   }
 
   @Patch(':id')
@@ -61,7 +76,8 @@ export class EmpresasController {
   @ApiResponse({ status: 200, description: 'Empresa actualizada exitosamente' })
   @ApiResponse({ status: 404, description: 'Empresa no encontrada' })
   update(@Param('id') id: string, @Body() updateEmpresaDto: UpdateEmpresaDto): Observable<any> {
-    return this.companiasClient.send({ cmd: 'update_empresa' }, { id, updateEmpresaDto });
+    return this.httpService.patch(`${this.companiasServiceUrl}/empresas/${id}`, updateEmpresaDto)
+      .pipe(map((response) => response.data));
   }
 
   @Delete(':id')
@@ -71,6 +87,7 @@ export class EmpresasController {
   @ApiResponse({ status: 404, description: 'Empresa no encontrada' })
   @ApiResponse({ status: 400, description: 'No se puede eliminar porque tiene cartas asociadas' })
   remove(@Param('id') id: string): Observable<any> {
-    return this.companiasClient.send({ cmd: 'remove_empresa' }, id);
+    return this.httpService.delete(`${this.companiasServiceUrl}/empresas/${id}`)
+      .pipe(map((response) => response.data));
   }
 }

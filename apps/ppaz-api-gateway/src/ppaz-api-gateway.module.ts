@@ -35,9 +35,9 @@ import { HealthModule } from './health/health.module';
     EscuelasModule,
     SecretariasModule,
     AlumnosModule,
-    // Módulos ppp_compañias (pendientes)
-    // EmpresasModule,
-    // CartasPresentacionModule,
+    // Módulos ppp_compañias
+    EmpresasModule,
+    CartasPresentacionModule,
   ],
   controllers: [], // PpazApiGatewayController temporalmente deshabilitado
   providers: [PpazApiGatewayService],
