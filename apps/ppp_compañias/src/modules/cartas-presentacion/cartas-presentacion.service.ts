@@ -9,49 +9,53 @@ import { CreateCartaPresentacionDto, UpdateCartaPresentacionDto } from './dto';
 import { PrismaCompaniasService } from '../../prisma/prisma.service';
 import { CartaEstado } from '../../../../../node_modules/.prisma/client-companias';
 import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class CartasPresentacionService {
+  private readonly coreServiceUrl = process.env.PPP_CORE_SERVICE_URL || 'http://ppp-core-service.internal.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io';
+
   constructor(
     private prisma: PrismaCompaniasService,
     @Inject('PPP_CORE_SERVICE') private coreClient: ClientProxy,
+    private readonly httpService: HttpService,
   ) {}
 
   async create(createCartaPresentacionDto: CreateCartaPresentacionDto) {
-    // Validate alumno exists in ppp_core
+    // Validate alumno exists in ppp_core via HTTP
     try {
-      const alumno = await firstValueFrom(
-        this.coreClient.send(
-          { cmd: 'find_one_alumno' },
-          createCartaPresentacionDto.idAlumno,
-        ),
+      const response = await firstValueFrom(
+        this.httpService.get(`${this.coreServiceUrl}/alumnos/${createCartaPresentacionDto.idAlumno}`),
       );
-      if (!alumno) {
+      if (!response.data) {
         throw new NotFoundException(
           `Alumno con id ${createCartaPresentacionDto.idAlumno} no encontrado`,
         );
       }
     } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
       throw new NotFoundException(
         `Alumno con id ${createCartaPresentacionDto.idAlumno} no encontrado`,
       );
     }
 
-    // Validate secretaria exists in ppp_core if provided
+    // Validate secretaria exists in ppp_core if provided via HTTP
     if (createCartaPresentacionDto.idSecretaria) {
       try {
-        const secretaria = await firstValueFrom(
-          this.coreClient.send(
-            { cmd: 'find_one_secretaria' },
-            createCartaPresentacionDto.idSecretaria,
-          ),
+        const response = await firstValueFrom(
+          this.httpService.get(`${this.coreServiceUrl}/secretarias/${createCartaPresentacionDto.idSecretaria}`),
         );
-        if (!secretaria) {
+        if (!response.data) {
           throw new NotFoundException(
             `Secretaria con id ${createCartaPresentacionDto.idSecretaria} no encontrada`,
           );
         }
       } catch (error) {
+        if (error instanceof NotFoundException) {
+          throw error;
+        }
         throw new NotFoundException(
           `Secretaria con id ${createCartaPresentacionDto.idSecretaria} no encontrada`,
         );

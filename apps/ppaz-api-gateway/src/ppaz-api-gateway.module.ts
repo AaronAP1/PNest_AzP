@@ -11,6 +11,8 @@ import { SecretariasModule } from './modules/secretarias/secretarias.module';
 import { AlumnosModule } from './modules/alumnos/alumnos.module';
 import { EmpresasModule } from './modules/empresas/empresas.module';
 import { CartasPresentacionModule } from './modules/cartas-presentacion/cartas-presentacion.module';
+import { TipoDocumentosModule } from './modules/tipo-documentos/tipo-documentos.module';
+import { DocumentosModule } from './modules/documentos/documentos.module';
 import { configValidationSchema } from './config/config.validation';
 import { HealthModule } from './health/health.module';
 
@@ -38,6 +40,8 @@ import { HealthModule } from './health/health.module';
     // Módulos ppp_compañias
     EmpresasModule,
     CartasPresentacionModule,
+    TipoDocumentosModule,
+    DocumentosModule,
   ],
   controllers: [], // PpazApiGatewayController temporalmente deshabilitado
   providers: [PpazApiGatewayService],

@@ -1,12 +1,54 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { DocumentosService } from './documentos.service';
 import { CreateDocumentoDto, UpdateDocumentoDto } from './dto';
 
-@Controller()
+@Controller('documentos')
 export class DocumentosController {
   constructor(private readonly documentosService: DocumentosService) {}
 
+  // HTTP REST Endpoints (Azure Container Apps)
+  @Post()
+  createHttp(@Body() createDocumentoDto: CreateDocumentoDto) {
+    return this.documentosService.create(createDocumentoDto);
+  }
+
+  @Get()
+  findAllHttp() {
+    return this.documentosService.findAll();
+  }
+
+  @Get(':id')
+  findOneHttp(@Param('id') id: string) {
+    return this.documentosService.findOne(id);
+  }
+
+  @Get('tipo/:idTipoDocumento')
+  findByTipoHttp(@Param('idTipoDocumento') idTipoDocumento: string) {
+    return this.documentosService.findByTipoDocumento(idTipoDocumento);
+  }
+
+  @Get('subido-por/:subidoPor')
+  findBySubidoPorHttp(@Param('subidoPor') subidoPor: string) {
+    return this.documentosService.findBySubidoPor(subidoPor);
+  }
+
+  @Get('generado-por/:generadoPor')
+  findByGeneradoPorHttp(@Param('generadoPor') generadoPor: string) {
+    return this.documentosService.findByGeneradoPor(generadoPor);
+  }
+
+  @Patch(':id')
+  updateHttp(@Param('id') id: string, @Body() updateDocumentoDto: UpdateDocumentoDto) {
+    return this.documentosService.update(id, updateDocumentoDto);
+  }
+
+  @Delete(':id')
+  removeHttp(@Param('id') id: string) {
+    return this.documentosService.remove(id);
+  }
+
+  // Microservice Patterns (Local Development)
   @MessagePattern({ cmd: 'create_documento' })
   create(@Payload() createDocumentoDto: CreateDocumentoDto) {
     return this.documentosService.create(createDocumentoDto);

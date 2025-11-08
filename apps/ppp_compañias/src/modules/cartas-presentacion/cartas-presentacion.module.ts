@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { HttpModule } from '@nestjs/axios';
 import { CartasPresentacionService } from './cartas-presentacion.service';
 import { CartasPresentacionController } from './cartas-presentacion.controller';
 
 @Module({
   imports: [
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
+    }),
     ClientsModule.register([
       {
         name: 'PPP_CORE_SERVICE',
