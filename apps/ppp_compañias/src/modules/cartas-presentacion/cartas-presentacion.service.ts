@@ -97,6 +97,7 @@ export class CartasPresentacionService {
       },
       include: {
         empresa: true,
+        documento: true,
       },
     });
   }
@@ -105,6 +106,11 @@ export class CartasPresentacionService {
     return await this.prisma.cartaPresentacion.findMany({
       include: {
         empresa: true,
+        documento: {
+          include: {
+            tipoDocumento: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -117,6 +123,11 @@ export class CartasPresentacionService {
       where: { id },
       include: {
         empresa: true,
+        documento: {
+          include: {
+            tipoDocumento: true,
+          },
+        },
       },
     });
 
@@ -134,6 +145,11 @@ export class CartasPresentacionService {
       where: { idAlumno },
       include: {
         empresa: true,
+        documento: {
+          include: {
+            tipoDocumento: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -154,6 +170,11 @@ export class CartasPresentacionService {
       where: { idEmpresa },
       include: {
         empresa: true,
+        documento: {
+          include: {
+            tipoDocumento: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -166,6 +187,11 @@ export class CartasPresentacionService {
       where: { estado },
       include: {
         empresa: true,
+        documento: {
+          include: {
+            tipoDocumento: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -252,6 +278,11 @@ export class CartasPresentacionService {
       data: dataToUpdate,
       include: {
         empresa: true,
+        documento: {
+          include: {
+            tipoDocumento: true,
+          },
+        },
       },
     });
   }
@@ -273,6 +304,11 @@ export class CartasPresentacionService {
       },
       include: {
         empresa: true,
+        documento: {
+          include: {
+            tipoDocumento: true,
+          },
+        },
       },
     });
   }
@@ -293,6 +329,11 @@ export class CartasPresentacionService {
       },
       include: {
         empresa: true,
+        documento: {
+          include: {
+            tipoDocumento: true,
+          },
+        },
       },
     });
   }
@@ -314,6 +355,11 @@ export class CartasPresentacionService {
       },
       include: {
         empresa: true,
+        documento: {
+          include: {
+            tipoDocumento: true,
+          },
+        },
       },
     });
   }
@@ -340,6 +386,11 @@ export class CartasPresentacionService {
       },
       include: {
         empresa: true,
+        documento: {
+          include: {
+            tipoDocumento: true,
+          },
+        },
       },
     });
   }
@@ -360,6 +411,11 @@ export class CartasPresentacionService {
       },
       include: {
         empresa: true,
+        documento: {
+          include: {
+            tipoDocumento: true,
+          },
+        },
       },
     });
   }
