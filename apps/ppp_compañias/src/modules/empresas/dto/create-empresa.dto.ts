@@ -30,9 +30,5 @@ export class CreateEmpresaDto {
   telefono: string;
 
   @IsString()
-  @MaxLength(100)
-  areaPractica: string;
-
-  @IsString()
   direccion: string;
 }

@@ -42,13 +42,22 @@ export class CreateCartaPresentacionDto {
   documentoId?: string;
 
   @ApiProperty({ 
-    description: 'Posición o área de práctica solicitada', 
+    description: 'Posición o cargo solicitado', 
     example: 'Practicante de Desarrollo de Software',
     maxLength: 255
   })
   @IsString()
   @MaxLength(255)
   posicion: string;
+
+  @ApiProperty({ 
+    description: 'Área de práctica o departamento', 
+    example: 'Desarrollo de Software',
+    maxLength: 100
+  })
+  @IsString()
+  @MaxLength(100)
+  areaPractica: string;
 
   @ApiProperty({ 
     description: 'Fecha de inicio de las prácticas (formato ISO 8601)', 

@@ -67,15 +67,6 @@ export class CreateEmpresaDto {
   telefono: string;
 
   @ApiProperty({ 
-    description: 'Área de práctica disponible', 
-    example: 'Desarrollo de Software',
-    maxLength: 100
-  })
-  @IsString()
-  @MaxLength(100)
-  areaPractica: string;
-
-  @ApiProperty({ 
     description: 'Dirección completa de la empresa', 
     example: 'Av. Arequipa 1234, Miraflores, Lima'
   })

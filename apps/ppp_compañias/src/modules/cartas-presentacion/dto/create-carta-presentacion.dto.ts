@@ -20,6 +20,10 @@ export class CreateCartaPresentacionDto {
   @MaxLength(255)
   posicion: string;
 
+  @IsString()
+  @MaxLength(100)
+  areaPractica: string;
+
   @IsDateString()
   fechaInicio: string;
 

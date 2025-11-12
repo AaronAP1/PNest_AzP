@@ -89,6 +89,7 @@ export class CartasPresentacionService {
         idAlumno: createCartaPresentacionDto.idAlumno,
         idEmpresa: createCartaPresentacionDto.idEmpresa,
         posicion: createCartaPresentacionDto.posicion,
+        areaPractica: createCartaPresentacionDto.areaPractica,
         fechaInicio: new Date(createCartaPresentacionDto.fechaInicio),
         estado: createCartaPresentacionDto.estado || CartaEstado.draft,
         ...(createCartaPresentacionDto.idSecretaria && { idSecretaria: createCartaPresentacionDto.idSecretaria }),
