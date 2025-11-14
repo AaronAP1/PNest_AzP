@@ -69,8 +69,7 @@ model CartaPresentacion {
   idEmpresa     String      @map("id_empresa") @db.Uuid
   idSecretaria  String?     @map("id_secretaria") @db.Uuid
   documentoId   String?     @map("documento_id") @db.Uuid
-  posicion      String      @db.VarChar(255)
-  areaPractica  String      @map("area_practica") @db.VarChar(100)
+  areaPractica  String?     @map("area_practica") @db.VarChar(100)
   fechaInicio   DateTime    @map("fecha_inicio") @db.Date
   motivoRechazo String?     @map("motivo_rechazo")
   estado        CartaEstado @default(draft)

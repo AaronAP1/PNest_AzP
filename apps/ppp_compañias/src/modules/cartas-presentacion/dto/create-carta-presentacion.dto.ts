@@ -16,13 +16,10 @@ export class CreateCartaPresentacionDto {
   @IsUUID()
   documentoId?: string;
 
-  @IsString()
-  @MaxLength(255)
-  posicion: string;
-
+  @IsOptional()
   @IsString()
   @MaxLength(100)
-  areaPractica: string;
+  areaPractica?: string;
 
   @IsDateString()
   fechaInicio: string;
