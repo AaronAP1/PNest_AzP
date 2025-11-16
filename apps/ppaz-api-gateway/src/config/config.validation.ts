@@ -7,10 +7,14 @@ export const configValidationSchema = Joi.object({
   HOST: Joi.string().default('localhost'),
   
   // Microservices
+  PPP_AUTH_HOST: Joi.string().default('localhost'),
+  PPP_AUTH_PORT: Joi.number().default(3001),
   PPP_CORE_HOST: Joi.string().default('localhost'),
-  PPP_CORE_PORT: Joi.number().default(3001),
+  PPP_CORE_PORT: Joi.number().default(3002),
   PPP_COMPANIAS_HOST: Joi.string().default('localhost'),
-  PPP_COMPANIAS_PORT: Joi.number().default(3002),
+  PPP_COMPANIAS_PORT: Joi.number().default(3003),
+  PPP_EVALUACIONES_HOST: Joi.string().default('localhost'),
+  PPP_EVALUACIONES_PORT: Joi.number().default(3004),
   
   // Database (for health checks)
   DATABASE_URL_CORE: Joi.string().required(),

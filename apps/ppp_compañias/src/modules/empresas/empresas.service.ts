@@ -31,13 +31,6 @@ export class EmpresasService {
 
   async findAll() {
     return await this.prisma.empresa.findMany({
-      include: {
-        _count: {
-          select: {
-            cartasPresentacion: true,
-          },
-        },
-      },
       orderBy: {
         nombre: 'asc',
       },
@@ -47,13 +40,6 @@ export class EmpresasService {
   async findOne(id: string) {
     const empresa = await this.prisma.empresa.findUnique({
       where: { id },
-      include: {
-        _count: {
-          select: {
-            cartasPresentacion: true,
-          },
-        },
-      },
     });
 
     if (!empresa) {
@@ -66,13 +52,6 @@ export class EmpresasService {
   async findByRuc(ruc: string) {
     const empresa = await this.prisma.empresa.findUnique({
       where: { ruc },
-      include: {
-        _count: {
-          select: {
-            cartasPresentacion: true,
-          },
-        },
-      },
     });
 
     if (!empresa) {
@@ -88,13 +67,6 @@ export class EmpresasService {
         sector: {
           contains: sector,
           mode: 'insensitive',
-        },
-      },
-      include: {
-        _count: {
-          select: {
-            cartasPresentacion: true,
-          },
         },
       },
       orderBy: {
@@ -124,14 +96,7 @@ export class EmpresasService {
   }
 
   async remove(id: string) {
-    const empresa = await this.findOne(id); // Validates existence
-
-    // Check if empresa is being used in cartas_presentacion
-    if (empresa._count.cartasPresentacion > 0) {
-      throw new BadRequestException(
-        `No se puede eliminar la empresa porque tiene ${empresa._count.cartasPresentacion} carta(s) de presentación asociadas`,
-      );
-    }
+    await this.findOne(id);
 
     return await this.prisma.empresa.delete({
       where: { id },

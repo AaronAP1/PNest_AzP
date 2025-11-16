@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client-auth"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_AUTH")
+}
+
+/// =========================
+///    USUARIOS
+/// =========================
+model Usuario {
+  id         String   @id @default(uuid()) @db.Uuid
+  nombres    String   @db.VarChar(120)
+  apellidos  String   @db.VarChar(120)
+  email      String   @unique @db.VarChar(150)
+  telefono   String?  @db.VarChar(20)
+  contraseña String   @db.VarChar(255)
+  activo     Boolean  @default(true)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  roles UsuarioRol[]
+
+  @@map("usuario")
+}
+
+/// =========================
+///    ROLES
+/// =========================
+model Rol {
+  id          String   @id @default(uuid()) @db.Uuid
+  nombre      String   @db.VarChar(100)
+  descripcion String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  usuarios UsuarioRol[]
+
+  @@map("rol")
+}
+
+/// =========================
+///    USUARIO-ROL (Many-to-Many)
+/// =========================
+model UsuarioRol {
+  usuarioId String @map("usuario_id") @db.Uuid
+  rolId     String @map("rol_id") @db.Uuid
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  rol     Rol     @relation(fields: [rolId], references: [id], onDelete: Cascade)
+
+  @@id([usuarioId, rolId])
+  @@map("usuario_rol")
+}

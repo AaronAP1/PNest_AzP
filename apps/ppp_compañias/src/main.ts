@@ -11,10 +11,10 @@ async function bootstrap() {
   const app = await NestFactory.create(PppCompañiasModule);
   
   const configService = app.get(ConfigService);
-  const httpPort = configService.get<number>('PORT', 3002); // HTTP para Azure
-  const tcpPort = configService.get<number>('TCP_PORT', 3012); // TCP para dev local
-  const host = configService.get<string>('HOST', '0.0.0.0');
-  const appName = configService.get<string>('APP_NAME', 'ppp_companias');
+  const httpPort = 3003; // HTTP para Azure - Puerto fijo para Compañías
+  const tcpPort = 3013; // TCP para dev local - PUERTO DIFERENTE
+  const host = '0.0.0.0';
+  const appName = 'ppp_companias';
 
   // Configurar validación global
   app.useGlobalPipes(

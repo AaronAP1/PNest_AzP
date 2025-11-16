@@ -5,9 +5,8 @@ import {
   HealthCheckService, 
   MemoryHealthIndicator,
   DiskHealthIndicator,
-  MicroserviceHealthIndicator,
+  HttpHealthIndicator,
 } from '@nestjs/terminus';
-import { Transport } from '@nestjs/microservices';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('health')
@@ -17,7 +16,7 @@ export class HealthController {
     private health: HealthCheckService,
     private memory: MemoryHealthIndicator,
     private disk: DiskHealthIndicator,
-    private microservice: MicroserviceHealthIndicator,
+    private http: HttpHealthIndicator,
     private configService: ConfigService,
   ) {}
 
@@ -27,26 +26,27 @@ export class HealthController {
   @ApiResponse({ status: 200, description: 'Servicio saludable' })
   @ApiResponse({ status: 503, description: 'Servicio no disponible' })
   check() {
+    const authHost = this.configService.get<string>('PPP_AUTH_HOST', 'localhost');
+    const authPort = this.configService.get<number>('PPP_AUTH_PORT', 3001);
+    const coreHost = this.configService.get<string>('PPP_CORE_HOST', 'localhost');
+    const corePort = this.configService.get<number>('PPP_CORE_PORT', 3002);
+    const companiasHost = this.configService.get<string>('PPP_COMPANIAS_HOST', 'localhost');
+    const companiasPort = this.configService.get<number>('PPP_COMPANIAS_PORT', 3003);
+    const evaluacionesHost = this.configService.get<string>('PPP_EVALUACIONES_HOST', 'localhost');
+    const evaluacionesPort = this.configService.get<number>('PPP_EVALUACIONES_PORT', 3004);
+
     return this.health.check([
-      // Check ppp_core microservice via TCP ping
-      () => this.microservice.pingCheck('ppp_core', {
-        transport: Transport.TCP,
-        options: {
-          host: this.configService.get<string>('PPP_CORE_HOST', 'localhost'),
-          port: this.configService.get<number>('PPP_CORE_PORT', 3001),
-        },
-        timeout: 3000,
-      }),
+      // Check ppp_auth microservice via HTTP
+      () => this.http.pingCheck('ppp_auth', `http://${authHost}:${authPort}/health`, { timeout: 3000 }),
       
-      // Check ppp_companias microservice via TCP ping  
-      () => this.microservice.pingCheck('ppp_companias', {
-        transport: Transport.TCP,
-        options: {
-          host: this.configService.get<string>('PPP_COMPANIAS_HOST', 'localhost'),
-          port: this.configService.get<number>('PPP_COMPANIAS_PORT', 3002),
-        },
-        timeout: 3000,
-      }),
+      // Check ppp_academic microservice via HTTP
+      () => this.http.pingCheck('ppp_academic', `http://${coreHost}:${corePort}/health`, { timeout: 3000 }),
+      
+      // Check ppp_companias microservice via HTTP
+      () => this.http.pingCheck('ppp_companias', `http://${companiasHost}:${companiasPort}/health`, { timeout: 3000 }),
+      
+      // Check ppp_evaluaciones microservice via HTTP
+      () => this.http.pingCheck('ppp_evaluaciones', `http://${evaluacionesHost}:${evaluacionesPort}/health`, { timeout: 3000 }),
       
       // Memory heap should not exceed 150MB
       () => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024),
@@ -68,24 +68,21 @@ export class HealthController {
   @ApiResponse({ status: 200, description: 'Gateway listo' })
   @ApiResponse({ status: 503, description: 'Gateway no listo' })
   ready() {
+    const authHost = this.configService.get<string>('PPP_AUTH_HOST', 'localhost');
+    const authPort = this.configService.get<number>('PPP_AUTH_PORT', 3001);
+    const coreHost = this.configService.get<string>('PPP_CORE_HOST', 'localhost');
+    const corePort = this.configService.get<number>('PPP_CORE_PORT', 3002);
+    const companiasHost = this.configService.get<string>('PPP_COMPANIAS_HOST', 'localhost');
+    const companiasPort = this.configService.get<number>('PPP_COMPANIAS_PORT', 3003);
+    const evaluacionesHost = this.configService.get<string>('PPP_EVALUACIONES_HOST', 'localhost');
+    const evaluacionesPort = this.configService.get<number>('PPP_EVALUACIONES_PORT', 3004);
+
     return this.health.check([
-      // Only check microservices connectivity for readiness via TCP
-      () => this.microservice.pingCheck('ppp_core', {
-        transport: Transport.TCP,
-        options: {
-          host: this.configService.get<string>('PPP_CORE_HOST', 'localhost'),
-          port: this.configService.get<number>('PPP_CORE_PORT', 3001),
-        },
-        timeout: 2000,
-      }),
-      () => this.microservice.pingCheck('ppp_companias', {
-        transport: Transport.TCP,
-        options: {
-          host: this.configService.get<string>('PPP_COMPANIAS_HOST', 'localhost'),
-          port: this.configService.get<number>('PPP_COMPANIAS_PORT', 3002),
-        },
-        timeout: 2000,
-      }),
+      // Only check microservices connectivity for readiness via HTTP
+      () => this.http.pingCheck('ppp_auth', `http://${authHost}:${authPort}/health`, { timeout: 2000 }),
+      () => this.http.pingCheck('ppp_academic', `http://${coreHost}:${corePort}/health`, { timeout: 2000 }),
+      () => this.http.pingCheck('ppp_companias', `http://${companiasHost}:${companiasPort}/health`, { timeout: 2000 }),
+      () => this.http.pingCheck('ppp_evaluaciones', `http://${evaluacionesHost}:${evaluacionesPort}/health`, { timeout: 2000 }),
     ]);
   }
 

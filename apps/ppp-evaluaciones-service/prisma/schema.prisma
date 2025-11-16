@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client-evaluaciones"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_EVALUACIONES")
+}
+
+/// =========================
+///    EVALUACIÓN SUPERVISOR
+/// =========================
+model EvaluacionSupervisor {
+  id           String   @id @default(uuid()) @db.Uuid
+  idSupervisor String   @map("id_supervisor") @db.Uuid
+  idAlumno     String   @map("id_alumno") @db.Uuid
+  comentario   String?  @db.Text
+  estado       Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  preguntas EvaluacionPregunta[]
+
+  @@index([idSupervisor])
+  @@index([idAlumno])
+  @@map("evaluacion_supervisor")
+}
+
+/// =========================
+///    EVALUACIÓN PREGUNTAS
+/// =========================
+model EvaluacionPregunta {
+  id            String   @id @default(uuid()) @db.Uuid
+  idEvaluacion  String   @map("id_evaluacion") @db.Uuid
+  idPregunta    String   @map("id_pregunta") @db.Uuid
+  valor         String   @db.VarChar(255)
+  estado        Boolean  @default(true)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  evaluacion EvaluacionSupervisor @relation(fields: [idEvaluacion], references: [id], onDelete: Cascade)
+  pregunta   Pregunta              @relation(fields: [idPregunta], references: [id], onDelete: Restrict)
+
+  @@index([idEvaluacion])
+  @@index([idPregunta])
+  @@map("evaluacion_preguntas")
+}
+
+/// =========================
+///    PREGUNTAS
+/// =========================
+model Pregunta {
+  id        String   @id @default(uuid()) @db.Uuid
+  preguntas String   @db.Text
+  estado    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  evaluaciones EvaluacionPregunta[]
+
+  @@map("preguntas")
+}
+
+/// =========================
+///    EVALUACIÓN PRACTICANTE
+/// =========================
+model EvaluacionPracticante {
+  id          String   @id @default(uuid()) @db.Uuid
+  idSolicitud String   @map("id_solicitud") @db.Uuid
+  comentario  String?  @db.Text
+  estado      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  preguntasLinea                  PreguntaLinea[]
+  evaluacionPracticanteSolicitud EvaluacionPracticanteSolicitud[]
+
+  @@index([idSolicitud])
+  @@map("evaluacion_practicante")
+}
+
+/// =========================
+///    EVALUACIÓN PRACTICANTE SOLICITUD
+/// =========================
+model EvaluacionPracticanteSolicitud {
+  id                      String   @id @default(uuid()) @db.Uuid
+  idDimensionTransversal  String   @map("id_dimension_transversal") @db.Uuid
+  idEvaluacionPracticante String   @map("id_evaluacion_practicante") @db.Uuid
+  valor                   String   @db.VarChar(255)
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+
+  dimensionTransversal  DimensionTransversal  @relation(fields: [idDimensionTransversal], references: [id], onDelete: Restrict)
+  evaluacionPracticante EvaluacionPracticante @relation(fields: [idEvaluacionPracticante], references: [id], onDelete: Cascade)
+
+  @@index([idDimensionTransversal])
+  @@index([idEvaluacionPracticante])
+  @@map("evaluacion_practicante_solicitud")
+}
+
+/// =========================
+///    PREGUNTAS LÍNEA
+/// =========================
+model PreguntaLinea {
+  id                       String   @id @default(uuid()) @db.Uuid
+  idLineaFacultad          String   @map("id_linea_facultad") @db.Uuid
+  idEvaluacionPracticante  String   @map("id_evaluacion_practicante") @db.Uuid
+  preguntas                String   @db.Text
+  estado                   Boolean  @default(true)
+  createdAt                DateTime @default(now()) @map("created_at")
+  updatedAt                DateTime @updatedAt @map("updated_at")
+
+  evaluacionPracticante EvaluacionPracticante @relation(fields: [idEvaluacionPracticante], references: [id], onDelete: Cascade)
+
+  @@index([idLineaFacultad])
+  @@index([idEvaluacionPracticante])
+  @@map("preguntas_linea")
+}
+
+/// =========================
+///    LÍNEA FACULTAD (referencia)
+/// Nota: Esta tabla existe en academic-service, aquí solo guardamos el ID
+/// =========================
+
+/// =========================
+///    DIMENSIÓN TRANSVERSAL
+/// =========================
+model DimensionTransversal {
+  id        String   @id @default(uuid()) @db.Uuid
+  pregunta  String   @db.Text
+  estado    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  evaluaciones EvaluacionPracticanteSolicitud[]
+
+  @@map("dimension_transversal")
+}

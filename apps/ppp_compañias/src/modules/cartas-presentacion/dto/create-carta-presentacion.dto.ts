@@ -1,5 +1,4 @@
-import { IsString, IsUUID, IsOptional, IsDateString, MaxLength, IsEnum } from 'class-validator';
-import { CartaEstado } from '../../../../../../node_modules/.prisma/client-companias';
+import { IsString, IsUUID, IsOptional, IsDateString, MaxLength } from 'class-validator';
 
 export class CreateCartaPresentacionDto {
   @IsUUID()
@@ -11,10 +10,6 @@ export class CreateCartaPresentacionDto {
   @IsOptional()
   @IsUUID()
   idSecretaria?: string;
-
-  @IsOptional()
-  @IsUUID()
-  documentoId?: string;
 
   @IsOptional()
   @IsString()
@@ -29,6 +24,6 @@ export class CreateCartaPresentacionDto {
   motivoRechazo?: string;
 
   @IsOptional()
-  @IsEnum(CartaEstado)
-  estado?: CartaEstado;
+  @IsString()
+  estado?: string;
 }

@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
+import { CreateAlumnoDto, UpdateAlumnoDto } from './dto';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateAlumnoDto } from './dto/create-alumno.dto';
-import { UpdateAlumnoDto } from './dto/update-alumno.dto';
+import { Prisma } from '../../../../../node_modules/.prisma/client-academic';
 
 @Injectable()
 export class AlumnosService {
@@ -12,36 +16,21 @@ export class AlumnosService {
       return await this.prisma.alumno.create({
         data: createAlumnoDto,
         include: {
-          usuario: {
-            select: {
-              id: true,
-              nombres: true,
-              apellidos: true,
-              email: true,
-              telefono: true,
-            },
-          },
           escuela: {
-            select: {
-              id: true,
-              nombre: true,
-              codigo: true,
-              facultad: {
-                select: {
-                  id: true,
-                  nombre: true,
-                },
-              },
+            include: {
+              facultad: true,
             },
           },
         },
       });
     } catch (error) {
-      if (error.code === 'P2002') {
-        throw new ConflictException('El código de alumno ya existe o el usuario ya está registrado como alumno');
-      }
-      if (error.code === 'P2003') {
-        throw new NotFoundException('El usuario o escuela especificado no existe');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ConflictException('El código de alumno o usuarioId ya existe');
+        }
+        if (error.code === 'P2003') {
+          throw new NotFoundException('La escuela especificada no existe');
+        }
       }
       throw error;
     }
@@ -50,29 +39,15 @@ export class AlumnosService {
   async findAll() {
     return await this.prisma.alumno.findMany({
       include: {
-        usuario: {
-          select: {
-            id: true,
-            nombres: true,
-            apellidos: true,
-            email: true,
-            activo: true,
-          },
-        },
         escuela: {
-          select: {
-            id: true,
-            nombre: true,
-            codigo: true,
-            facultad: {
-              select: {
-                nombre: true,
-              },
-            },
+          include: {
+            facultad: true,
           },
         },
       },
-      orderBy: { codigo: 'asc' },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 
@@ -80,15 +55,6 @@ export class AlumnosService {
     const alumno = await this.prisma.alumno.findUnique({
       where: { id },
       include: {
-        usuario: {
-          include: {
-            roles: {
-              include: {
-                rol: true,
-              },
-            },
-          },
-        },
         escuela: {
           include: {
             facultad: true,
@@ -98,13 +64,13 @@ export class AlumnosService {
     });
 
     if (!alumno) {
-      throw new NotFoundException(`Alumno con ID ${id} no encontrado`);
+      throw new NotFoundException(`Alumno con id ${id} no encontrado`);
     }
 
     return alumno;
   }
 
-  async findByUsuario(usuarioId: string) {
+  async findByUsuarioId(usuarioId: string) {
     const alumno = await this.prisma.alumno.findUnique({
       where: { usuarioId },
       include: {
@@ -117,7 +83,7 @@ export class AlumnosService {
     });
 
     if (!alumno) {
-      throw new NotFoundException(`No se encontró alumno para el usuario ${usuarioId}`);
+      throw new NotFoundException(`Alumno con usuarioId ${usuarioId} no encontrado`);
     }
 
     return alumno;
@@ -127,14 +93,6 @@ export class AlumnosService {
     const alumno = await this.prisma.alumno.findUnique({
       where: { codigo },
       include: {
-        usuario: {
-          select: {
-            id: true,
-            nombres: true,
-            apellidos: true,
-            email: true,
-          },
-        },
         escuela: {
           include: {
             facultad: true,
@@ -154,66 +112,45 @@ export class AlumnosService {
     return await this.prisma.alumno.findMany({
       where: { idEscuela },
       include: {
-        usuario: {
-          select: {
-            id: true,
-            nombres: true,
-            apellidos: true,
-            email: true,
-          },
-        },
+        escuela: true,
       },
       orderBy: { codigo: 'asc' },
     });
   }
 
   async update(id: string, updateAlumnoDto: UpdateAlumnoDto) {
+    await this.findOne(id);
+
     try {
       return await this.prisma.alumno.update({
         where: { id },
         data: updateAlumnoDto,
         include: {
-          usuario: {
-            select: {
-              id: true,
-              nombres: true,
-              apellidos: true,
-              email: true,
-            },
-          },
           escuela: {
-            select: {
-              id: true,
-              nombre: true,
-              codigo: true,
+            include: {
+              facultad: true,
             },
           },
         },
       });
     } catch (error) {
-      if (error.code === 'P2025') {
-        throw new NotFoundException(`Alumno con ID ${id} no encontrado`);
-      }
-      if (error.code === 'P2002') {
-        throw new ConflictException('El código de alumno ya existe');
-      }
-      if (error.code === 'P2003') {
-        throw new NotFoundException('La escuela especificada no existe');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ConflictException('El código de alumno ya existe');
+        }
+        if (error.code === 'P2003') {
+          throw new NotFoundException('La escuela especificada no existe');
+        }
       }
       throw error;
     }
   }
 
   async remove(id: string) {
-    try {
-      return await this.prisma.alumno.delete({
-        where: { id },
-      });
-    } catch (error) {
-      if (error.code === 'P2025') {
-        throw new NotFoundException(`Alumno con ID ${id} no encontrado`);
-      }
-      throw error;
-    }
+    await this.findOne(id);
+
+    await this.prisma.alumno.delete({
+      where: { id },
+    });
   }
 }

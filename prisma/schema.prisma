@@ -1,59 +1,16 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-academic"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL_CORE")
+  url      = env("DATABASE_URL_ACADEMIC")
 }
 
-/* =========================
-   ROLES & RBAC
-========================= */
-model Rol {
-  id          String       @id @default(uuid()) @db.Uuid
-  nombre      String       @db.VarChar(100)
-  descripcion String?      @db.Text
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
-
-  usuarios  UsuarioRol[]
-
-  @@map("rol")
-}
-
-model Usuario {
-  id         String       @id @default(uuid()) @db.Uuid
-  nombres    String       @db.VarChar(120)
-  apellidos  String       @db.VarChar(120)
-  email      String       @unique @db.VarChar(150)
-  telefono   String?      @db.VarChar(20)
-  contraseña String       @db.VarChar(255)
-  activo     Boolean      @default(true)
-  createdAt  DateTime     @default(now()) @map("created_at")
-  updatedAt  DateTime     @updatedAt @map("updated_at")
-
-  // Relaciones
-  alumno         Alumno?
-  roles          UsuarioRol[]
-
-  @@map("usuario")
-}
-
-model UsuarioRol {
-  usuarioId String @db.Uuid
-  rolId     String @db.Uuid
-
-  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
-  rol     Rol     @relation(fields: [rolId], references: [id], onDelete: Restrict)
-
-  @@id([usuarioId, rolId])
-  @@map("usuario_rol")
-}
-
-/* =========================
-   ESTRUCTURA ACADÉMICA
-========================= */
+/// =========================
+///    FACULTAD
+/// =========================
 model Facultad {
   id          String   @id @default(uuid()) @db.Uuid
   nombre      String   @db.VarChar(255)
@@ -63,11 +20,14 @@ model Facultad {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  escuelas    Escuela[]
+  escuelas Escuela[]
 
   @@map("facultad")
 }
 
+/// =========================
+///    ESCUELA
+/// =========================
 model Escuela {
   id          String   @id @default(uuid()) @db.Uuid
   idFacultad  String   @map("id_facultad") @db.Uuid
@@ -78,19 +38,40 @@ model Escuela {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  facultad     Facultad     @relation(fields: [idFacultad], references: [id], onDelete: Restrict)
-  alumnos      Alumno[]
-  secretarias  Secretaria[]
+  facultad       Facultad        @relation(fields: [idFacultad], references: [id], onDelete: Restrict)
+  alumnos        Alumno[]
+  secretarias    Secretaria[]
+  supervisores   Supervisor[]
+  coordinadores  Coordinador[]
+  lineasFacultad LineaFacultad[]
 
   @@map("escuela")
 }
 
-/* =========================
-   SECRETARIAS
-========================= */
+/// =========================
+///    ALUMNO
+/// =========================
+model Alumno {
+  id        String   @id @default(uuid()) @db.Uuid
+  usuarioId String   @unique @map("usuario_id") @db.Uuid
+  idEscuela String   @map("id_escuela") @db.Uuid
+  codigo    String   @unique @db.VarChar(30)
+  ciclo     String   @db.VarChar(20)
+  año       String   @db.VarChar(4)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  escuela Escuela @relation(fields: [idEscuela], references: [id], onDelete: Restrict)
+
+  @@map("alumno")
+}
+
+/// =========================
+///    SECRETARIA
+/// =========================
 model Secretaria {
   id        String   @id @default(uuid()) @db.Uuid
-  nombre    String   @db.VarChar(255)
+  usuarioId String   @map("usuario_id") @db.Uuid
   idEscuela String   @map("id_escuela") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -100,21 +81,49 @@ model Secretaria {
   @@map("secretaria")
 }
 
-/* =========================
-   ALUMNOS
-========================= */
-model Alumno {
-  id         String   @id @default(uuid()) @db.Uuid
-  usuarioId  String   @unique @map("usuario_id") @db.Uuid
-  idEscuela  String   @map("id_escuela") @db.Uuid
-  codigo     String   @unique @db.VarChar(30)
-  ciclo      String   @db.VarChar(10)
-  año        String   @db.VarChar(4)
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+/// =========================
+///    SUPERVISOR
+/// =========================
+model Supervisor {
+  id        String   @id @default(uuid()) @db.Uuid
+  usuarioId String   @map("usuario_id") @db.Uuid
+  idEscuela String   @map("id_escuela") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
   escuela Escuela @relation(fields: [idEscuela], references: [id], onDelete: Restrict)
 
-  @@map("alumno")
+  @@map("supervisor")
+}
+
+/// =========================
+///    COORDINADOR
+/// =========================
+model Coordinador {
+  id        String   @id @default(uuid()) @db.Uuid
+  usuarioId String   @map("usuario_id") @db.Uuid
+  idEscuela String   @map("id_escuela") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  escuela Escuela @relation(fields: [idEscuela], references: [id], onDelete: Restrict)
+
+  @@map("coordinador")
+}
+
+/// =========================
+///    LINEA FACULTAD
+/// =========================
+model LineaFacultad {
+  id        String   @id @default(uuid()) @db.Uuid
+  idEscuela String   @map("id_escuela") @db.Uuid
+  nombre    String   @db.VarChar(255)
+  codigo    String   @db.VarChar(50)
+  estado    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  escuela Escuela @relation(fields: [idEscuela], references: [id], onDelete: Restrict)
+
+  @@map("linea_facultad")
 }

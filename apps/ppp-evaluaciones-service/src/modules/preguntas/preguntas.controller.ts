@@ -1,0 +1,46 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { PreguntasService } from './preguntas.service';
+import { CreatePreguntaDto } from './dto/create-pregunta.dto';
+import { UpdatePreguntaDto } from './dto/update-pregunta.dto';
+
+@Controller('preguntas')
+export class PreguntasController {
+  constructor(private readonly preguntasService: PreguntasService) {}
+
+  @Post()
+  @MessagePattern({ cmd: 'create-pregunta' })
+  create(@Body() @Payload() createDto: CreatePreguntaDto) {
+    return this.preguntasService.create(createDto);
+  }
+
+  @Get()
+  @MessagePattern({ cmd: 'find-all-preguntas' })
+  findAll() {
+    return this.preguntasService.findAll();
+  }
+
+  @Get('activas')
+  @MessagePattern({ cmd: 'find-preguntas-activas' })
+  findAllActivas() {
+    return this.preguntasService.findAllActivas();
+  }
+
+  @Get(':id')
+  @MessagePattern({ cmd: 'find-one-pregunta' })
+  findOne(@Param('id') @Payload() id: string) {
+    return this.preguntasService.findOne(id);
+  }
+
+  @Patch(':id')
+  @MessagePattern({ cmd: 'update-pregunta' })
+  update(@Param('id') id: string, @Body() @Payload() updateDto: UpdatePreguntaDto) {
+    return this.preguntasService.update(id, updateDto);
+  }
+
+  @Delete(':id')
+  @MessagePattern({ cmd: 'remove-pregunta' })
+  remove(@Param('id') @Payload() id: string) {
+    return this.preguntasService.remove(id);
+  }
+}

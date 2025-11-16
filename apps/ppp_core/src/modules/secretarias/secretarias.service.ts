@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
+import { CreateSecretariaDto, UpdateSecretariaDto } from './dto';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateSecretariaDto } from './dto/create-secretaria.dto';
-import { UpdateSecretariaDto } from './dto/update-secretaria.dto';
+import { Prisma } from '../../../../../node_modules/.prisma/client-academic';
 
 @Injectable()
 export class SecretariasService {
@@ -13,23 +17,17 @@ export class SecretariasService {
         data: createSecretariaDto,
         include: {
           escuela: {
-            select: {
-              id: true,
-              nombre: true,
-              codigo: true,
-              facultad: {
-                select: {
-                  id: true,
-                  nombre: true,
-                },
-              },
+            include: {
+              facultad: true,
             },
           },
         },
       });
     } catch (error) {
-      if (error.code === 'P2003') {
-        throw new NotFoundException('La escuela especificada no existe');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2003') {
+          throw new NotFoundException('La escuela especificada no existe');
+        }
       }
       throw error;
     }
@@ -39,19 +37,12 @@ export class SecretariasService {
     return await this.prisma.secretaria.findMany({
       include: {
         escuela: {
-          select: {
-            id: true,
-            nombre: true,
-            codigo: true,
-            facultad: {
-              select: {
-                nombre: true,
-              },
-            },
+          include: {
+            facultad: true,
           },
         },
       },
-      orderBy: { nombre: 'asc' },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -68,7 +59,7 @@ export class SecretariasService {
     });
 
     if (!secretaria) {
-      throw new NotFoundException(`Secretaria con ID ${id} no encontrada`);
+      throw new NotFoundException(`Secretaria con id ${id} no encontrada`);
     }
 
     return secretaria;
@@ -77,46 +68,43 @@ export class SecretariasService {
   async findByEscuela(idEscuela: string) {
     return await this.prisma.secretaria.findMany({
       where: { idEscuela },
-      orderBy: { nombre: 'asc' },
+      include: {
+        escuela: true,
+      },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
   async update(id: string, updateSecretariaDto: UpdateSecretariaDto) {
+    await this.findOne(id);
+
     try {
       return await this.prisma.secretaria.update({
         where: { id },
         data: updateSecretariaDto,
         include: {
           escuela: {
-            select: {
-              id: true,
-              nombre: true,
-              codigo: true,
+            include: {
+              facultad: true,
             },
           },
         },
       });
     } catch (error) {
-      if (error.code === 'P2025') {
-        throw new NotFoundException(`Secretaria con ID ${id} no encontrada`);
-      }
-      if (error.code === 'P2003') {
-        throw new NotFoundException('La escuela especificada no existe');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2003') {
+          throw new NotFoundException('La escuela especificada no existe');
+        }
       }
       throw error;
     }
   }
 
   async remove(id: string) {
-    try {
-      return await this.prisma.secretaria.delete({
-        where: { id },
-      });
-    } catch (error) {
-      if (error.code === 'P2025') {
-        throw new NotFoundException(`Secretaria con ID ${id} no encontrada`);
-      }
-      throw error;
-    }
+    await this.findOne(id);
+
+    await this.prisma.secretaria.delete({
+      where: { id },
+    });
   }
 }

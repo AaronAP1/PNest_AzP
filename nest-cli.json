@@ -19,6 +19,24 @@
         "tsConfigPath": "apps/ppaz-api-gateway/tsconfig.app.json"
       }
     },
+    "ppp-auth-service": {
+      "type": "application",
+      "root": "apps/ppp-auth-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/ppp-auth-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ppp-auth-service/tsconfig.app.json"
+      }
+    },
+    "ppp-academic-service": {
+      "type": "application",
+      "root": "apps/ppp_core",
+      "entryFile": "main",
+      "sourceRoot": "apps/ppp_core/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ppp_core/tsconfig.app.json"
+      }
+    },
     "ppp_compañias": {
       "type": "application",
       "root": "apps/ppp_compañias",
@@ -35,6 +53,15 @@
       "sourceRoot": "apps/ppp_core/src",
       "compilerOptions": {
         "tsConfigPath": "apps/ppp_core/tsconfig.app.json"
+      }
+    },
+    "ppp-evaluaciones-service": {
+      "type": "application",
+      "root": "apps/ppp-evaluaciones-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/ppp-evaluaciones-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ppp-evaluaciones-service/tsconfig.app.json"
       }
     }
   }

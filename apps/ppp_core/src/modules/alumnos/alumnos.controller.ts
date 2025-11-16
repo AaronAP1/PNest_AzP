@@ -26,7 +26,7 @@ export class AlumnosController {
 
   @Get('usuario/:usuarioId')
   findByUsuarioHttp(@Param('usuarioId') usuarioId: string) {
-    return this.alumnosService.findByUsuario(usuarioId);
+    return this.alumnosService.findByUsuarioId(usuarioId);
   }
 
   @Get('codigo/:codigo')
@@ -67,7 +67,7 @@ export class AlumnosController {
 
   @MessagePattern({ cmd: 'find_alumno_by_usuario' })
   findByUsuario(@Payload() usuarioId: string) {
-    return this.alumnosService.findByUsuario(usuarioId);
+    return this.alumnosService.findByUsuarioId(usuarioId);
   }
 
   @MessagePattern({ cmd: 'find_alumno_by_codigo' })

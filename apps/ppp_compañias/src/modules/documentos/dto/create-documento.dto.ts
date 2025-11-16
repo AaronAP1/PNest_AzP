@@ -4,6 +4,9 @@ export class CreateDocumentoDto {
   @IsUUID()
   idTipoDocumento: string;
 
+  @IsUUID()
+  idSolicitudPpp: string;
+
   @IsString()
   @MaxLength(255)
   nombreArchivo: string;

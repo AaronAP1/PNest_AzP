@@ -1,0 +1,15 @@
+import { Controller, Get } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
+
+@Controller('health')
+export class HealthController {
+  @Get()
+  @MessagePattern('health.check')
+  check() {
+    return {
+      status: 'ok',
+      service: 'ppp-auth-service',
+      timestamp: new Date().toISOString(),
+    };
+  }
+}

@@ -9,17 +9,17 @@ import { CreateRolDto } from './dto/create-rol.dto';
 @ApiTags('roles')
 @Controller('roles')
 export class RolesController {
-  private readonly coreServiceUrl: string;
+  private readonly authServiceUrl: string;
 
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    const host = this.configService.get<string>('PPP_CORE_HOST');
-    const port = this.configService.get<number>('PPP_CORE_PORT');
+    const host = this.configService.get<string>('PPP_AUTH_HOST');
+    const port = this.configService.get<number>('PPP_AUTH_PORT');
     const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
     
-    this.coreServiceUrl = isProduction 
+    this.authServiceUrl = isProduction 
       ? `https://${host}` 
       : `http://${host}:${port}`;
   }
@@ -31,7 +31,7 @@ export class RolesController {
   @ApiResponse({ status: 400, description: 'Datos de entrada inválidos' })
   create(@Body() createRolDto: CreateRolDto): Observable<any> {
     return this.httpService
-      .post(`${this.coreServiceUrl}/roles`, createRolDto)
+      .post(`${this.authServiceUrl}/roles`, createRolDto)
       .pipe(map((response) => response.data));
   }
 
@@ -40,7 +40,7 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'Lista de roles obtenida exitosamente' })
   findAll(): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/roles`)
+      .get(`${this.authServiceUrl}/roles`)
       .pipe(map((response) => response.data));
   }
 
@@ -51,7 +51,7 @@ export class RolesController {
   @ApiResponse({ status: 404, description: 'Rol no encontrado' })
   findOne(@Param('id') id: string): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/roles/${id}`)
+      .get(`${this.authServiceUrl}/roles/${id}`)
       .pipe(map((response) => response.data));
   }
 
@@ -63,7 +63,7 @@ export class RolesController {
   @ApiResponse({ status: 409, description: 'No se puede eliminar el rol porque tiene usuarios asociados' })
   remove(@Param('id') id: string): Observable<any> {
     return this.httpService
-      .delete(`${this.coreServiceUrl}/roles/${id}`)
+      .delete(`${this.authServiceUrl}/roles/${id}`)
       .pipe(map((response) => response.data));
   }
 }

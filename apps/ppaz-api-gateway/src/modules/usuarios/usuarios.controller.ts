@@ -10,22 +10,22 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 @ApiTags('usuarios')
 @Controller('usuarios')
 export class UsuariosController {
-  private readonly coreServiceUrl: string;
+  private readonly authServiceUrl: string;
 
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    const host = this.configService.get<string>('PPP_CORE_HOST');
-    const port = this.configService.get<number>('PPP_CORE_PORT');
+    const host = this.configService.get<string>('PPP_AUTH_HOST');
+    const port = this.configService.get<number>('PPP_AUTH_PORT');
     const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
     
     // En Azure, usar HTTPS con el FQDN interno
     // En desarrollo, usar HTTP con host:port
     if (isProduction) {
-      this.coreServiceUrl = `https://${host}`;
+      this.authServiceUrl = `https://${host}`;
     } else {
-      this.coreServiceUrl = `http://${host}:${port}`;
+      this.authServiceUrl = `http://${host}:${port}`;
     }
   }
 
@@ -36,7 +36,7 @@ export class UsuariosController {
   @ApiResponse({ status: 400, description: 'Datos de entrada inválidos' })
   create(@Body() createUsuarioDto: CreateUsuarioDto): Observable<any> {
     return this.httpService
-      .post(`${this.coreServiceUrl}/usuarios`, createUsuarioDto)
+      .post(`${this.authServiceUrl}/usuarios`, createUsuarioDto)
       .pipe(map((response) => response.data));
   }
 
@@ -45,7 +45,7 @@ export class UsuariosController {
   @ApiResponse({ status: 200, description: 'Lista de usuarios obtenida exitosamente' })
   findAll(): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/usuarios`)
+      .get(`${this.authServiceUrl}/usuarios`)
       .pipe(map((response) => response.data));
   }
 
@@ -56,7 +56,7 @@ export class UsuariosController {
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   findOne(@Param('id') id: string): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/usuarios/${id}`)
+      .get(`${this.authServiceUrl}/usuarios/${id}`)
       .pipe(map((response) => response.data));
   }
 
@@ -67,7 +67,7 @@ export class UsuariosController {
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   findByEmail(@Param('email') email: string): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/usuarios/email/${email}`)
+      .get(`${this.authServiceUrl}/usuarios/email/${email}`)
       .pipe(map((response) => response.data));
   }
 
@@ -82,7 +82,7 @@ export class UsuariosController {
     @Body() updateUsuarioDto: UpdateUsuarioDto,
   ): Observable<any> {
     return this.httpService
-      .patch(`${this.coreServiceUrl}/usuarios/${id}`, updateUsuarioDto)
+      .patch(`${this.authServiceUrl}/usuarios/${id}`, updateUsuarioDto)
       .pipe(map((response) => response.data));
   }
 
@@ -93,7 +93,7 @@ export class UsuariosController {
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   remove(@Param('id') id: string): Observable<any> {
     return this.httpService
-      .delete(`${this.coreServiceUrl}/usuarios/${id}`)
+      .delete(`${this.authServiceUrl}/usuarios/${id}`)
       .pipe(map((response) => response.data));
   }
 }
