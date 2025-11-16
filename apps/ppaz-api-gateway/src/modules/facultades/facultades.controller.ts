@@ -23,6 +23,11 @@ export class FacultadesController {
     this.coreServiceUrl = isProduction 
       ? `https://${host}` 
       : `http://${host}:${port}`;
+    
+    // DEBUG: Log para verificar configuración
+    console.log('🔍 [FacultadesController] PPP_CORE_HOST:', host);
+    console.log('🔍 [FacultadesController] PPP_CORE_PORT:', port);
+    console.log('🔍 [FacultadesController] coreServiceUrl:', this.coreServiceUrl);
   }
 
   @Post()
