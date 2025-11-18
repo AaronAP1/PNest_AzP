@@ -1,7 +1,11 @@
 [
   {
     "name": "DATABASE_URL_CORE",
-    "value": "postgresql://pgNestAdmin:aA1234567*@s-ppp-nest.postgres.database.azure.com:5432/pppNest_Core?sslmode=require"
+    "value": "postgresql://pgNestAdmin:aA1234567*@psql-upeu-ppp-5628.postgres.database.azure.com:5432/pppNest_Core?sslmode=require"
+  },
+  {
+    "name": "DATABASE_URL_ACADEMIC",
+    "value": "postgresql://pgNestAdmin:aA1234567*@psql-upeu-ppp-5628.postgres.database.azure.com:5432/pppNest_Core?sslmode=require"
   },
   {
     "name": "APP_NAME",
@@ -9,7 +13,7 @@
   },
   {
     "name": "PORT",
-    "value": "3001"
+    "value": "3002"
   },
   {
     "name": "HOST",

@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CartasPresentacionService } from './cartas-presentacion.service';
 import { CreateCartaPresentacionDto, UpdateCartaPresentacionDto } from './dto';
-import { CartaEstado } from '../../../../../node_modules/.prisma/client-companias';
+import { CartaEstado } from '../../../../../node_modules/.prisma/client-core';
 
 @Controller('cartas-presentacion')
 export class CartasPresentacionController {

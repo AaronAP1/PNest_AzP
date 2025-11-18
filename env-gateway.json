@@ -33,7 +33,7 @@
   },
   {
     "name": "PPP_CORE_PORT",
-    "value": "443"
+    "value": "3002"
   },
   {
     "name": "PPP_COMPANIAS_HOST",
@@ -41,7 +41,23 @@
   },
   {
     "name": "PPP_COMPANIAS_PORT",
-    "value": "443"
+    "value": "3003"
+  },
+  {
+    "name": "PPP_AUTH_HOST",
+    "value": "ppp-auth-service.internal.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io"
+  },
+  {
+    "name": "PPP_AUTH_PORT",
+    "value": "3001"
+  },
+  {
+    "name": "PPP_EVALUACIONES_HOST",
+    "value": "ppp-evaluaciones-service.internal.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io"
+  },
+  {
+    "name": "PPP_EVALUACIONES_PORT",
+    "value": "3004"
   },
   {
     "name": "SWAGGER_TITLE",

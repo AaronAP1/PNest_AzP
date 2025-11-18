@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
 import { PrismaCompaniasService } from '../../prisma/prisma.service';
-import { Prisma } from '../../../../../node_modules/.prisma/client-companias';
+import { Prisma } from '../../../../../node_modules/.prisma/client-core';
 
 @Injectable()
 export class EmpresasService {

@@ -9,7 +9,7 @@
   },
   {
     "name": "PORT",
-    "value": "3002"
+    "value": "3003"
   },
   {
     "name": "HOST",
@@ -22,5 +22,13 @@
   {
     "name": "LOG_LEVEL",
     "value": "info"
+  },
+  {
+    "name": "DATABASE_URL_CORE",
+    "value": "postgresql://upeuadmin:3TfnXOcxpgoSR2bAr16vW4IK@psql-upeu-ppp-5628.postgres.database.azure.com:5432/ppp_core_db?schema=public&sslmode=require"
+  },
+  {
+    "name": "SUNAT_API_TOKEN",
+    "value": "sk_11565.84mnn3NouKcJF0DL7B7RBOpHDkVtwSKO"
   }
 ]

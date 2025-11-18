@@ -1,0 +1,26 @@
+[
+  {
+    "name": "DATABASE_URL_CORE",
+    "value": "postgresql://pgNestAdmin:aA1234567*@s-ppp-nest.postgres.database.azure.com:5432/pppNest_Core?sslmode=require"
+  },
+  {
+    "name": "APP_NAME",
+    "value": "ppp_evaluaciones_service"
+  },
+  {
+    "name": "PORT",
+    "value": "3004"
+  },
+  {
+    "name": "HOST",
+    "value": "0.0.0.0"
+  },
+  {
+    "name": "NODE_ENV",
+    "value": "production"
+  },
+  {
+    "name": "LOG_LEVEL",
+    "value": "info"
+  }
+]

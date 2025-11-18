@@ -34,19 +34,26 @@ export class HealthController {
     const companiasPort = this.configService.get<number>('PPP_COMPANIAS_PORT', 3003);
     const evaluacionesHost = this.configService.get<string>('PPP_EVALUACIONES_HOST', 'localhost');
     const evaluacionesPort = this.configService.get<number>('PPP_EVALUACIONES_PORT', 3004);
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+
+    // En producción (Azure), usar HTTPS sin puerto. En desarrollo, usar HTTP con puerto
+    const authUrl = isProduction ? `https://${authHost}/health` : `http://${authHost}:${authPort}/health`;
+    const coreUrl = isProduction ? `https://${coreHost}/health` : `http://${coreHost}:${corePort}/health`;
+    const companiasUrl = isProduction ? `https://${companiasHost}/health` : `http://${companiasHost}:${companiasPort}/health`;
+    const evaluacionesUrl = isProduction ? `https://${evaluacionesHost}/health` : `http://${evaluacionesHost}:${evaluacionesPort}/health`;
 
     return this.health.check([
-      // Check ppp_auth microservice via HTTP
-      () => this.http.pingCheck('ppp_auth', `http://${authHost}:${authPort}/health`, { timeout: 3000 }),
+      // Check ppp_auth microservice
+      () => this.http.pingCheck('ppp_auth', authUrl, { timeout: 5000 }),
       
-      // Check ppp_academic microservice via HTTP
-      () => this.http.pingCheck('ppp_academic', `http://${coreHost}:${corePort}/health`, { timeout: 3000 }),
+      // Check ppp_academic microservice
+      () => this.http.pingCheck('ppp_academic', coreUrl, { timeout: 5000 }),
       
-      // Check ppp_companias microservice via HTTP
-      () => this.http.pingCheck('ppp_companias', `http://${companiasHost}:${companiasPort}/health`, { timeout: 3000 }),
+      // Check ppp_companias microservice
+      () => this.http.pingCheck('ppp_companias', companiasUrl, { timeout: 5000 }),
       
-      // Check ppp_evaluaciones microservice via HTTP
-      () => this.http.pingCheck('ppp_evaluaciones', `http://${evaluacionesHost}:${evaluacionesPort}/health`, { timeout: 3000 }),
+      // Check ppp_evaluaciones microservice
+      () => this.http.pingCheck('ppp_evaluaciones', evaluacionesUrl, { timeout: 5000 }),
       
       // Memory heap should not exceed 150MB
       () => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024),
@@ -76,13 +83,19 @@ export class HealthController {
     const companiasPort = this.configService.get<number>('PPP_COMPANIAS_PORT', 3003);
     const evaluacionesHost = this.configService.get<string>('PPP_EVALUACIONES_HOST', 'localhost');
     const evaluacionesPort = this.configService.get<number>('PPP_EVALUACIONES_PORT', 3004);
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+
+    const authUrl = isProduction ? `https://${authHost}/health` : `http://${authHost}:${authPort}/health`;
+    const coreUrl = isProduction ? `https://${coreHost}/health` : `http://${coreHost}:${corePort}/health`;
+    const companiasUrl = isProduction ? `https://${companiasHost}/health` : `http://${companiasHost}:${companiasPort}/health`;
+    const evaluacionesUrl = isProduction ? `https://${evaluacionesHost}/health` : `http://${evaluacionesHost}:${evaluacionesPort}/health`;
 
     return this.health.check([
-      // Only check microservices connectivity for readiness via HTTP
-      () => this.http.pingCheck('ppp_auth', `http://${authHost}:${authPort}/health`, { timeout: 2000 }),
-      () => this.http.pingCheck('ppp_academic', `http://${coreHost}:${corePort}/health`, { timeout: 2000 }),
-      () => this.http.pingCheck('ppp_companias', `http://${companiasHost}:${companiasPort}/health`, { timeout: 2000 }),
-      () => this.http.pingCheck('ppp_evaluaciones', `http://${evaluacionesHost}:${evaluacionesPort}/health`, { timeout: 2000 }),
+      // Only check microservices connectivity for readiness
+      () => this.http.pingCheck('ppp_auth', authUrl, { timeout: 3000 }),
+      () => this.http.pingCheck('ppp_academic', coreUrl, { timeout: 3000 }),
+      () => this.http.pingCheck('ppp_companias', companiasUrl, { timeout: 3000 }),
+      () => this.http.pingCheck('ppp_evaluaciones', evaluacionesUrl, { timeout: 3000 }),
     ]);
   }
 

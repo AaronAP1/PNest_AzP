@@ -9,6 +9,7 @@ import { EmpresasModule } from './modules/empresas/empresas.module';
 import { CartasPresentacionModule } from './modules/cartas-presentacion/cartas-presentacion.module';
 import { SolicitudesPppModule } from './modules/solicitudes-ppp/solicitudes-ppp.module';
 import { ReunionesModule } from './modules/reuniones/reuniones.module';
+import { SunatModule } from './modules/sunat/sunat.module';
 import { configValidationSchema } from './config/config.validation';
 import { HealthModule } from './health/health.module';
 
@@ -30,6 +31,7 @@ import { HealthModule } from './health/health.module';
     CartasPresentacionModule,
     SolicitudesPppModule,
     ReunionesModule,
+    SunatModule,
   ],
   controllers: [PppCompañiasController],
   providers: [PppCompañiasService],

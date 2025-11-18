@@ -18,6 +18,7 @@ import { SolicitudesPppModule } from './modules/solicitudes-ppp/solicitudes-ppp.
 import { ReunionesModule } from './modules/reuniones/reuniones.module';
 import { TipoDocumentosModule } from './modules/tipo-documentos/tipo-documentos.module';
 import { DocumentosModule } from './modules/documentos/documentos.module';
+import { SunatModule } from './modules/sunat/sunat.module';
 import { PreguntasModule } from './modules/preguntas/preguntas.module';
 import { PreguntaLineaModule } from './modules/pregunta-linea/pregunta-linea.module';
 import { EvaluacionPreguntaModule } from './modules/evaluacion-pregunta/evaluacion-pregunta.module';
@@ -61,6 +62,7 @@ import { DimensionTransversalModule } from './modules/dimension-transversal/dime
     ReunionesModule,
     TipoDocumentosModule,
     DocumentosModule,
+    SunatModule,
     // Evaluaciones Service modules
     PreguntasModule,
     PreguntaLineaModule,
