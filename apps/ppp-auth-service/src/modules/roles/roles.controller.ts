@@ -15,7 +15,7 @@ export class RolesController {
   @ApiOperation({ summary: 'Crear un nuevo rol' })
   @ApiResponse({ status: 201, description: 'Rol creado exitosamente' })
   @MessagePattern('roles.create')
-  create(@Body() @Payload() createRolDto: CreateRolDto) {
+  create(@Body() createRolDto: CreateRolDto) {
     return this.rolesService.create(createRolDto);
   }
 
@@ -31,7 +31,7 @@ export class RolesController {
   @ApiOperation({ summary: 'Obtener un rol por ID' })
   @ApiResponse({ status: 200, description: 'Rol encontrado' })
   @MessagePattern('roles.findOne')
-  findOne(@Param('id') @Payload() id: string) {
+  findOne(@Param('id') id: string) {
     return this.rolesService.findOne(id);
   }
 
@@ -39,7 +39,7 @@ export class RolesController {
   @ApiOperation({ summary: 'Actualizar un rol' })
   @ApiResponse({ status: 200, description: 'Rol actualizado' })
   @MessagePattern('roles.update')
-  update(@Param('id') id: string, @Body() @Payload() updateRolDto: UpdateRolDto) {
+  update(@Param('id') id: string, @Body() updateRolDto: UpdateRolDto) {
     return this.rolesService.update(id, updateRolDto);
   }
 
@@ -48,7 +48,7 @@ export class RolesController {
   @ApiOperation({ summary: 'Eliminar un rol' })
   @ApiResponse({ status: 204, description: 'Rol eliminado' })
   @MessagePattern('roles.remove')
-  remove(@Param('id') @Payload() id: string) {
+  remove(@Param('id') id: string) {
     return this.rolesService.remove(id);
   }
 

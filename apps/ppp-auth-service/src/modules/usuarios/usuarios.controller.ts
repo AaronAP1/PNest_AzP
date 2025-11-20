@@ -20,7 +20,7 @@ export class UsuariosController {
     type: UsuarioResponseDto
   })
   @ApiResponse({ status: 400, description: 'Datos inválidos' })
-  create(@Body() @Payload() createUsuarioDto: CreateUsuarioDto) {
+  create(@Body() createUsuarioDto: CreateUsuarioDto) {
     return this.usuariosService.create(createUsuarioDto);
   }
 
@@ -46,7 +46,7 @@ export class UsuariosController {
     type: UsuarioResponseDto
   })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  findOne(@Param('id') @Payload() id: string) {
+  findOne(@Param('id') id: string) {
     return this.usuariosService.findOne(id);
   }
 
@@ -60,7 +60,7 @@ export class UsuariosController {
     type: UsuarioResponseDto
   })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  findByEmail(@Param('email') @Payload() email: string) {
+  findByEmail(@Param('email') email: string) {
     return this.usuariosService.findByEmail(email);
   }
 
@@ -74,7 +74,7 @@ export class UsuariosController {
     type: UsuarioResponseDto
   })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  update(@Param('id') id: string, @Body() @Payload() updateUsuarioDto: UpdateUsuarioDto) {
+  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
     return this.usuariosService.update(id, updateUsuarioDto);
   }
 
@@ -84,7 +84,7 @@ export class UsuariosController {
   @ApiParam({ name: 'id', description: 'UUID del usuario' })
   @ApiResponse({ status: 200, description: 'Usuario eliminado' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  remove(@Param('id') @Payload() id: string) {
+  remove(@Param('id') id: string) {
     return this.usuariosService.remove(id);
   }
 
@@ -109,7 +109,7 @@ export class UsuariosController {
     description: 'Roles asignados exitosamente',
     type: UsuarioResponseDto
   })
-  assignRoles(@Param('id') usuarioId: string, @Body() @Payload() rolesData: { rolesIds: string[] }) {
+  assignRoles(@Param('id') usuarioId: string, @Body() rolesData: { rolesIds: string[] }) {
     return this.usuariosService.assignRoles(usuarioId, rolesData.rolesIds);
   }
 }
