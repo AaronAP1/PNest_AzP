@@ -5,6 +5,7 @@ import { PpazApiGatewayController } from './ppaz-api-gateway.controller';
 import { PpazApiGatewayService } from './ppaz-api-gateway.service';
 import { UsuariosModule } from './modules/usuarios/usuarios.module';
 import { RolesModule } from './modules/roles/roles.module';
+import { PrivilegiosModule } from './modules/privilegios/privilegios.module';
 import { FacultadesModule } from './modules/facultades/facultades.module';
 import { EscuelasModule } from './modules/escuelas/escuelas.module';
 import { SecretariasModule } from './modules/secretarias/secretarias.module';
@@ -47,6 +48,7 @@ import { DimensionTransversalModule } from './modules/dimension-transversal/dime
     // Auth Service modules
     UsuariosModule,
     RolesModule,
+    PrivilegiosModule,
     // Academic Service modules
     FacultadesModule,
     EscuelasModule,
