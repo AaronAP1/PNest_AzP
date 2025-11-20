@@ -54,8 +54,8 @@ export class FacultadesService {
       include: {
         escuelas: {
           include: {
-            _count: {
-              select: { alumnos: true },
+            lineasFacultad: {
+              where: { estado: true },
             },
           },
         },

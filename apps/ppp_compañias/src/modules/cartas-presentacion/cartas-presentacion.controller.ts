@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/s
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CartasPresentacionService } from './cartas-presentacion.service';
 import { CreateCartaPresentacionDto, UpdateCartaPresentacionDto } from './dto';
-import { CartaEstado } from '../../../../../node_modules/.prisma/client-core';
+import { CartaEstado } from '.prisma/client-companias';
 
 @ApiTags('Cartas de Presentación')
 @Controller('cartas-presentacion')

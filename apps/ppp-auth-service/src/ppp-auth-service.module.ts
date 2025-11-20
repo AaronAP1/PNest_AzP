@@ -14,7 +14,7 @@ import { HealthModule } from './health/health.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ['apps/ppp-auth-service/.env', '.env', '.env.local'],
     }),
     PrismaModule,
     HealthModule,

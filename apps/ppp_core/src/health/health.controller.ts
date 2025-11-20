@@ -23,7 +23,7 @@ export class HealthController {
   check() {
     return this.health.check([
       // Database health (timeout aumentado para Azure PostgreSQL)
-      () => this.prismaHealth.pingCheck('database', this.prisma, { timeout: 5000 }),
+      () => this.prismaHealth.pingCheck('database', this.prisma as any, { timeout: 5000 }),
       
       // Memory heap should not exceed 150MB
       () => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024),
@@ -44,7 +44,7 @@ export class HealthController {
   ready() {
     return this.health.check([
       // Only check database for readiness
-      () => this.prismaHealth.pingCheck('database', this.prisma, { timeout: 5000 }),
+      () => this.prismaHealth.pingCheck('database', this.prisma as any, { timeout: 5000 }),
     ]);
   }
 

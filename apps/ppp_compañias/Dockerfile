@@ -1,42 +1,41 @@
-# Dockerfile para ppp_compañías
-FROM node:18-alpine AS builder
+# Build stage
+FROM node:20-alpine AS build
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-# Copiar package files
+# Copy package files
 COPY package*.json ./
 COPY tsconfig*.json ./
 COPY nest-cli.json ./
 
-# Instalar dependencias
+# Install dependencies
 RUN npm ci
 
-# Copiar Prisma schema primero
-COPY apps/ppp_compañias/prisma ./apps/ppp_compañias/prisma
+# Copy source code
+COPY apps/ppp_compañias ./apps/ppp_compañias
 
-# Generar Prisma Client
+# Generate Prisma Client
 RUN npx prisma generate --schema=./apps/ppp_compañias/prisma/schema.prisma
 
-# Copiar todo el código fuente de apps
-COPY apps ./apps
-
-# Build
+# Build application
 RUN npm run build ppp_compañias
 
-# Producción
-FROM node:18-alpine
+# Production stage
+FROM node:20-alpine AS production
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-# Copiar dependencias y build
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist/apps/ppp_compañias ./dist
-COPY --from=builder /app/apps/ppp_compañias/prisma ./prisma
-COPY --from=builder /app/package*.json ./
+# Copy package files
+COPY package*.json ./
 
-# Generar Prisma Client en producción
-RUN npx prisma generate --schema=./prisma/schema.prisma
+# Install only production dependencies
+RUN npm ci --only=production && npm cache clean --force
 
-EXPOSE 3002
+# Copy built application
+COPY --from=build /usr/src/app/dist ./dist
+COPY --from=build /usr/src/app/node_modules/.prisma ./node_modules/.prisma
+COPY apps/ppp_compañias/prisma ./apps/ppp_compañias/prisma
 
-CMD ["node", "dist/main.js"]
+EXPOSE 3003
+
+CMD ["node", "dist/apps/ppp_compañias/main"]

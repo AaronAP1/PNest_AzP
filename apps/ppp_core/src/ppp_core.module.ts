@@ -5,10 +5,6 @@ import { PppCoreService } from './ppp_core.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { FacultadesModule } from './modules/facultades/facultades.module';
 import { EscuelasModule } from './modules/escuelas/escuelas.module';
-import { SecretariasModule } from './modules/secretarias/secretarias.module';
-import { AlumnosModule } from './modules/alumnos/alumnos.module';
-import { SupervisoresModule } from './modules/supervisores/supervisores.module';
-import { CoordinadoresModule } from './modules/coordinadores/coordinadores.module';
 import { LineasFacultadModule } from './modules/lineas-facultad/lineas-facultad.module';
 import { configValidationSchema } from './config/config.validation';
 import { HealthModule } from './health/health.module';
@@ -17,7 +13,7 @@ import { HealthModule } from './health/health.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.local'],
+      envFilePath: ['apps/ppp_core/.env', '.env', '.env.local'],
       validationSchema: configValidationSchema,
       validationOptions: {
         abortEarly: false,
@@ -27,10 +23,6 @@ import { HealthModule } from './health/health.module';
     HealthModule,
     FacultadesModule,
     EscuelasModule,
-    AlumnosModule,
-    SecretariasModule,
-    SupervisoresModule,
-    CoordinadoresModule,
     LineasFacultadModule,
   ],
   controllers: [PppCoreController],

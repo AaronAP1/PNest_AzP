@@ -1,0 +1,9 @@
+﻿{
+    "Gateway":  "https://ppaz-api-gateway.ashystone-4eec785e.eastus.azurecontainerapps.io",
+    "Health":  "https://ppaz-api-gateway.ashystone-4eec785e.eastus.azurecontainerapps.io/health",
+    "Core":  "https://ppp-core.internal.ashystone-4eec785e.eastus.azurecontainerapps.io",
+    "Evaluaciones":  "https://ppp-evaluaciones-service.internal.ashystone-4eec785e.eastus.azurecontainerapps.io",
+    "Swagger":  "https://ppaz-api-gateway.ashystone-4eec785e.eastus.azurecontainerapps.io/api",
+    "Companias":  "https://ppp-companias.internal.ashystone-4eec785e.eastus.azurecontainerapps.io",
+    "Auth":  "https://ppp-auth-service.internal.ashystone-4eec785e.eastus.azurecontainerapps.io"
+}

@@ -16,7 +16,7 @@ model Facultad {
   nombre      String    @db.VarChar(255)
   codigo      String    @db.VarChar(50)
   descripcion String?   @db.Text
-  estado      String    @db.VarChar(50)
+  estado      Boolean   @default(true)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
@@ -34,7 +34,7 @@ model Escuela {
   nombre      String    @db.VarChar(255)
   codigo      String    @db.VarChar(50)
   descripcion String?   @db.Text
-  estado      String    @db.VarChar(50)
+  estado      Boolean   @default(true)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
@@ -53,7 +53,7 @@ model LineaFacultad {
   idEscuela  String   @map("id_escuela") @db.Uuid
   nombre     String   @db.VarChar(255)
   codigo     String   @db.VarChar(50)
-  estado     String   @db.VarChar(50)
+  estado     Boolean  @default(true)
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 

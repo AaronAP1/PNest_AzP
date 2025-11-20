@@ -17,7 +17,7 @@ import { HealthModule } from './health/health.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.local'],
+      envFilePath: ['apps/ppp_compañias/.env', '.env', '.env.local'],
       validationSchema: configValidationSchema,
       validationOptions: {
         abortEarly: false,

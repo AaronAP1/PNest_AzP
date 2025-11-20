@@ -1,32 +1,36 @@
-# Dockerfile para API Gateway
-FROM node:18-alpine AS builder
+# Build stage
+FROM node:20-alpine AS build
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-# Copiar package files
+# Copy package files
 COPY package*.json ./
 COPY tsconfig*.json ./
 COPY nest-cli.json ./
 
-# Instalar dependencias
+# Install dependencies
 RUN npm ci
 
-# Copiar código fuente
+# Copy source code
 COPY apps/ppaz-api-gateway ./apps/ppaz-api-gateway
 
-# Build
+# Build application
 RUN npm run build ppaz-api-gateway
 
-# Producción
-FROM node:18-alpine
+# Production stage
+FROM node:20-alpine AS production
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-# Copiar dependencias y build
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist/apps/ppaz-api-gateway ./dist
-COPY --from=builder /app/package*.json ./
+# Copy package files
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm ci --only=production && npm cache clean --force
+
+# Copy built application
+COPY --from=build /usr/src/app/dist ./dist
 
 EXPOSE 3000
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/apps/ppaz-api-gateway/main"]

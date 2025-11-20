@@ -11,7 +11,7 @@ async function bootstrap() {
   const app = await NestFactory.create(PppCoreModule);
   
   const configService = app.get(ConfigService);
-  const httpPort = parseInt(process.env.PORT || '3002'); // HTTP - Lee de env o usa 3002 por defecto
+  const httpPort = parseInt(process.env.PORT || '3001'); // HTTP - Lee de env o usa 3001 por defecto
   const tcpPort = 3012; // TCP para dev local - PUERTO DIFERENTE
   const host = process.env.HOST || '0.0.0.0';
   const appName = 'ppp_academic';
