@@ -105,4 +105,82 @@ export class RolesService {
 
     return { message: 'Rol eliminado correctamente' };
   }
+
+  // ==========================================
+  // MÉTODOS PARA GESTIÓN DE PRIVILEGIOS
+  // ==========================================
+
+  async assignPrivilegios(rolId: string, privilegiosIds: string[]) {
+    // Verificar que el rol existe
+    await this.findOne(rolId);
+
+    // Verificar que todos los privilegios existen
+    const privilegios = await this.prisma.privilegio.findMany({
+      where: { id: { in: privilegiosIds } },
+    });
+
+    if (privilegios.length !== privilegiosIds.length) {
+      throw new NotFoundException('Uno o más privilegios no existen');
+    }
+
+    // Eliminar privilegios existentes del rol
+    await this.prisma.rolPrivilegio.deleteMany({
+      where: { idRol: rolId },
+    });
+
+    // Asignar nuevos privilegios
+    const rolPrivilegios = await this.prisma.rolPrivilegio.createMany({
+      data: privilegiosIds.map((idPrivilegio) => ({
+        idRol: rolId,
+        idPrivilegio,
+      })),
+    });
+
+    return {
+      message: `Se asignaron ${rolPrivilegios.count} privilegio(s) al rol`,
+      count: rolPrivilegios.count,
+    };
+  }
+
+  async getPrivilegios(rolId: string) {
+    const rol = await this.prisma.rol.findUnique({
+      where: { id: rolId },
+      include: {
+        privilegios: {
+          include: {
+            privilegio: true,
+          },
+        },
+      },
+    });
+
+    if (!rol) {
+      throw new NotFoundException(`Rol con ID ${rolId} no encontrado`);
+    }
+
+    return rol.privilegios.map((rp) => rp.privilegio);
+  }
+
+  async removePrivilegio(rolId: string, privilegioId: string) {
+    // Verificar que el rol existe
+    await this.findOne(rolId);
+
+    // Buscar la relación
+    const rolPrivilegio = await this.prisma.rolPrivilegio.findFirst({
+      where: {
+        idRol: rolId,
+        idPrivilegio: privilegioId,
+      },
+    });
+
+    if (!rolPrivilegio) {
+      throw new NotFoundException('El privilegio no está asignado a este rol');
+    }
+
+    await this.prisma.rolPrivilegio.delete({
+      where: { id: rolPrivilegio.id },
+    });
+
+    return { message: 'Privilegio removido del rol correctamente' };
+  }
 }

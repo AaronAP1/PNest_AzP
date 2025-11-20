@@ -56,6 +56,10 @@ export class UsuariosService {
             rol: true,
           },
         },
+        alumno: true,
+        secretaria: true,
+        supervisor: true,
+        coordinador: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -74,6 +78,10 @@ export class UsuariosService {
             rol: true,
           },
         },
+        alumno: true,
+        secretaria: true,
+        supervisor: true,
+        coordinador: true,
       },
     });
 
