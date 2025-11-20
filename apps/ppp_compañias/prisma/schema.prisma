@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL_CORE")
+  url      = env("DATABASE_URL_COMPANIAS")
 }
 
 /// =========================
@@ -24,6 +24,9 @@ model Empresa {
   createdAt           DateTime @default(now()) @map("created_at")
   updatedAt           DateTime @updatedAt @map("updated_at")
 
+  solicitudes         SolicitudPpp[]
+  cartasPresentacion  CartaPresentacion[]
+
   @@map("empresa")
 }
 
@@ -34,16 +37,19 @@ model SolicitudPpp {
   id           String          @id @default(uuid()) @db.Uuid
   idSupervisor String          @map("id_supervisor") @db.Uuid
   idAlumno     String          @map("id_alumno") @db.Uuid
+  idEmpresa    String          @map("id_empresa") @db.Uuid
   estado       EstadoSolicitud @default(pendiente)
   createdAt    DateTime        @default(now()) @map("created_at")
   updatedAt    DateTime        @updatedAt @map("updated_at")
 
+  empresa             Empresa             @relation(fields: [idEmpresa], references: [id], onDelete: Restrict)
   documentos          Documento[]
   cartaPresentacion   CartaPresentacion?
   reuniones           Reunion[]
 
   @@index([idSupervisor])
   @@index([idAlumno])
+  @@index([idEmpresa])
   @@index([estado])
   @@map("solicitud_ppp")
 }
@@ -65,8 +71,9 @@ model CartaPresentacion {
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
 
-  // Relation
+  // Relations
   solicitud     SolicitudPpp?  @relation(fields: [idSolicitud], references: [id], onDelete: SetNull)
+  empresa       Empresa        @relation(fields: [idEmpresa], references: [id], onDelete: Restrict)
 
   @@index([idAlumno])
   @@index([idEmpresa])

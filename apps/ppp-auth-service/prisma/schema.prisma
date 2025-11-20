@@ -22,7 +22,11 @@ model Usuario {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
-  roles UsuarioRol[]
+  roles        UsuarioRol[]
+  alumno       Alumno?
+  secretaria   Secretaria?
+  supervisor   Supervisor?
+  coordinador  Coordinador?
 
   @@map("usuario")
 }
@@ -37,7 +41,8 @@ model Rol {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  usuarios UsuarioRol[]
+  usuarios    UsuarioRol[]
+  privilegios RolPrivilegio[]
 
   @@map("rol")
 }
@@ -54,4 +59,108 @@ model UsuarioRol {
 
   @@id([usuarioId, rolId])
   @@map("usuario_rol")
+}
+
+/// =========================
+///    PRIVILEGIO
+/// =========================
+model Privilegio {
+  id        String   @id @default(uuid()) @db.Uuid
+  nombre    String   @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  rolesPrivilegios RolPrivilegio[]
+
+  @@map("privilegio")
+}
+
+/// =========================
+///    ROL-PRIVILEGIO (Many-to-Many)
+/// =========================
+model RolPrivilegio {
+  id            String   @id @default(uuid()) @db.Uuid
+  idRol         String   @map("id_rol") @db.Uuid
+  idPrivilegio  String   @map("id_privilegio") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  rol        Rol        @relation(fields: [idRol], references: [id], onDelete: Cascade)
+  privilegio Privilegio @relation(fields: [idPrivilegio], references: [id], onDelete: Cascade)
+
+  @@unique([idRol, idPrivilegio])
+  @@index([idRol])
+  @@index([idPrivilegio])
+  @@map("rol_privilegio")
+}
+
+/// =========================
+///    ALUMNO
+/// =========================
+model Alumno {
+  id         String   @id @default(uuid()) @db.Uuid
+  usuarioId  String   @map("usuario_id") @db.Uuid
+  idEscuela  String   @map("id_escuela") @db.Uuid
+  codigo     String   @db.VarChar(30)
+  ciclo      String   @db.VarChar(20)
+  año        String   @db.VarChar(4)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId])
+  @@index([idEscuela])
+  @@map("alumno")
+}
+
+/// =========================
+///    SECRETARIA
+/// =========================
+model Secretaria {
+  id        String   @id @default(uuid()) @db.Uuid
+  usuarioId String   @map("usuario_id") @db.Uuid
+  idEscuela String   @map("id_escuela") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId])
+  @@index([idEscuela])
+  @@map("secretaria")
+}
+
+/// =========================
+///    SUPERVISOR
+/// =========================
+model Supervisor {
+  id        String   @id @default(uuid()) @db.Uuid
+  usuarioId String   @map("usuario_id") @db.Uuid
+  idEscuela String   @map("id_escuela") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId])
+  @@index([idEscuela])
+  @@map("supervisor")
+}
+
+/// =========================
+///    COORDINADOR
+/// =========================
+model Coordinador {
+  id        String   @id @default(uuid()) @db.Uuid
+  usuarioId String   @map("usuario_id") @db.Uuid
+  idEscuela String   @map("id_escuela") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId])
+  @@index([idEscuela])
+  @@map("coordinador")
 }

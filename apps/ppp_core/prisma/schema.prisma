@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client-core"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_CORE")
+}
+
+/// =========================
+///    FACULTAD
+/// =========================
+model Facultad {
+  id          String    @id @default(uuid()) @db.Uuid
+  nombre      String    @db.VarChar(255)
+  codigo      String    @db.VarChar(50)
+  descripcion String?   @db.Text
+  estado      String    @db.VarChar(50)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  escuelas    Escuela[]
+
+  @@map("facultad")
+}
+
+/// =========================
+///    ESCUELA
+/// =========================
+model Escuela {
+  id          String    @id @default(uuid()) @db.Uuid
+  idFacultad  String    @map("id_facultad") @db.Uuid
+  nombre      String    @db.VarChar(255)
+  codigo      String    @db.VarChar(50)
+  descripcion String?   @db.Text
+  estado      String    @db.VarChar(50)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  facultad        Facultad        @relation(fields: [idFacultad], references: [id], onDelete: Cascade)
+  lineasFacultad  LineaFacultad[]
+
+  @@index([idFacultad])
+  @@map("escuela")
+}
+
+/// =========================
+///    LÍNEA FACULTAD
+/// =========================
+model LineaFacultad {
+  id         String   @id @default(uuid()) @db.Uuid
+  idEscuela  String   @map("id_escuela") @db.Uuid
+  nombre     String   @db.VarChar(255)
+  codigo     String   @db.VarChar(50)
+  estado     String   @db.VarChar(50)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  escuela Escuela @relation(fields: [idEscuela], references: [id], onDelete: Cascade)
+
+  @@index([idEscuela])
+  @@map("linea_facultad")
+}
