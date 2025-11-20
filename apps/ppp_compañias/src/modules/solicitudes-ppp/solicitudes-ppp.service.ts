@@ -8,12 +8,25 @@ export class SolicitudesPppService {
   constructor(private prisma: PrismaCompaniasService) {}
 
   async create(createDto: CreateSolicitudPppDto) {
+    // Verificar que la empresa existe
+    const empresa = await this.prisma.empresa.findUnique({
+      where: { id: createDto.idEmpresa },
+    });
+
+    if (!empresa) {
+      throw new NotFoundException(`Empresa con ID ${createDto.idEmpresa} no encontrada`);
+    }
+
     try {
       return await this.prisma.solicitudPpp.create({
         data: {
           idSupervisor: createDto.idSupervisor,
           idAlumno: createDto.idAlumno,
+          idEmpresa: createDto.idEmpresa,
           estado: createDto.estado || ('pendiente' as any),
+        },
+        include: {
+          empresa: true,
         },
       });
     } catch (error) {
@@ -27,6 +40,7 @@ export class SolicitudesPppService {
   async findAll() {
     return this.prisma.solicitudPpp.findMany({
       include: {
+        empresa: true,
         cartaPresentacion: true,
         reuniones: true,
         documentos: true,
@@ -39,6 +53,7 @@ export class SolicitudesPppService {
     const solicitud = await this.prisma.solicitudPpp.findUnique({
       where: { id },
       include: {
+        empresa: true,
         cartaPresentacion: true,
         reuniones: true,
         documentos: true,
@@ -56,6 +71,7 @@ export class SolicitudesPppService {
     return this.prisma.solicitudPpp.findMany({
       where: { idAlumno },
       include: {
+        empresa: true,
         cartaPresentacion: true,
         reuniones: true,
         documentos: true,
@@ -68,6 +84,7 @@ export class SolicitudesPppService {
     return this.prisma.solicitudPpp.findMany({
       where: { idSupervisor },
       include: {
+        empresa: true,
         cartaPresentacion: true,
         reuniones: true,
         documentos: true,
@@ -80,6 +97,7 @@ export class SolicitudesPppService {
     return this.prisma.solicitudPpp.findMany({
       where: { estado: estado as any },
       include: {
+        empresa: true,
         cartaPresentacion: true,
         reuniones: true,
         documentos: true,

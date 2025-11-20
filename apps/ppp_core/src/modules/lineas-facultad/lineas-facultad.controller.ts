@@ -1,40 +1,64 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { LineasFacultadService } from './lineas-facultad.service';
 import { CreateLineaFacultadDto } from './dto/create-linea-facultad.dto';
 import { UpdateLineaFacultadDto } from './dto/update-linea-facultad.dto';
 
+@ApiTags('Líneas de Facultad')
 @Controller('lineas-facultad')
 export class LineasFacultadController {
   constructor(private readonly lineasFacultadService: LineasFacultadService) {}
 
   // HTTP REST Endpoints (Azure Container Apps)
   @Post()
+  @ApiOperation({ summary: 'Crear una nueva línea de práctica/investigación' })
+  @ApiResponse({ status: 201, description: 'Línea creada exitosamente' })
+  @ApiResponse({ status: 404, description: 'Escuela no encontrada' })
+  @ApiResponse({ status: 409, description: 'El código de línea ya existe' })
   createHttp(@Body() createLineaFacultadDto: CreateLineaFacultadDto) {
     return this.lineasFacultadService.create(createLineaFacultadDto);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Obtener todas las líneas de facultad' })
+  @ApiResponse({ status: 200, description: 'Lista de líneas con sus escuelas y facultades' })
   findAllHttp() {
     return this.lineasFacultadService.findAll();
   }
 
-  @Get(':id')
-  findOneHttp(@Param('id') id: string) {
-    return this.lineasFacultadService.findOne(id);
-  }
-
   @Get('escuela/:idEscuela')
+  @ApiOperation({ summary: 'Obtener líneas por escuela' })
+  @ApiParam({ name: 'idEscuela', description: 'UUID de la escuela' })
+  @ApiResponse({ status: 200, description: 'Lista de líneas de la escuela' })
   findByEscuelaHttp(@Param('idEscuela') idEscuela: string) {
     return this.lineasFacultadService.findByEscuela(idEscuela);
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtener una línea por ID' })
+  @ApiParam({ name: 'id', description: 'UUID de la línea' })
+  @ApiResponse({ status: 200, description: 'Línea encontrada' })
+  @ApiResponse({ status: 404, description: 'Línea no encontrada' })
+  findOneHttp(@Param('id') id: string) {
+    return this.lineasFacultadService.findOne(id);
+  }
+
   @Patch(':id')
+  @ApiOperation({ summary: 'Actualizar una línea' })
+  @ApiParam({ name: 'id', description: 'UUID de la línea' })
+  @ApiResponse({ status: 200, description: 'Línea actualizada' })
+  @ApiResponse({ status: 404, description: 'Línea no encontrada' })
   updateHttp(@Param('id') id: string, @Body() updateLineaFacultadDto: UpdateLineaFacultadDto) {
     return this.lineasFacultadService.update(id, updateLineaFacultadDto);
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Eliminar una línea' })
+  @ApiParam({ name: 'id', description: 'UUID de la línea' })
+  @ApiResponse({ status: 204, description: 'Línea eliminada' })
+  @ApiResponse({ status: 404, description: 'Línea no encontrada' })
   removeHttp(@Param('id') id: string) {
     return this.lineasFacultadService.remove(id);
   }

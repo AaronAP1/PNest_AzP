@@ -11,6 +11,17 @@ export class CartasPresentacionService {
   constructor(private prisma: PrismaCompaniasService) {}
 
   async create(createCartaPresentacionDto: CreateCartaPresentacionDto) {
+    // Verificar que la empresa existe
+    const empresa = await this.prisma.empresa.findUnique({
+      where: { id: createCartaPresentacionDto.idEmpresa },
+    });
+
+    if (!empresa) {
+      throw new NotFoundException(
+        `Empresa con ID ${createCartaPresentacionDto.idEmpresa} no encontrada`,
+      );
+    }
+
     return await this.prisma.cartaPresentacion.create({
       data: {
         idAlumno: createCartaPresentacionDto.idAlumno,
@@ -21,11 +32,19 @@ export class CartasPresentacionService {
         motivoRechazo: createCartaPresentacionDto.motivoRechazo,
         estado: (createCartaPresentacionDto.estado as any) || 'borrador' as any,
       },
+      include: {
+        empresa: true,
+        solicitud: true,
+      },
     });
   }
 
   async findAll() {
     return await this.prisma.cartaPresentacion.findMany({
+      include: {
+        empresa: true,
+        solicitud: true,
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -33,6 +52,10 @@ export class CartasPresentacionService {
   async findOne(id: string) {
     const carta = await this.prisma.cartaPresentacion.findUnique({
       where: { id },
+      include: {
+        empresa: true,
+        solicitud: true,
+      },
     });
 
     if (!carta) {
@@ -47,6 +70,10 @@ export class CartasPresentacionService {
   async findByAlumno(idAlumno: string) {
     return await this.prisma.cartaPresentacion.findMany({
       where: { idAlumno },
+      include: {
+        empresa: true,
+        solicitud: true,
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -54,6 +81,10 @@ export class CartasPresentacionService {
   async findByEmpresa(idEmpresa: string) {
     return await this.prisma.cartaPresentacion.findMany({
       where: { idEmpresa },
+      include: {
+        empresa: true,
+        solicitud: true,
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -61,6 +92,10 @@ export class CartasPresentacionService {
   async findBySecretaria(idSecretaria: string) {
     return await this.prisma.cartaPresentacion.findMany({
       where: { idSecretaria },
+      include: {
+        empresa: true,
+        solicitud: true,
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -68,6 +103,10 @@ export class CartasPresentacionService {
   async findByEstado(estado: string) {
     return await this.prisma.cartaPresentacion.findMany({
       where: { estado: estado as any },
+      include: {
+        empresa: true,
+        solicitud: true,
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
