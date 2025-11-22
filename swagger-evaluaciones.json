@@ -1,0 +1,1227 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+        "/health": {
+            "get": {
+                "operationId": "HealthController_check",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Health"
+                ]
+            }
+        },
+        "/dimension-transversal": {
+            "post": {
+                "operationId": "DimensionTransversalController_createRest",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateDimensionTransversalDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Dimensión transversal creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva dimensión transversal",
+                "tags": [
+                    "dimension-transversal"
+                ]
+            },
+            "get": {
+                "operationId": "DimensionTransversalController_findAllRest",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de dimensiones transversales obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las dimensiones transversales",
+                "tags": [
+                    "dimension-transversal"
+                ]
+            }
+        },
+        "/dimension-transversal/activas": {
+            "get": {
+                "operationId": "DimensionTransversalController_findAllActivasRest",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de dimensiones transversales activas"
+                    }
+                },
+                "summary": "Listar dimensiones transversales activas",
+                "tags": [
+                    "dimension-transversal"
+                ]
+            }
+        },
+        "/dimension-transversal/{id}": {
+            "get": {
+                "operationId": "DimensionTransversalController_findOneRest",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la dimensión transversal",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dimensión transversal encontrada"
+                    },
+                    "404": {
+                        "description": "Dimensión transversal no encontrada"
+                    }
+                },
+                "summary": "Obtener dimensión transversal por ID",
+                "tags": [
+                    "dimension-transversal"
+                ]
+            },
+            "patch": {
+                "operationId": "DimensionTransversalController_updateRest",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la dimensión transversal",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDimensionTransversalDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Dimensión transversal actualizada exitosamente"
+                    },
+                    "404": {
+                        "description": "Dimensión transversal no encontrada"
+                    }
+                },
+                "summary": "Actualizar dimensión transversal",
+                "tags": [
+                    "dimension-transversal"
+                ]
+            },
+            "delete": {
+                "operationId": "DimensionTransversalController_removeRest",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la dimensión transversal",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dimensión transversal eliminada exitosamente"
+                    },
+                    "404": {
+                        "description": "Dimensión transversal no encontrada"
+                    }
+                },
+                "summary": "Eliminar dimensión transversal",
+                "tags": [
+                    "dimension-transversal"
+                ]
+            }
+        },
+        "/preguntas": {
+            "post": {
+                "operationId": "PreguntasController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreatePreguntaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pregunta creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva pregunta",
+                "tags": [
+                    "Preguntas"
+                ]
+            },
+            "get": {
+                "operationId": "PreguntasController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Preguntas"
+                ]
+            }
+        },
+        "/preguntas/activas": {
+            "get": {
+                "operationId": "PreguntasController_findAllActivas",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Preguntas"
+                ]
+            }
+        },
+        "/preguntas/{id}": {
+            "get": {
+                "operationId": "PreguntasController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Preguntas"
+                ]
+            },
+            "patch": {
+                "operationId": "PreguntasController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePreguntaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Preguntas"
+                ]
+            },
+            "delete": {
+                "operationId": "PreguntasController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Preguntas"
+                ]
+            }
+        },
+        "/evaluacion-supervisor": {
+            "post": {
+                "operationId": "EvaluacionSupervisorController_createHttp",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEvaluacionSupervisorDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Evaluación creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva evaluación de supervisor",
+                "tags": [
+                    "Evaluación Supervisor"
+                ]
+            },
+            "get": {
+                "operationId": "EvaluacionSupervisorController_findAllHttp",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de evaluaciones con preguntas"
+                    }
+                },
+                "summary": "Obtener todas las evaluaciones de supervisor",
+                "tags": [
+                    "Evaluación Supervisor"
+                ]
+            }
+        },
+        "/evaluacion-supervisor/supervisor/{idSupervisor}": {
+            "get": {
+                "operationId": "EvaluacionSupervisorController_findBySupervisorHttp",
+                "parameters": [
+                    {
+                        "name": "idSupervisor",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del supervisor (referencia a ppp_auth.supervisores)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de evaluaciones del supervisor"
+                    }
+                },
+                "summary": "Obtener evaluaciones por supervisor",
+                "tags": [
+                    "Evaluación Supervisor"
+                ]
+            }
+        },
+        "/evaluacion-supervisor/alumno/{idAlumno}": {
+            "get": {
+                "operationId": "EvaluacionSupervisorController_findByAlumnoHttp",
+                "parameters": [
+                    {
+                        "name": "idAlumno",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del alumno (referencia a ppp_auth.alumnos)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de evaluaciones del alumno"
+                    }
+                },
+                "summary": "Obtener evaluaciones por alumno",
+                "tags": [
+                    "Evaluación Supervisor"
+                ]
+            }
+        },
+        "/evaluacion-supervisor/{id}": {
+            "get": {
+                "operationId": "EvaluacionSupervisorController_findOneHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Evaluación encontrada"
+                    },
+                    "404": {
+                        "description": "Evaluación no encontrada"
+                    }
+                },
+                "summary": "Obtener una evaluación por ID",
+                "tags": [
+                    "Evaluación Supervisor"
+                ]
+            },
+            "patch": {
+                "operationId": "EvaluacionSupervisorController_updateHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEvaluacionSupervisorDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Evaluación actualizada"
+                    },
+                    "404": {
+                        "description": "Evaluación no encontrada"
+                    }
+                },
+                "summary": "Actualizar una evaluación",
+                "tags": [
+                    "Evaluación Supervisor"
+                ]
+            },
+            "delete": {
+                "operationId": "EvaluacionSupervisorController_removeHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Evaluación eliminada"
+                    },
+                    "404": {
+                        "description": "Evaluación no encontrada"
+                    }
+                },
+                "summary": "Eliminar una evaluación",
+                "tags": [
+                    "Evaluación Supervisor"
+                ]
+            }
+        },
+        "/evaluacion-pregunta": {
+            "post": {
+                "operationId": "EvaluacionPreguntaController_createHttp",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEvaluacionPreguntaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva respuesta de evaluación",
+                "tags": [
+                    "Evaluación Pregunta"
+                ]
+            },
+            "get": {
+                "operationId": "EvaluacionPreguntaController_findAllHttp",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Evaluación Pregunta"
+                ]
+            }
+        },
+        "/evaluacion-pregunta/{id}": {
+            "get": {
+                "operationId": "EvaluacionPreguntaController_findOneHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Evaluación Pregunta"
+                ]
+            },
+            "patch": {
+                "operationId": "EvaluacionPreguntaController_updateHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEvaluacionPreguntaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Evaluación Pregunta"
+                ]
+            },
+            "delete": {
+                "operationId": "EvaluacionPreguntaController_removeHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Evaluación Pregunta"
+                ]
+            }
+        },
+        "/evaluacion-pregunta/evaluacion/{idEvaluacion}": {
+            "get": {
+                "operationId": "EvaluacionPreguntaController_findByEvaluacionHttp",
+                "parameters": [
+                    {
+                        "name": "idEvaluacion",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Evaluación Pregunta"
+                ]
+            }
+        },
+        "/evaluacion-pregunta/pregunta/{idPregunta}": {
+            "get": {
+                "operationId": "EvaluacionPreguntaController_findByPreguntaHttp",
+                "parameters": [
+                    {
+                        "name": "idPregunta",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Evaluación Pregunta"
+                ]
+            }
+        },
+        "/evaluacion-practicante": {
+            "post": {
+                "operationId": "EvaluacionPracticanteController_createHttp",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEvaluacionPracticanteDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Evaluación creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva evaluación de practicante",
+                "tags": [
+                    "Evaluación Practicante"
+                ]
+            },
+            "get": {
+                "operationId": "EvaluacionPracticanteController_findAllHttp",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de evaluaciones con preguntas por línea"
+                    }
+                },
+                "summary": "Obtener todas las evaluaciones de practicantes",
+                "tags": [
+                    "Evaluación Practicante"
+                ]
+            }
+        },
+        "/evaluacion-practicante/solicitud/{idSolicitud}": {
+            "get": {
+                "operationId": "EvaluacionPracticanteController_findBySolicitudHttp",
+                "parameters": [
+                    {
+                        "name": "idSolicitud",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la solicitud (referencia a ppp_companias.solicitud_ppp)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de evaluaciones de la solicitud"
+                    }
+                },
+                "summary": "Obtener evaluaciones por solicitud de PPP",
+                "tags": [
+                    "Evaluación Practicante"
+                ]
+            }
+        },
+        "/evaluacion-practicante/{id}": {
+            "get": {
+                "operationId": "EvaluacionPracticanteController_findOneHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Evaluación encontrada"
+                    },
+                    "404": {
+                        "description": "Evaluación no encontrada"
+                    }
+                },
+                "summary": "Obtener una evaluación por ID",
+                "tags": [
+                    "Evaluación Practicante"
+                ]
+            },
+            "patch": {
+                "operationId": "EvaluacionPracticanteController_updateHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEvaluacionPracticanteDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Evaluación actualizada"
+                    },
+                    "404": {
+                        "description": "Evaluación no encontrada"
+                    }
+                },
+                "summary": "Actualizar una evaluación",
+                "tags": [
+                    "Evaluación Practicante"
+                ]
+            },
+            "delete": {
+                "operationId": "EvaluacionPracticanteController_removeHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Evaluación eliminada"
+                    },
+                    "404": {
+                        "description": "Evaluación no encontrada"
+                    }
+                },
+                "summary": "Eliminar una evaluación",
+                "tags": [
+                    "Evaluación Practicante"
+                ]
+            }
+        },
+        "/evaluacion-practicante-solicitud": {
+            "post": {
+                "operationId": "EvaluacionPracticanteSolicitudController_createHttp",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEvaluacionPracticanteSolicitudDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Evaluación creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva evaluación practicante solicitud",
+                "tags": [
+                    "Evaluación Practicante Solicitud"
+                ]
+            },
+            "get": {
+                "operationId": "EvaluacionPracticanteSolicitudController_findAllHttp",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Evaluación Practicante Solicitud"
+                ]
+            }
+        },
+        "/evaluacion-practicante-solicitud/{id}": {
+            "get": {
+                "operationId": "EvaluacionPracticanteSolicitudController_findOneHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Evaluación Practicante Solicitud"
+                ]
+            },
+            "patch": {
+                "operationId": "EvaluacionPracticanteSolicitudController_updateHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEvaluacionPracticanteSolicitudDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Evaluación Practicante Solicitud"
+                ]
+            },
+            "delete": {
+                "operationId": "EvaluacionPracticanteSolicitudController_removeHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Evaluación Practicante Solicitud"
+                ]
+            }
+        },
+        "/evaluacion-practicante-solicitud/dimension-transversal/{idDimensionTransversal}": {
+            "get": {
+                "operationId": "EvaluacionPracticanteSolicitudController_findByDimensionTransversalHttp",
+                "parameters": [
+                    {
+                        "name": "idDimensionTransversal",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Evaluación Practicante Solicitud"
+                ]
+            }
+        },
+        "/evaluacion-practicante-solicitud/evaluacion-practicante/{idEvaluacionPracticante}": {
+            "get": {
+                "operationId": "EvaluacionPracticanteSolicitudController_findByEvaluacionPracticanteHttp",
+                "parameters": [
+                    {
+                        "name": "idEvaluacionPracticante",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Evaluación Practicante Solicitud"
+                ]
+            }
+        },
+        "/pregunta-linea": {
+            "post": {
+                "operationId": "PreguntaLineaController_createHttp",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreatePreguntaLineaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pregunta creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva pregunta por línea",
+                "tags": [
+                    "Pregunta Línea"
+                ]
+            },
+            "get": {
+                "operationId": "PreguntaLineaController_findAllHttp",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Pregunta Línea"
+                ]
+            }
+        },
+        "/pregunta-linea/{id}": {
+            "get": {
+                "operationId": "PreguntaLineaController_findOneHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Pregunta Línea"
+                ]
+            },
+            "patch": {
+                "operationId": "PreguntaLineaController_updateHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePreguntaLineaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Pregunta Línea"
+                ]
+            },
+            "delete": {
+                "operationId": "PreguntaLineaController_removeHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Pregunta Línea"
+                ]
+            }
+        },
+        "/pregunta-linea/linea-facultad/{idLineaFacultad}": {
+            "get": {
+                "operationId": "PreguntaLineaController_findByLineaFacultadHttp",
+                "parameters": [
+                    {
+                        "name": "idLineaFacultad",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Pregunta Línea"
+                ]
+            }
+        },
+        "/pregunta-linea/evaluacion-practicante/{idEvaluacionPracticante}": {
+            "get": {
+                "operationId": "PreguntaLineaController_findByEvaluacionPracticanteHttp",
+                "parameters": [
+                    {
+                        "name": "idEvaluacionPracticante",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Pregunta Línea"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "PPP Evaluaciones Service API",
+        "description": "Evaluaciones - Preguntas, Evaluación Supervisor, Practicante, Dimensiones",
+        "version": "1.0",
+        "contact": {}
+    },
+    "tags": [],
+    "servers": [],
+    "components": {
+        "schemas": {
+            "CreateDimensionTransversalDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "UpdateDimensionTransversalDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "CreatePreguntaDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "UpdatePreguntaDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "CreateEvaluacionSupervisorDto": {
+                "type": "object",
+                "properties": {
+                    "idSupervisor": {
+                        "type": "string",
+                        "description": "UUID del supervisor evaluador (referencia a ppp_auth.supervisores)",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "idAlumno": {
+                        "type": "string",
+                        "description": "UUID del alumno evaluado (referencia a ppp_auth.alumnos)",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    },
+                    "comentario": {
+                        "type": "string",
+                        "description": "Comentarios generales del supervisor sobre el desempeño del alumno",
+                        "example": "El alumno demostró excelente capacidad de adaptación y trabajo en equipo."
+                    },
+                    "estado": {
+                        "type": "boolean",
+                        "description": "Estado de la evaluación (activo/inactivo)",
+                        "example": true,
+                        "default": true
+                    }
+                },
+                "required": [
+                    "idSupervisor",
+                    "idAlumno"
+                ]
+            },
+            "UpdateEvaluacionSupervisorDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "CreateEvaluacionPreguntaDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "UpdateEvaluacionPreguntaDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "CreateEvaluacionPracticanteDto": {
+                "type": "object",
+                "properties": {
+                    "idSolicitud": {
+                        "type": "string",
+                        "description": "UUID de la solicitud de PPP (referencia a ppp_companias.solicitud_ppp)",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "comentario": {
+                        "type": "string",
+                        "description": "Comentarios generales sobre el desempeño del practicante",
+                        "example": "El practicante mostró compromiso y responsabilidad en sus tareas."
+                    },
+                    "estado": {
+                        "type": "boolean",
+                        "description": "Estado de la evaluación (activo/inactivo)",
+                        "example": true,
+                        "default": true
+                    }
+                },
+                "required": [
+                    "idSolicitud"
+                ]
+            },
+            "UpdateEvaluacionPracticanteDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "CreateEvaluacionPracticanteSolicitudDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "UpdateEvaluacionPracticanteSolicitudDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "CreatePreguntaLineaDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "UpdatePreguntaLineaDto": {
+                "type": "object",
+                "properties": {}
+            }
+        }
+    }
+}

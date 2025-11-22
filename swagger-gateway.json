@@ -1,0 +1,5165 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+        "/health": {
+            "get": {
+                "description": "Verifica el estado del Gateway y conexión con microservicios y bases de datos",
+                "operationId": "HealthController_check",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The Health Check is successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        },
+                                        "info": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "example": {},
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "details": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "The Health Check is not successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "info": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "example": {
+                                                "redis": {
+                                                    "status": "down",
+                                                    "message": "Could not connect"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "details": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                },
+                                                "redis": {
+                                                    "status": "down",
+                                                    "message": "Could not connect"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Health check completo",
+                "tags": [
+                    "health"
+                ]
+            }
+        },
+        "/health/ready": {
+            "get": {
+                "description": "Verifica si el Gateway está listo para recibir tráfico",
+                "operationId": "HealthController_ready",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The Health Check is successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        },
+                                        "info": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "example": {},
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "details": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "The Health Check is not successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "info": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "example": {
+                                                "redis": {
+                                                    "status": "down",
+                                                    "message": "Could not connect"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "details": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                },
+                                                "redis": {
+                                                    "status": "down",
+                                                    "message": "Could not connect"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Readiness check",
+                "tags": [
+                    "health"
+                ]
+            }
+        },
+        "/health/live": {
+            "get": {
+                "description": "Verifica si el Gateway está en ejecución",
+                "operationId": "HealthController_live",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Gateway activo"
+                    }
+                },
+                "summary": "Liveness check",
+                "tags": [
+                    "health"
+                ]
+            }
+        },
+        "/usuarios": {
+            "post": {
+                "description": "Registra un nuevo usuario en el sistema con roles asignados",
+                "operationId": "UsuariosController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUsuarioDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario creado exitosamente"
+                    },
+                    "400": {
+                        "description": "Datos de entrada inválidos"
+                    }
+                },
+                "summary": "Crear un nuevo usuario",
+                "tags": [
+                    "usuarios"
+                ]
+            },
+            "get": {
+                "description": "Obtiene la lista completa de usuarios con sus roles",
+                "operationId": "UsuariosController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de usuarios obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todos los usuarios",
+                "tags": [
+                    "usuarios"
+                ]
+            }
+        },
+        "/usuarios/{id}": {
+            "get": {
+                "description": "Busca un usuario específico por su UUID",
+                "operationId": "UsuariosController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del usuario",
+                        "schema": {
+                            "example": "550e8400-e29b-41d4-a716-446655440000",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario encontrado"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "summary": "Obtener usuario por ID",
+                "tags": [
+                    "usuarios"
+                ]
+            },
+            "patch": {
+                "description": "Actualiza los datos de un usuario existente",
+                "operationId": "UsuariosController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del usuario",
+                        "schema": {
+                            "example": "550e8400-e29b-41d4-a716-446655440000",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUsuarioDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario actualizado exitosamente"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "summary": "Actualizar usuario",
+                "tags": [
+                    "usuarios"
+                ]
+            },
+            "delete": {
+                "description": "Elimina un usuario del sistema",
+                "operationId": "UsuariosController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del usuario",
+                        "schema": {
+                            "example": "550e8400-e29b-41d4-a716-446655440000",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "summary": "Eliminar usuario",
+                "tags": [
+                    "usuarios"
+                ]
+            }
+        },
+        "/usuarios/email/{email}": {
+            "get": {
+                "description": "Busca un usuario utilizando su dirección de correo electrónico",
+                "operationId": "UsuariosController_findByEmail",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "required": true,
+                        "in": "path",
+                        "description": "Email del usuario",
+                        "schema": {
+                            "example": "juan.perez@upeu.edu.pe",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario encontrado"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "summary": "Buscar usuario por email",
+                "tags": [
+                    "usuarios"
+                ]
+            }
+        },
+        "/roles": {
+            "post": {
+                "description": "Registra un nuevo rol en el sistema",
+                "operationId": "RolesController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateRolDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rol creado exitosamente"
+                    },
+                    "400": {
+                        "description": "Datos de entrada inválidos"
+                    }
+                },
+                "summary": "Crear un nuevo rol",
+                "tags": [
+                    "roles"
+                ]
+            },
+            "get": {
+                "description": "Obtiene la lista completa de roles disponibles en el sistema",
+                "operationId": "RolesController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de roles obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todos los roles",
+                "tags": [
+                    "roles"
+                ]
+            }
+        },
+        "/roles/{id}": {
+            "get": {
+                "description": "Busca un rol específico por su UUID, incluyendo los usuarios asociados",
+                "operationId": "RolesController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del rol",
+                        "schema": {
+                            "example": "550e8400-e29b-41d4-a716-446655440000",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rol encontrado"
+                    },
+                    "404": {
+                        "description": "Rol no encontrado"
+                    }
+                },
+                "summary": "Obtener rol por ID",
+                "tags": [
+                    "roles"
+                ]
+            },
+            "patch": {
+                "description": "Actualiza la información de un rol",
+                "operationId": "RolesController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del rol",
+                        "schema": {
+                            "example": "550e8400-e29b-41d4-a716-446655440000",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRolDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rol actualizado exitosamente"
+                    },
+                    "404": {
+                        "description": "Rol no encontrado"
+                    }
+                },
+                "summary": "Actualizar rol",
+                "tags": [
+                    "roles"
+                ]
+            },
+            "delete": {
+                "description": "Elimina un rol del sistema",
+                "operationId": "RolesController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del rol",
+                        "schema": {
+                            "example": "550e8400-e29b-41d4-a716-446655440000",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rol eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Rol no encontrado"
+                    },
+                    "409": {
+                        "description": "No se puede eliminar el rol porque tiene usuarios asociados"
+                    }
+                },
+                "summary": "Eliminar rol",
+                "tags": [
+                    "roles"
+                ]
+            }
+        },
+        "/roles/{id}/privilegios": {
+            "post": {
+                "description": "Asigna uno o más privilegios a un rol específico",
+                "operationId": "RolesController_assignPrivilegios",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del rol",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssignPrivilegiosDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Privilegios asignados correctamente"
+                    },
+                    "404": {
+                        "description": "Rol no encontrado"
+                    }
+                },
+                "summary": "Asignar privilegios a un rol",
+                "tags": [
+                    "roles"
+                ]
+            },
+            "get": {
+                "description": "Lista todos los privilegios asignados a un rol",
+                "operationId": "RolesController_getPrivilegios",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del rol",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de privilegios del rol"
+                    },
+                    "404": {
+                        "description": "Rol no encontrado"
+                    }
+                },
+                "summary": "Obtener privilegios de un rol",
+                "tags": [
+                    "roles"
+                ]
+            }
+        },
+        "/roles/{id}/privilegios/{privilegioId}": {
+            "delete": {
+                "description": "Elimina la asignación de un privilegio específico de un rol",
+                "operationId": "RolesController_removePrivilegio",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del rol",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "privilegioId",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del privilegio a remover",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Privilegio removido del rol"
+                    },
+                    "404": {
+                        "description": "Rol o privilegio no encontrado"
+                    }
+                },
+                "summary": "Remover un privilegio de un rol",
+                "tags": [
+                    "roles"
+                ]
+            }
+        },
+        "/privilegios": {
+            "post": {
+                "operationId": "PrivilegiosController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreatePrivilegioDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Privilegio creado exitosamente"
+                    },
+                    "409": {
+                        "description": "El privilegio ya existe"
+                    }
+                },
+                "summary": "Crear un nuevo privilegio",
+                "tags": [
+                    "privilegios"
+                ]
+            },
+            "get": {
+                "operationId": "PrivilegiosController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de privilegios"
+                    }
+                },
+                "summary": "Obtener todos los privilegios",
+                "tags": [
+                    "privilegios"
+                ]
+            }
+        },
+        "/privilegios/{id}": {
+            "get": {
+                "operationId": "PrivilegiosController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del privilegio",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Privilegio encontrado"
+                    },
+                    "404": {
+                        "description": "Privilegio no encontrado"
+                    }
+                },
+                "summary": "Obtener un privilegio por ID",
+                "tags": [
+                    "privilegios"
+                ]
+            },
+            "patch": {
+                "operationId": "PrivilegiosController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del privilegio",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePrivilegioDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Privilegio actualizado"
+                    },
+                    "404": {
+                        "description": "Privilegio no encontrado"
+                    }
+                },
+                "summary": "Actualizar un privilegio",
+                "tags": [
+                    "privilegios"
+                ]
+            },
+            "delete": {
+                "operationId": "PrivilegiosController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del privilegio",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Privilegio eliminado"
+                    },
+                    "404": {
+                        "description": "Privilegio no encontrado"
+                    }
+                },
+                "summary": "Eliminar un privilegio",
+                "tags": [
+                    "privilegios"
+                ]
+            }
+        },
+        "/facultades": {
+            "post": {
+                "description": "Registra una nueva facultad en el sistema",
+                "operationId": "FacultadesController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateFacultadDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Facultad creada exitosamente"
+                    },
+                    "400": {
+                        "description": "Datos de entrada inválidos"
+                    },
+                    "409": {
+                        "description": "Ya existe una facultad con ese código"
+                    }
+                },
+                "summary": "Crear una nueva facultad",
+                "tags": [
+                    "facultades"
+                ]
+            },
+            "get": {
+                "description": "Obtiene la lista completa de facultades con el conteo de escuelas",
+                "operationId": "FacultadesController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de facultades obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las facultades",
+                "tags": [
+                    "facultades"
+                ]
+            }
+        },
+        "/facultades/{id}": {
+            "get": {
+                "description": "Busca una facultad específica por su UUID",
+                "operationId": "FacultadesController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la facultad",
+                        "schema": {
+                            "example": "550e8400-e29b-41d4-a716-446655440000",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Facultad encontrada"
+                    },
+                    "404": {
+                        "description": "Facultad no encontrada"
+                    }
+                },
+                "summary": "Obtener facultad por ID",
+                "tags": [
+                    "facultades"
+                ]
+            },
+            "patch": {
+                "description": "Actualiza los datos de una facultad existente",
+                "operationId": "FacultadesController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la facultad",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateFacultadDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Facultad actualizada exitosamente"
+                    },
+                    "404": {
+                        "description": "Facultad no encontrada"
+                    },
+                    "409": {
+                        "description": "Ya existe una facultad con ese código"
+                    }
+                },
+                "summary": "Actualizar facultad",
+                "tags": [
+                    "facultades"
+                ]
+            },
+            "delete": {
+                "description": "Elimina una facultad del sistema (solo si no tiene escuelas asociadas)",
+                "operationId": "FacultadesController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la facultad",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Facultad eliminada exitosamente"
+                    },
+                    "400": {
+                        "description": "No se puede eliminar la facultad porque tiene escuelas asociadas"
+                    },
+                    "404": {
+                        "description": "Facultad no encontrada"
+                    }
+                },
+                "summary": "Eliminar facultad",
+                "tags": [
+                    "facultades"
+                ]
+            }
+        },
+        "/escuelas": {
+            "post": {
+                "description": "Registra una nueva escuela profesional asociada a una facultad",
+                "operationId": "EscuelasController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEscuelaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Escuela creada exitosamente"
+                    },
+                    "400": {
+                        "description": "Datos inválidos o facultad no existe"
+                    },
+                    "409": {
+                        "description": "Ya existe una escuela con ese código"
+                    }
+                },
+                "summary": "Crear una nueva escuela",
+                "tags": [
+                    "escuelas"
+                ]
+            },
+            "get": {
+                "description": "Obtiene todas las escuelas con información de su facultad",
+                "operationId": "EscuelasController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de escuelas obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las escuelas",
+                "tags": [
+                    "escuelas"
+                ]
+            }
+        },
+        "/escuelas/{id}": {
+            "get": {
+                "description": "Busca una escuela específica por su UUID",
+                "operationId": "EscuelasController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Escuela encontrada"
+                    },
+                    "404": {
+                        "description": "Escuela no encontrada"
+                    }
+                },
+                "summary": "Obtener escuela por ID",
+                "tags": [
+                    "escuelas"
+                ]
+            },
+            "patch": {
+                "description": "Actualiza los datos de una escuela existente",
+                "operationId": "EscuelasController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEscuelaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Escuela actualizada exitosamente"
+                    },
+                    "404": {
+                        "description": "Escuela no encontrada"
+                    }
+                },
+                "summary": "Actualizar escuela",
+                "tags": [
+                    "escuelas"
+                ]
+            },
+            "delete": {
+                "description": "Elimina una escuela (solo si no tiene alumnos asociados)",
+                "operationId": "EscuelasController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Escuela eliminada exitosamente"
+                    },
+                    "400": {
+                        "description": "No se puede eliminar porque tiene alumnos asociados"
+                    },
+                    "404": {
+                        "description": "Escuela no encontrada"
+                    }
+                },
+                "summary": "Eliminar escuela",
+                "tags": [
+                    "escuelas"
+                ]
+            }
+        },
+        "/escuelas/facultad/{idFacultad}": {
+            "get": {
+                "description": "Obtiene todas las escuelas de una facultad específica",
+                "operationId": "EscuelasController_findByFacultad",
+                "parameters": [
+                    {
+                        "name": "idFacultad",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la facultad",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de escuelas obtenida"
+                    },
+                    "404": {
+                        "description": "Facultad no encontrada"
+                    }
+                },
+                "summary": "Listar escuelas por facultad",
+                "tags": [
+                    "escuelas"
+                ]
+            }
+        },
+        "/secretarias": {
+            "post": {
+                "description": "Registra una secretaria asociada a una escuela",
+                "operationId": "SecretariasController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateSecretariaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Secretaria creada exitosamente"
+                    },
+                    "400": {
+                        "description": "Datos inválidos o escuela no existe"
+                    }
+                },
+                "summary": "Crear una nueva secretaria",
+                "tags": [
+                    "secretarias"
+                ]
+            },
+            "get": {
+                "description": "Obtiene todas las secretarias con información de su escuela y facultad",
+                "operationId": "SecretariasController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de secretarias obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las secretarias",
+                "tags": [
+                    "secretarias"
+                ]
+            }
+        },
+        "/secretarias/{id}": {
+            "get": {
+                "description": "Busca una secretaria específica por su UUID",
+                "operationId": "SecretariasController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la secretaria",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Secretaria encontrada"
+                    },
+                    "404": {
+                        "description": "Secretaria no encontrada"
+                    }
+                },
+                "summary": "Obtener secretaria por ID",
+                "tags": [
+                    "secretarias"
+                ]
+            },
+            "patch": {
+                "description": "Actualiza los datos de una secretaria existente",
+                "operationId": "SecretariasController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la secretaria",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateSecretariaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Secretaria actualizada exitosamente"
+                    },
+                    "404": {
+                        "description": "Secretaria no encontrada"
+                    }
+                },
+                "summary": "Actualizar secretaria",
+                "tags": [
+                    "secretarias"
+                ]
+            },
+            "delete": {
+                "description": "Elimina una secretaria del sistema",
+                "operationId": "SecretariasController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la secretaria",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Secretaria eliminada exitosamente"
+                    },
+                    "404": {
+                        "description": "Secretaria no encontrada"
+                    }
+                },
+                "summary": "Eliminar secretaria",
+                "tags": [
+                    "secretarias"
+                ]
+            }
+        },
+        "/secretarias/escuela/{idEscuela}": {
+            "get": {
+                "description": "Obtiene todas las secretarias de una escuela específica",
+                "operationId": "SecretariasController_findByEscuela",
+                "parameters": [
+                    {
+                        "name": "idEscuela",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de secretarias obtenida"
+                    }
+                },
+                "summary": "Listar secretarias por escuela",
+                "tags": [
+                    "secretarias"
+                ]
+            }
+        },
+        "/alumnos": {
+            "post": {
+                "description": "Registra un alumno vinculado a un usuario y escuela",
+                "operationId": "AlumnosController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAlumnoDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Alumno creado exitosamente"
+                    },
+                    "400": {
+                        "description": "Datos inválidos, usuario o escuela no existe"
+                    },
+                    "409": {
+                        "description": "El código o usuario ya está registrado"
+                    }
+                },
+                "summary": "Crear un nuevo alumno",
+                "tags": [
+                    "alumnos"
+                ]
+            },
+            "get": {
+                "description": "Obtiene todos los alumnos con información de usuario y escuela",
+                "operationId": "AlumnosController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de alumnos obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todos los alumnos",
+                "tags": [
+                    "alumnos"
+                ]
+            }
+        },
+        "/alumnos/{id}": {
+            "get": {
+                "description": "Busca un alumno específico por su UUID",
+                "operationId": "AlumnosController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del alumno",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Alumno encontrado"
+                    },
+                    "404": {
+                        "description": "Alumno no encontrado"
+                    }
+                },
+                "summary": "Obtener alumno por ID",
+                "tags": [
+                    "alumnos"
+                ]
+            },
+            "patch": {
+                "description": "Actualiza los datos de un alumno existente",
+                "operationId": "AlumnosController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del alumno",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAlumnoDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Alumno actualizado exitosamente"
+                    },
+                    "404": {
+                        "description": "Alumno no encontrado"
+                    }
+                },
+                "summary": "Actualizar alumno",
+                "tags": [
+                    "alumnos"
+                ]
+            },
+            "delete": {
+                "description": "Elimina un alumno del sistema",
+                "operationId": "AlumnosController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del alumno",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Alumno eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Alumno no encontrado"
+                    }
+                },
+                "summary": "Eliminar alumno",
+                "tags": [
+                    "alumnos"
+                ]
+            }
+        },
+        "/alumnos/usuario/{usuarioId}": {
+            "get": {
+                "description": "Obtiene el registro de alumno asociado a un usuario",
+                "operationId": "AlumnosController_findByUsuario",
+                "parameters": [
+                    {
+                        "name": "usuarioId",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del usuario",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Alumno encontrado"
+                    },
+                    "404": {
+                        "description": "Alumno no encontrado"
+                    }
+                },
+                "summary": "Buscar alumno por usuario",
+                "tags": [
+                    "alumnos"
+                ]
+            }
+        },
+        "/alumnos/codigo/{codigo}": {
+            "get": {
+                "description": "Busca un alumno por su código de matrícula",
+                "operationId": "AlumnosController_findByCodigo",
+                "parameters": [
+                    {
+                        "name": "codigo",
+                        "required": true,
+                        "in": "path",
+                        "description": "Código del alumno",
+                        "schema": {
+                            "example": "2021001234",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Alumno encontrado"
+                    },
+                    "404": {
+                        "description": "Alumno no encontrado"
+                    }
+                },
+                "summary": "Buscar alumno por código",
+                "tags": [
+                    "alumnos"
+                ]
+            }
+        },
+        "/alumnos/escuela/{idEscuela}": {
+            "get": {
+                "description": "Obtiene todos los alumnos de una escuela específica",
+                "operationId": "AlumnosController_findByEscuela",
+                "parameters": [
+                    {
+                        "name": "idEscuela",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de alumnos obtenida"
+                    }
+                },
+                "summary": "Listar alumnos por escuela",
+                "tags": [
+                    "alumnos"
+                ]
+            }
+        },
+        "/supervisores": {
+            "post": {
+                "operationId": "SupervisoresController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateSupervisorDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Supervisor creado exitosamente"
+                    }
+                },
+                "summary": "Crear un nuevo supervisor",
+                "tags": [
+                    "supervisores"
+                ]
+            },
+            "get": {
+                "operationId": "SupervisoresController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de supervisores obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todos los supervisores",
+                "tags": [
+                    "supervisores"
+                ]
+            }
+        },
+        "/supervisores/{id}": {
+            "get": {
+                "operationId": "SupervisoresController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del supervisor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Supervisor encontrado"
+                    },
+                    "404": {
+                        "description": "Supervisor no encontrado"
+                    }
+                },
+                "summary": "Obtener supervisor por ID",
+                "tags": [
+                    "supervisores"
+                ]
+            },
+            "patch": {
+                "operationId": "SupervisoresController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del supervisor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Actualizar supervisor",
+                "tags": [
+                    "supervisores"
+                ]
+            },
+            "delete": {
+                "operationId": "SupervisoresController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del supervisor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Eliminar supervisor",
+                "tags": [
+                    "supervisores"
+                ]
+            }
+        },
+        "/supervisores/usuario/{usuarioId}": {
+            "get": {
+                "operationId": "SupervisoresController_findByUsuario",
+                "parameters": [
+                    {
+                        "name": "usuarioId",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del usuario",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Buscar supervisor por usuario",
+                "tags": [
+                    "supervisores"
+                ]
+            }
+        },
+        "/supervisores/escuela/{idEscuela}": {
+            "get": {
+                "operationId": "SupervisoresController_findByEscuela",
+                "parameters": [
+                    {
+                        "name": "idEscuela",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Buscar supervisores por escuela",
+                "tags": [
+                    "supervisores"
+                ]
+            }
+        },
+        "/coordinadores": {
+            "post": {
+                "operationId": "CoordinadoresController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCoordinadorDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Coordinador creado exitosamente"
+                    }
+                },
+                "summary": "Crear un nuevo coordinador",
+                "tags": [
+                    "coordinadores"
+                ]
+            },
+            "get": {
+                "operationId": "CoordinadoresController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de coordinadores obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todos los coordinadores",
+                "tags": [
+                    "coordinadores"
+                ]
+            }
+        },
+        "/coordinadores/{id}": {
+            "get": {
+                "operationId": "CoordinadoresController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del coordinador",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Coordinador encontrado"
+                    },
+                    "404": {
+                        "description": "Coordinador no encontrado"
+                    }
+                },
+                "summary": "Obtener coordinador por ID",
+                "tags": [
+                    "coordinadores"
+                ]
+            },
+            "patch": {
+                "operationId": "CoordinadoresController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del coordinador",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Actualizar coordinador",
+                "tags": [
+                    "coordinadores"
+                ]
+            },
+            "delete": {
+                "operationId": "CoordinadoresController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del coordinador",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Eliminar coordinador",
+                "tags": [
+                    "coordinadores"
+                ]
+            }
+        },
+        "/lineas-facultad": {
+            "post": {
+                "operationId": "LineasFacultadController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateLineaFacultadDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Línea creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva línea de facultad",
+                "tags": [
+                    "lineas-facultad"
+                ]
+            },
+            "get": {
+                "operationId": "LineasFacultadController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de líneas obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las líneas de facultad",
+                "tags": [
+                    "lineas-facultad"
+                ]
+            }
+        },
+        "/lineas-facultad/{id}": {
+            "get": {
+                "operationId": "LineasFacultadController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la línea",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Línea encontrada"
+                    },
+                    "404": {
+                        "description": "Línea no encontrada"
+                    }
+                },
+                "summary": "Obtener línea por ID",
+                "tags": [
+                    "lineas-facultad"
+                ]
+            },
+            "patch": {
+                "operationId": "LineasFacultadController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la línea",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Actualizar línea",
+                "tags": [
+                    "lineas-facultad"
+                ]
+            },
+            "delete": {
+                "operationId": "LineasFacultadController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la línea",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Eliminar línea",
+                "tags": [
+                    "lineas-facultad"
+                ]
+            }
+        },
+        "/lineas-facultad/escuela/{idEscuela}": {
+            "get": {
+                "operationId": "LineasFacultadController_findByEscuela",
+                "parameters": [
+                    {
+                        "name": "idEscuela",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Buscar líneas por escuela",
+                "tags": [
+                    "lineas-facultad"
+                ]
+            }
+        },
+        "/empresas": {
+            "post": {
+                "description": "Registra una nueva empresa para prácticas profesionales",
+                "operationId": "EmpresasController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEmpresaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Empresa creada exitosamente"
+                    },
+                    "409": {
+                        "description": "Ya existe una empresa con ese RUC"
+                    }
+                },
+                "summary": "Crear nueva empresa",
+                "tags": [
+                    "empresas"
+                ]
+            },
+            "get": {
+                "description": "Obtiene la lista completa de empresas registradas",
+                "operationId": "EmpresasController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de empresas obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las empresas",
+                "tags": [
+                    "empresas"
+                ]
+            }
+        },
+        "/empresas/{id}": {
+            "get": {
+                "description": "Busca una empresa específica por su UUID",
+                "operationId": "EmpresasController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la empresa",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Empresa encontrada"
+                    },
+                    "404": {
+                        "description": "Empresa no encontrada"
+                    }
+                },
+                "summary": "Obtener empresa por ID",
+                "tags": [
+                    "empresas"
+                ]
+            },
+            "patch": {
+                "description": "Actualiza los datos de una empresa existente",
+                "operationId": "EmpresasController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la empresa",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEmpresaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Empresa actualizada exitosamente"
+                    },
+                    "404": {
+                        "description": "Empresa no encontrada"
+                    }
+                },
+                "summary": "Actualizar empresa",
+                "tags": [
+                    "empresas"
+                ]
+            },
+            "delete": {
+                "description": "Elimina una empresa (solo si no tiene cartas de presentación asociadas)",
+                "operationId": "EmpresasController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la empresa",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Empresa eliminada exitosamente"
+                    },
+                    "400": {
+                        "description": "No se puede eliminar porque tiene cartas asociadas"
+                    },
+                    "404": {
+                        "description": "Empresa no encontrada"
+                    }
+                },
+                "summary": "Eliminar empresa",
+                "tags": [
+                    "empresas"
+                ]
+            }
+        },
+        "/empresas/ruc/{ruc}": {
+            "get": {
+                "description": "Busca una empresa usando su número de RUC",
+                "operationId": "EmpresasController_findByRuc",
+                "parameters": [
+                    {
+                        "name": "ruc",
+                        "required": true,
+                        "in": "path",
+                        "description": "RUC de la empresa (11 dígitos)",
+                        "schema": {
+                            "example": "20123456789",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Empresa encontrada"
+                    },
+                    "404": {
+                        "description": "Empresa no encontrada"
+                    }
+                },
+                "summary": "Buscar empresa por RUC",
+                "tags": [
+                    "empresas"
+                ]
+            }
+        },
+        "/empresas/sector/{sector}": {
+            "get": {
+                "description": "Obtiene empresas de un sector económico específico",
+                "operationId": "EmpresasController_findBySector",
+                "parameters": [
+                    {
+                        "name": "sector",
+                        "required": true,
+                        "in": "path",
+                        "description": "Sector económico",
+                        "schema": {
+                            "example": "Tecnología",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de empresas obtenida"
+                    }
+                },
+                "summary": "Buscar empresas por sector",
+                "tags": [
+                    "empresas"
+                ]
+            }
+        },
+        "/cartas": {
+            "post": {
+                "description": "Crea una nueva solicitud de carta de presentación",
+                "operationId": "CartasPresentacionController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCartaPresentacionDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Carta creada exitosamente"
+                    },
+                    "400": {
+                        "description": "Alumno, empresa o secretaria no existe"
+                    }
+                },
+                "summary": "Crear carta de presentación",
+                "tags": [
+                    "cartas"
+                ]
+            },
+            "get": {
+                "description": "Obtiene todas las cartas de presentación registradas",
+                "operationId": "CartasPresentacionController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de cartas obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las cartas",
+                "tags": [
+                    "cartas"
+                ]
+            }
+        },
+        "/cartas/{id}": {
+            "get": {
+                "description": "Busca una carta específica por su UUID",
+                "operationId": "CartasPresentacionController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la carta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Carta encontrada"
+                    },
+                    "404": {
+                        "description": "Carta no encontrada"
+                    }
+                },
+                "summary": "Obtener carta por ID",
+                "tags": [
+                    "cartas"
+                ]
+            },
+            "patch": {
+                "description": "Actualiza los datos de una carta existente",
+                "operationId": "CartasPresentacionController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la carta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCartaPresentacionDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Carta actualizada exitosamente"
+                    },
+                    "404": {
+                        "description": "Carta no encontrada"
+                    }
+                },
+                "summary": "Actualizar carta",
+                "tags": [
+                    "cartas"
+                ]
+            },
+            "delete": {
+                "description": "Elimina una carta (solo en estado draft o cancelled)",
+                "operationId": "CartasPresentacionController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la carta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Carta eliminada exitosamente"
+                    },
+                    "400": {
+                        "description": "Solo se pueden eliminar cartas en draft o cancelled"
+                    }
+                },
+                "summary": "Eliminar carta",
+                "tags": [
+                    "cartas"
+                ]
+            }
+        },
+        "/cartas/alumno/{idAlumno}": {
+            "get": {
+                "description": "Obtiene todas las cartas de un alumno específico",
+                "operationId": "CartasPresentacionController_findByAlumno",
+                "parameters": [
+                    {
+                        "name": "idAlumno",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del alumno",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de cartas del alumno"
+                    }
+                },
+                "summary": "Listar cartas por alumno",
+                "tags": [
+                    "cartas"
+                ]
+            }
+        },
+        "/cartas/empresa/{idEmpresa}": {
+            "get": {
+                "description": "Obtiene todas las cartas dirigidas a una empresa",
+                "operationId": "CartasPresentacionController_findByEmpresa",
+                "parameters": [
+                    {
+                        "name": "idEmpresa",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la empresa",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de cartas de la empresa"
+                    }
+                },
+                "summary": "Listar cartas por empresa",
+                "tags": [
+                    "cartas"
+                ]
+            }
+        },
+        "/cartas/estado/{estado}": {
+            "get": {
+                "description": "Obtiene cartas filtradas por su estado actual",
+                "operationId": "CartasPresentacionController_findByEstado",
+                "parameters": [
+                    {
+                        "name": "estado",
+                        "required": true,
+                        "in": "path",
+                        "description": "Estado de la carta",
+                        "schema": {
+                            "enum": [
+                                "draft",
+                                "submitted",
+                                "reviewing",
+                                "approved",
+                                "rejected",
+                                "cancelled"
+                            ],
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de cartas filtradas"
+                    }
+                },
+                "summary": "Listar cartas por estado",
+                "tags": [
+                    "cartas"
+                ]
+            }
+        },
+        "/cartas/{id}/enviar": {
+            "put": {
+                "description": "Cambia el estado de la carta a \"enviada\"",
+                "operationId": "CartasPresentacionController_submit",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la carta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Carta enviada exitosamente"
+                    },
+                    "400": {
+                        "description": "La carta ya fue enviada o estado inválido"
+                    }
+                },
+                "summary": "Enviar carta",
+                "tags": [
+                    "cartas"
+                ]
+            }
+        },
+        "/cartas/{id}/revisar": {
+            "put": {
+                "description": "Cambia el estado de la carta a \"en revisión\"",
+                "operationId": "CartasPresentacionController_review",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la carta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Carta marcada en revisión"
+                    }
+                },
+                "summary": "Marcar en revisión",
+                "tags": [
+                    "cartas"
+                ]
+            }
+        },
+        "/cartas/{id}/aprobar": {
+            "put": {
+                "description": "Aprueba una carta que está en revisión",
+                "operationId": "CartasPresentacionController_approve",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la carta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Carta aprobada exitosamente"
+                    }
+                },
+                "summary": "Aprobar carta",
+                "tags": [
+                    "cartas"
+                ]
+            }
+        },
+        "/cartas/{id}/rechazar": {
+            "put": {
+                "description": "Rechaza una carta con un motivo",
+                "operationId": "CartasPresentacionController_reject",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la carta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "motivoRechazo": {
+                                        "type": "string",
+                                        "example": "Falta documentación"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Carta rechazada"
+                    }
+                },
+                "summary": "Rechazar carta",
+                "tags": [
+                    "cartas"
+                ]
+            }
+        },
+        "/cartas/{id}/cancelar": {
+            "put": {
+                "description": "Cancela una carta de presentación",
+                "operationId": "CartasPresentacionController_cancel",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la carta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Carta cancelada"
+                    },
+                    "400": {
+                        "description": "No se puede cancelar una carta aprobada"
+                    }
+                },
+                "summary": "Cancelar carta",
+                "tags": [
+                    "cartas"
+                ]
+            }
+        },
+        "/solicitudes-ppp": {
+            "post": {
+                "operationId": "SolicitudesPppController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateSolicitudPppDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Solicitud creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva solicitud de PPP",
+                "tags": [
+                    "solicitudes-ppp"
+                ]
+            },
+            "get": {
+                "operationId": "SolicitudesPppController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de solicitudes obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las solicitudes de PPP",
+                "tags": [
+                    "solicitudes-ppp"
+                ]
+            }
+        },
+        "/solicitudes-ppp/{id}": {
+            "get": {
+                "operationId": "SolicitudesPppController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la solicitud",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Solicitud encontrada"
+                    },
+                    "404": {
+                        "description": "Solicitud no encontrada"
+                    }
+                },
+                "summary": "Obtener solicitud por ID",
+                "tags": [
+                    "solicitudes-ppp"
+                ]
+            },
+            "patch": {
+                "operationId": "SolicitudesPppController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la solicitud",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Actualizar solicitud",
+                "tags": [
+                    "solicitudes-ppp"
+                ]
+            },
+            "delete": {
+                "operationId": "SolicitudesPppController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la solicitud",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Eliminar solicitud",
+                "tags": [
+                    "solicitudes-ppp"
+                ]
+            }
+        },
+        "/solicitudes-ppp/alumno/{idAlumno}": {
+            "get": {
+                "operationId": "SolicitudesPppController_findByAlumno",
+                "parameters": [
+                    {
+                        "name": "idAlumno",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del alumno",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Buscar solicitudes por alumno",
+                "tags": [
+                    "solicitudes-ppp"
+                ]
+            }
+        },
+        "/solicitudes-ppp/supervisor/{idSupervisor}": {
+            "get": {
+                "operationId": "SolicitudesPppController_findBySupervisor",
+                "parameters": [
+                    {
+                        "name": "idSupervisor",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del supervisor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Buscar solicitudes por supervisor",
+                "tags": [
+                    "solicitudes-ppp"
+                ]
+            }
+        },
+        "/solicitudes-ppp/estado/{estado}": {
+            "get": {
+                "operationId": "SolicitudesPppController_findByEstado",
+                "parameters": [
+                    {
+                        "name": "estado",
+                        "required": true,
+                        "in": "path",
+                        "description": "Estado de la solicitud",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Buscar solicitudes por estado",
+                "tags": [
+                    "solicitudes-ppp"
+                ]
+            }
+        },
+        "/reuniones": {
+            "post": {
+                "operationId": "ReunionesController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateReunionDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reunión creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva reunión",
+                "tags": [
+                    "reuniones"
+                ]
+            },
+            "get": {
+                "operationId": "ReunionesController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de reuniones obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las reuniones",
+                "tags": [
+                    "reuniones"
+                ]
+            }
+        },
+        "/reuniones/{id}": {
+            "get": {
+                "operationId": "ReunionesController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la reunión",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reunión encontrada"
+                    },
+                    "404": {
+                        "description": "Reunión no encontrada"
+                    }
+                },
+                "summary": "Obtener reunión por ID",
+                "tags": [
+                    "reuniones"
+                ]
+            },
+            "patch": {
+                "operationId": "ReunionesController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la reunión",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Actualizar reunión",
+                "tags": [
+                    "reuniones"
+                ]
+            },
+            "delete": {
+                "operationId": "ReunionesController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la reunión",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Eliminar reunión",
+                "tags": [
+                    "reuniones"
+                ]
+            }
+        },
+        "/reuniones/solicitud/{idSolicitud}": {
+            "get": {
+                "operationId": "ReunionesController_findBySolicitud",
+                "parameters": [
+                    {
+                        "name": "idSolicitud",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la solicitud",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Buscar reuniones por solicitud",
+                "tags": [
+                    "reuniones"
+                ]
+            }
+        },
+        "/reuniones/estado/{estado}": {
+            "get": {
+                "operationId": "ReunionesController_findByEstado",
+                "parameters": [
+                    {
+                        "name": "estado",
+                        "required": true,
+                        "in": "path",
+                        "description": "Estado de la reunión",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Buscar reuniones por estado",
+                "tags": [
+                    "reuniones"
+                ]
+            }
+        },
+        "/reuniones/estadisticas/por-estado": {
+            "get": {
+                "operationId": "ReunionesController_countByEstado",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Contar reuniones por estado",
+                "tags": [
+                    "reuniones"
+                ]
+            }
+        },
+        "/tipo-documentos": {
+            "post": {
+                "description": "Registra un nuevo tipo de documento",
+                "operationId": "TipoDocumentosController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTipoDocumentoDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tipo de documento creado exitosamente"
+                    }
+                },
+                "summary": "Crear tipo de documento",
+                "tags": [
+                    "tipo-documentos"
+                ]
+            },
+            "get": {
+                "description": "Obtiene todos los tipos de documentos registrados",
+                "operationId": "TipoDocumentosController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar tipos de documentos",
+                "tags": [
+                    "tipo-documentos"
+                ]
+            }
+        },
+        "/tipo-documentos/{id}": {
+            "get": {
+                "description": "Busca un tipo de documento por su UUID",
+                "operationId": "TipoDocumentosController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del tipo de documento",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tipo de documento encontrado"
+                    },
+                    "404": {
+                        "description": "Tipo de documento no encontrado"
+                    }
+                },
+                "summary": "Obtener tipo de documento por ID",
+                "tags": [
+                    "tipo-documentos"
+                ]
+            },
+            "patch": {
+                "description": "Modifica los datos de un tipo de documento existente",
+                "operationId": "TipoDocumentosController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del tipo de documento",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTipoDocumentoDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tipo de documento actualizado exitosamente"
+                    },
+                    "404": {
+                        "description": "Tipo de documento no encontrado"
+                    }
+                },
+                "summary": "Actualizar tipo de documento",
+                "tags": [
+                    "tipo-documentos"
+                ]
+            },
+            "delete": {
+                "description": "Elimina un tipo de documento del sistema",
+                "operationId": "TipoDocumentosController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del tipo de documento",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tipo de documento eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Tipo de documento no encontrado"
+                    }
+                },
+                "summary": "Eliminar tipo de documento",
+                "tags": [
+                    "tipo-documentos"
+                ]
+            }
+        },
+        "/documentos": {
+            "post": {
+                "description": "Registra un nuevo documento en el sistema",
+                "operationId": "DocumentosController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateDocumentoDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Documento creado exitosamente"
+                    }
+                },
+                "summary": "Crear documento",
+                "tags": [
+                    "documentos"
+                ]
+            },
+            "get": {
+                "description": "Obtiene todos los documentos registrados",
+                "operationId": "DocumentosController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar documentos",
+                "tags": [
+                    "documentos"
+                ]
+            }
+        },
+        "/documentos/{id}": {
+            "get": {
+                "description": "Busca un documento por su UUID",
+                "operationId": "DocumentosController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del documento",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Documento encontrado"
+                    },
+                    "404": {
+                        "description": "Documento no encontrado"
+                    }
+                },
+                "summary": "Obtener documento por ID",
+                "tags": [
+                    "documentos"
+                ]
+            },
+            "patch": {
+                "description": "Modifica los datos de un documento existente",
+                "operationId": "DocumentosController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del documento",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDocumentoDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Documento actualizado exitosamente"
+                    },
+                    "404": {
+                        "description": "Documento no encontrado"
+                    }
+                },
+                "summary": "Actualizar documento",
+                "tags": [
+                    "documentos"
+                ]
+            },
+            "delete": {
+                "description": "Elimina un documento del sistema",
+                "operationId": "DocumentosController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del documento",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Documento eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Documento no encontrado"
+                    }
+                },
+                "summary": "Eliminar documento",
+                "tags": [
+                    "documentos"
+                ]
+            }
+        },
+        "/documentos/tipo/{idTipoDocumento}": {
+            "get": {
+                "description": "Obtiene documentos filtrados por tipo de documento",
+                "operationId": "DocumentosController_findByTipo",
+                "parameters": [
+                    {
+                        "name": "idTipoDocumento",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del tipo de documento",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de documentos obtenida"
+                    }
+                },
+                "summary": "Buscar documentos por tipo",
+                "tags": [
+                    "documentos"
+                ]
+            }
+        },
+        "/documentos/subido-por/{subidoPor}": {
+            "get": {
+                "description": "Obtiene documentos filtrados por el usuario que los subió",
+                "operationId": "DocumentosController_findBySubidoPor",
+                "parameters": [
+                    {
+                        "name": "subidoPor",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del usuario",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de documentos obtenida"
+                    }
+                },
+                "summary": "Buscar documentos por usuario que subió",
+                "tags": [
+                    "documentos"
+                ]
+            }
+        },
+        "/documentos/generado-por/{generadoPor}": {
+            "get": {
+                "description": "Obtiene documentos filtrados por el usuario que los generó",
+                "operationId": "DocumentosController_findByGeneradoPor",
+                "parameters": [
+                    {
+                        "name": "generadoPor",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del usuario",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de documentos obtenida"
+                    }
+                },
+                "summary": "Buscar documentos por usuario generador",
+                "tags": [
+                    "documentos"
+                ]
+            }
+        },
+        "/sunat/consultar-ruc": {
+            "get": {
+                "operationId": "SunatController_consultarRuc",
+                "parameters": [
+                    {
+                        "name": "ruc",
+                        "required": true,
+                        "in": "query",
+                        "description": "Número de RUC de 11 dígitos",
+                        "schema": {
+                            "example": "20100047218",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Información obtenida exitosamente"
+                    },
+                    "400": {
+                        "description": "RUC inválido"
+                    },
+                    "404": {
+                        "description": "RUC no encontrado"
+                    }
+                },
+                "summary": "Consultar información de empresa por RUC en SUNAT",
+                "tags": [
+                    "sunat"
+                ]
+            }
+        },
+        "/preguntas": {
+            "post": {
+                "operationId": "PreguntasController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreatePreguntaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pregunta creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva pregunta",
+                "tags": [
+                    "preguntas"
+                ]
+            },
+            "get": {
+                "operationId": "PreguntasController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de preguntas obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las preguntas",
+                "tags": [
+                    "preguntas"
+                ]
+            }
+        },
+        "/preguntas/activas": {
+            "get": {
+                "operationId": "PreguntasController_findAllActivas",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de preguntas activas"
+                    }
+                },
+                "summary": "Listar preguntas activas",
+                "tags": [
+                    "preguntas"
+                ]
+            }
+        },
+        "/preguntas/{id}": {
+            "get": {
+                "operationId": "PreguntasController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la pregunta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pregunta encontrada"
+                    },
+                    "404": {
+                        "description": "Pregunta no encontrada"
+                    }
+                },
+                "summary": "Obtener pregunta por ID",
+                "tags": [
+                    "preguntas"
+                ]
+            },
+            "patch": {
+                "operationId": "PreguntasController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la pregunta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Actualizar pregunta",
+                "tags": [
+                    "preguntas"
+                ]
+            },
+            "delete": {
+                "operationId": "PreguntasController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la pregunta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Eliminar pregunta",
+                "tags": [
+                    "preguntas"
+                ]
+            }
+        },
+        "/pregunta-linea": {
+            "post": {
+                "operationId": "PreguntaLineaController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreatePreguntaLineaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Asignación creada exitosamente"
+                    }
+                },
+                "summary": "Asignar pregunta a línea de facultad",
+                "tags": [
+                    "pregunta-linea"
+                ]
+            },
+            "get": {
+                "operationId": "PreguntaLineaController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las asignaciones pregunta-línea",
+                "tags": [
+                    "pregunta-linea"
+                ]
+            }
+        },
+        "/pregunta-linea/linea/{idLinea}": {
+            "get": {
+                "operationId": "PreguntaLineaController_findByLinea",
+                "parameters": [
+                    {
+                        "name": "idLinea",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la línea de facultad",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Obtener preguntas de una línea",
+                "tags": [
+                    "pregunta-linea"
+                ]
+            }
+        },
+        "/pregunta-linea/{id}": {
+            "delete": {
+                "operationId": "PreguntaLineaController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la asignación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Eliminar asignación pregunta-línea",
+                "tags": [
+                    "pregunta-linea"
+                ]
+            }
+        },
+        "/evaluacion-pregunta": {
+            "post": {
+                "operationId": "EvaluacionPreguntaController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEvaluacionPreguntaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva respuesta de evaluación",
+                "tags": [
+                    "evaluacion-pregunta"
+                ]
+            },
+            "get": {
+                "operationId": "EvaluacionPreguntaController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las respuestas de evaluación",
+                "tags": [
+                    "evaluacion-pregunta"
+                ]
+            }
+        },
+        "/evaluacion-pregunta/evaluacion-supervisor/{idEvaluacion}": {
+            "get": {
+                "operationId": "EvaluacionPreguntaController_findByEvaluacionSupervisor",
+                "parameters": [
+                    {
+                        "name": "idEvaluacion",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Obtener respuestas de una evaluación de supervisor",
+                "tags": [
+                    "evaluacion-pregunta"
+                ]
+            }
+        },
+        "/evaluacion-pregunta/{id}": {
+            "patch": {
+                "operationId": "EvaluacionPreguntaController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la respuesta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Actualizar respuesta",
+                "tags": [
+                    "evaluacion-pregunta"
+                ]
+            },
+            "delete": {
+                "operationId": "EvaluacionPreguntaController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la respuesta",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Eliminar respuesta",
+                "tags": [
+                    "evaluacion-pregunta"
+                ]
+            }
+        },
+        "/evaluacion-supervisor": {
+            "post": {
+                "operationId": "EvaluacionSupervisorController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEvaluacionSupervisorDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Evaluación creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva evaluación de supervisor",
+                "tags": [
+                    "evaluacion-supervisor"
+                ]
+            },
+            "get": {
+                "operationId": "EvaluacionSupervisorController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las evaluaciones de supervisor",
+                "tags": [
+                    "evaluacion-supervisor"
+                ]
+            }
+        },
+        "/evaluacion-supervisor/{id}": {
+            "get": {
+                "operationId": "EvaluacionSupervisorController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Obtener evaluación por ID",
+                "tags": [
+                    "evaluacion-supervisor"
+                ]
+            },
+            "patch": {
+                "operationId": "EvaluacionSupervisorController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Actualizar evaluación de supervisor",
+                "tags": [
+                    "evaluacion-supervisor"
+                ]
+            },
+            "delete": {
+                "operationId": "EvaluacionSupervisorController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Eliminar evaluación",
+                "tags": [
+                    "evaluacion-supervisor"
+                ]
+            }
+        },
+        "/evaluacion-supervisor/solicitud/{idSolicitud}": {
+            "get": {
+                "operationId": "EvaluacionSupervisorController_findBySolicitud",
+                "parameters": [
+                    {
+                        "name": "idSolicitud",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la solicitud",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Obtener evaluaciones por solicitud PPP",
+                "tags": [
+                    "evaluacion-supervisor"
+                ]
+            }
+        },
+        "/evaluacion-practicante": {
+            "post": {
+                "operationId": "EvaluacionPracticanteController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEvaluacionPracticanteDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Evaluación creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva evaluación de practicante",
+                "tags": [
+                    "evaluacion-practicante"
+                ]
+            },
+            "get": {
+                "operationId": "EvaluacionPracticanteController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las evaluaciones de practicante",
+                "tags": [
+                    "evaluacion-practicante"
+                ]
+            }
+        },
+        "/evaluacion-practicante/{id}": {
+            "get": {
+                "operationId": "EvaluacionPracticanteController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Obtener evaluación por ID",
+                "tags": [
+                    "evaluacion-practicante"
+                ]
+            },
+            "patch": {
+                "operationId": "EvaluacionPracticanteController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Actualizar evaluación de practicante",
+                "tags": [
+                    "evaluacion-practicante"
+                ]
+            },
+            "delete": {
+                "operationId": "EvaluacionPracticanteController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la evaluación",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Eliminar evaluación",
+                "tags": [
+                    "evaluacion-practicante"
+                ]
+            }
+        },
+        "/evaluacion-practicante/solicitud/{idSolicitud}": {
+            "get": {
+                "operationId": "EvaluacionPracticanteController_findBySolicitud",
+                "parameters": [
+                    {
+                        "name": "idSolicitud",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la solicitud",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Obtener evaluaciones por solicitud PPP",
+                "tags": [
+                    "evaluacion-practicante"
+                ]
+            }
+        },
+        "/evaluacion-practicante-solicitud": {
+            "post": {
+                "operationId": "EvaluacionPracticanteSolicitudController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEvaluacionPracticanteSolicitudDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Solicitud creada exitosamente"
+                    }
+                },
+                "summary": "Crear solicitud de evaluación de practicante",
+                "tags": [
+                    "evaluacion-practicante-solicitud"
+                ]
+            },
+            "get": {
+                "operationId": "EvaluacionPracticanteSolicitudController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las solicitudes de evaluación",
+                "tags": [
+                    "evaluacion-practicante-solicitud"
+                ]
+            }
+        },
+        "/evaluacion-practicante-solicitud/{id}": {
+            "get": {
+                "operationId": "EvaluacionPracticanteSolicitudController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la solicitud",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Obtener solicitud por ID",
+                "tags": [
+                    "evaluacion-practicante-solicitud"
+                ]
+            },
+            "patch": {
+                "operationId": "EvaluacionPracticanteSolicitudController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la solicitud",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Actualizar solicitud de evaluación",
+                "tags": [
+                    "evaluacion-practicante-solicitud"
+                ]
+            },
+            "delete": {
+                "operationId": "EvaluacionPracticanteSolicitudController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la solicitud",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Eliminar solicitud",
+                "tags": [
+                    "evaluacion-practicante-solicitud"
+                ]
+            }
+        },
+        "/evaluacion-practicante-solicitud/solicitud-ppp/{idSolicitudPpp}": {
+            "get": {
+                "operationId": "EvaluacionPracticanteSolicitudController_findBySolicitudPpp",
+                "parameters": [
+                    {
+                        "name": "idSolicitudPpp",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la solicitud PPP",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "summary": "Obtener solicitudes por solicitud PPP",
+                "tags": [
+                    "evaluacion-practicante-solicitud"
+                ]
+            }
+        },
+        "/dimension-transversal": {
+            "post": {
+                "operationId": "DimensionTransversalController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateDimensionTransversalDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Dimensión transversal creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva dimensión transversal",
+                "tags": [
+                    "dimension-transversal"
+                ]
+            },
+            "get": {
+                "operationId": "DimensionTransversalController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de dimensiones transversales obtenida exitosamente"
+                    }
+                },
+                "summary": "Listar todas las dimensiones transversales",
+                "tags": [
+                    "dimension-transversal"
+                ]
+            }
+        },
+        "/dimension-transversal/activas": {
+            "get": {
+                "operationId": "DimensionTransversalController_findAllActivas",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de dimensiones transversales activas"
+                    }
+                },
+                "summary": "Listar dimensiones transversales activas",
+                "tags": [
+                    "dimension-transversal"
+                ]
+            }
+        },
+        "/dimension-transversal/{id}": {
+            "get": {
+                "operationId": "DimensionTransversalController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la dimensión transversal",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dimensión transversal encontrada"
+                    },
+                    "404": {
+                        "description": "Dimensión transversal no encontrada"
+                    }
+                },
+                "summary": "Obtener dimensión transversal por ID",
+                "tags": [
+                    "dimension-transversal"
+                ]
+            },
+            "patch": {
+                "operationId": "DimensionTransversalController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la dimensión transversal",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dimensión transversal actualizada exitosamente"
+                    },
+                    "404": {
+                        "description": "Dimensión transversal no encontrada"
+                    }
+                },
+                "summary": "Actualizar dimensión transversal",
+                "tags": [
+                    "dimension-transversal"
+                ]
+            },
+            "delete": {
+                "operationId": "DimensionTransversalController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la dimensión transversal",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dimensión transversal eliminada exitosamente"
+                    },
+                    "404": {
+                        "description": "Dimensión transversal no encontrada"
+                    }
+                },
+                "summary": "Eliminar dimensión transversal",
+                "tags": [
+                    "dimension-transversal"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "PPP API Gateway",
+        "description": "API Gateway para el sistema de Prácticas Pre-Profesionales",
+        "version": "1.0",
+        "contact": {}
+    },
+    "tags": [
+        {
+            "name": "health",
+            "description": "Health checks del sistema"
+        },
+        {
+            "name": "usuarios",
+            "description": "Gestión de usuarios del sistema"
+        },
+        {
+            "name": "roles",
+            "description": "Gestión de roles y permisos"
+        },
+        {
+            "name": "alumnos",
+            "description": "Gestión de estudiantes"
+        },
+        {
+            "name": "facultades",
+            "description": "Gestión de facultades"
+        },
+        {
+            "name": "escuelas",
+            "description": "Gestión de escuelas profesionales"
+        },
+        {
+            "name": "secretarias",
+            "description": "Gestión de secretarías"
+        },
+        {
+            "name": "empresas",
+            "description": "Gestión de empresas para prácticas"
+        },
+        {
+            "name": "cartas",
+            "description": "Gestión de cartas de presentación"
+        }
+    ],
+    "servers": [],
+    "components": {
+        "schemas": {
+            "CreateUsuarioDto": {
+                "type": "object",
+                "properties": {
+                    "nombres": {
+                        "type": "string",
+                        "description": "Nombres del usuario",
+                        "example": "Juan Carlos",
+                        "maxLength": 120
+                    },
+                    "apellidos": {
+                        "type": "string",
+                        "description": "Apellidos del usuario",
+                        "example": "Pérez García",
+                        "maxLength": 120
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Correo electrónico institucional del usuario",
+                        "example": "juan.perez@upeu.edu.pe",
+                        "format": "email",
+                        "maxLength": 150
+                    },
+                    "telefono": {
+                        "type": "string",
+                        "description": "Número de teléfono del usuario",
+                        "example": "987654321",
+                        "maxLength": 20
+                    },
+                    "contraseña": {
+                        "type": "string",
+                        "description": "Contraseña del usuario (mínimo 6 caracteres)",
+                        "example": "SecureP@ss123",
+                        "minLength": 6,
+                        "maxLength": 255
+                    },
+                    "activo": {
+                        "type": "boolean",
+                        "description": "Estado activo del usuario",
+                        "example": true,
+                        "default": true
+                    },
+                    "rolesIds": {
+                        "description": "IDs de los roles a asignar al usuario (relación many-to-many)",
+                        "example": [
+                            "550e8400-e29b-41d4-a716-446655440000"
+                        ],
+                        "items": {
+                            "type": "array"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "nombres",
+                    "apellidos",
+                    "email",
+                    "contraseña"
+                ]
+            },
+            "UpdateUsuarioDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "CreateRolDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre del rol",
+                        "example": "Alumno",
+                        "maxLength": 255
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "description": "Descripción del rol",
+                        "example": "Estudiante de la universidad",
+                        "maxLength": 255
+                    }
+                },
+                "required": [
+                    "nombre"
+                ]
+            },
+            "UpdateRolDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre del rol",
+                        "example": "Alumno",
+                        "maxLength": 255
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "description": "Descripción del rol",
+                        "example": "Estudiante de la universidad",
+                        "maxLength": 255
+                    }
+                }
+            },
+            "AssignPrivilegiosDto": {
+                "type": "object",
+                "properties": {
+                    "privilegiosIds": {
+                        "description": "Array de IDs de privilegios a asignar al rol",
+                        "example": [
+                            "123e4567-e89b-12d3-a456-426614174000",
+                            "123e4567-e89b-12d3-a456-426614174001"
+                        ],
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "privilegiosIds"
+                ]
+            },
+            "CreatePrivilegioDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre del privilegio",
+                        "example": "crear_usuario",
+                        "maxLength": 100
+                    }
+                },
+                "required": [
+                    "nombre"
+                ]
+            },
+            "UpdatePrivilegioDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre del privilegio",
+                        "example": "crear_usuario",
+                        "maxLength": 100
+                    }
+                }
+            },
+            "CreateFacultadDto": {
+                "type": "object",
+                "properties": {
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código único de la facultad",
+                        "example": "FAC-ING",
+                        "maxLength": 50
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la facultad",
+                        "example": "Facultad de Ingeniería",
+                        "maxLength": 255
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "description": "Descripción detallada de la facultad",
+                        "example": "Facultad dedicada a la formación de ingenieros en diversas especialidades"
+                    }
+                },
+                "required": [
+                    "codigo",
+                    "nombre"
+                ]
+            },
+            "UpdateFacultadDto": {
+                "type": "object",
+                "properties": {
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código único de la facultad",
+                        "example": "FAC-ING",
+                        "maxLength": 50
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la facultad",
+                        "example": "Facultad de Ingeniería",
+                        "maxLength": 255
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "description": "Descripción detallada de la facultad",
+                        "example": "Facultad dedicada a la formación de ingenieros en diversas especialidades"
+                    }
+                }
+            },
+            "CreateEscuelaDto": {
+                "type": "object",
+                "properties": {
+                    "idFacultad": {
+                        "type": "string",
+                        "description": "UUID de la facultad a la que pertenece",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código único de la escuela",
+                        "example": "ESC-SIS",
+                        "maxLength": 50
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la escuela",
+                        "example": "Escuela Profesional de Ingeniería de Sistemas",
+                        "maxLength": 255
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "description": "Descripción de la escuela",
+                        "example": "Forma profesionales en desarrollo de software y tecnologías de información"
+                    }
+                },
+                "required": [
+                    "idFacultad",
+                    "codigo",
+                    "nombre"
+                ]
+            },
+            "UpdateEscuelaDto": {
+                "type": "object",
+                "properties": {
+                    "idFacultad": {
+                        "type": "string",
+                        "description": "UUID de la facultad a la que pertenece",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código único de la escuela",
+                        "example": "ESC-SIS",
+                        "maxLength": 50
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la escuela",
+                        "example": "Escuela Profesional de Ingeniería de Sistemas",
+                        "maxLength": 255
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "description": "Descripción de la escuela",
+                        "example": "Forma profesionales en desarrollo de software y tecnologías de información"
+                    }
+                }
+            },
+            "CreateSecretariaDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la secretaria",
+                        "example": "María González Pérez",
+                        "maxLength": 255
+                    },
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "UUID de la escuela a la que pertenece",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                },
+                "required": [
+                    "nombre",
+                    "idEscuela"
+                ]
+            },
+            "UpdateSecretariaDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la secretaria",
+                        "example": "María González Pérez",
+                        "maxLength": 255
+                    },
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "UUID de la escuela a la que pertenece",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                }
+            },
+            "CreateAlumnoDto": {
+                "type": "object",
+                "properties": {
+                    "usuarioId": {
+                        "type": "string",
+                        "description": "UUID del usuario asociado al alumno",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "UUID de la escuela del alumno",
+                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                    },
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código único del alumno",
+                        "example": "2021001234",
+                        "maxLength": 30
+                    },
+                    "ciclo": {
+                        "type": "string",
+                        "description": "Ciclo académico del alumno",
+                        "example": "VIII",
+                        "maxLength": 10
+                    },
+                    "año": {
+                        "type": "string",
+                        "description": "Año de ingreso",
+                        "example": "2021",
+                        "maxLength": 4
+                    }
+                },
+                "required": [
+                    "usuarioId",
+                    "idEscuela",
+                    "codigo",
+                    "ciclo",
+                    "año"
+                ]
+            },
+            "UpdateAlumnoDto": {
+                "type": "object",
+                "properties": {
+                    "usuarioId": {
+                        "type": "string",
+                        "description": "UUID del usuario asociado al alumno",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "UUID de la escuela del alumno",
+                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                    },
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código único del alumno",
+                        "example": "2021001234",
+                        "maxLength": 30
+                    },
+                    "ciclo": {
+                        "type": "string",
+                        "description": "Ciclo académico del alumno",
+                        "example": "VIII",
+                        "maxLength": 10
+                    },
+                    "año": {
+                        "type": "string",
+                        "description": "Año de ingreso",
+                        "example": "2021",
+                        "maxLength": 4
+                    }
+                }
+            },
+            "CreateSupervisorDto": {
+                "type": "object",
+                "properties": {
+                    "usuarioId": {
+                        "type": "string",
+                        "description": "UUID del usuario asociado al supervisor",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "UUID de la escuela a la que pertenece el supervisor",
+                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                    }
+                },
+                "required": [
+                    "usuarioId",
+                    "idEscuela"
+                ]
+            },
+            "CreateCoordinadorDto": {
+                "type": "object",
+                "properties": {
+                    "usuarioId": {
+                        "type": "string",
+                        "description": "UUID del usuario asociado al coordinador",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "UUID de la escuela a la que pertenece el coordinador",
+                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                    }
+                },
+                "required": [
+                    "usuarioId",
+                    "idEscuela"
+                ]
+            },
+            "CreateLineaFacultadDto": {
+                "type": "object",
+                "properties": {
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "UUID de la escuela a la que pertenece la línea",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la línea de facultad",
+                        "example": "Desarrollo de Software",
+                        "maxLength": 255
+                    },
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código único de la línea",
+                        "example": "DS-001",
+                        "maxLength": 50
+                    }
+                },
+                "required": [
+                    "idEscuela",
+                    "nombre",
+                    "codigo"
+                ]
+            },
+            "CreateEmpresaDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la empresa",
+                        "example": "Tech Solutions S.A.C.",
+                        "maxLength": 255
+                    },
+                    "nombreRepresentante": {
+                        "type": "string",
+                        "description": "Nombre del representante legal",
+                        "example": "Juan Carlos Pérez López",
+                        "maxLength": 255
+                    },
+                    "ruc": {
+                        "type": "string",
+                        "description": "RUC de la empresa (11 dígitos)",
+                        "example": "20123456789",
+                        "minLength": 11,
+                        "maxLength": 11
+                    },
+                    "sector": {
+                        "type": "string",
+                        "description": "Sector económico",
+                        "example": "Tecnología",
+                        "maxLength": 100
+                    },
+                    "gradoAcademico": {
+                        "type": "string",
+                        "description": "Grado académico del representante",
+                        "example": "Ingeniero de Sistemas",
+                        "maxLength": 100
+                    },
+                    "cargoRepresentante": {
+                        "type": "string",
+                        "description": "Cargo del representante",
+                        "example": "Gerente General",
+                        "maxLength": 100
+                    },
+                    "telefono": {
+                        "type": "string",
+                        "description": "Teléfono de contacto",
+                        "example": "987654321",
+                        "maxLength": 15
+                    },
+                    "direccion": {
+                        "type": "string",
+                        "description": "Dirección completa de la empresa",
+                        "example": "Av. Arequipa 1234, Miraflores, Lima"
+                    }
+                },
+                "required": [
+                    "nombre",
+                    "nombreRepresentante",
+                    "ruc",
+                    "sector",
+                    "gradoAcademico",
+                    "cargoRepresentante",
+                    "telefono",
+                    "direccion"
+                ]
+            },
+            "UpdateEmpresaDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la empresa",
+                        "example": "Tech Solutions S.A.C.",
+                        "maxLength": 255
+                    },
+                    "nombreRepresentante": {
+                        "type": "string",
+                        "description": "Nombre del representante legal",
+                        "example": "Juan Carlos Pérez López",
+                        "maxLength": 255
+                    },
+                    "ruc": {
+                        "type": "string",
+                        "description": "RUC de la empresa (11 dígitos)",
+                        "example": "20123456789",
+                        "minLength": 11,
+                        "maxLength": 11
+                    },
+                    "sector": {
+                        "type": "string",
+                        "description": "Sector económico",
+                        "example": "Tecnología",
+                        "maxLength": 100
+                    },
+                    "gradoAcademico": {
+                        "type": "string",
+                        "description": "Grado académico del representante",
+                        "example": "Ingeniero de Sistemas",
+                        "maxLength": 100
+                    },
+                    "cargoRepresentante": {
+                        "type": "string",
+                        "description": "Cargo del representante",
+                        "example": "Gerente General",
+                        "maxLength": 100
+                    },
+                    "telefono": {
+                        "type": "string",
+                        "description": "Teléfono de contacto",
+                        "example": "987654321",
+                        "maxLength": 15
+                    },
+                    "direccion": {
+                        "type": "string",
+                        "description": "Dirección completa de la empresa",
+                        "example": "Av. Arequipa 1234, Miraflores, Lima"
+                    }
+                }
+            },
+            "CreateCartaPresentacionDto": {
+                "type": "object",
+                "properties": {
+                    "idAlumno": {
+                        "type": "string",
+                        "description": "UUID del alumno (referencia a ppp_auth.alumnos)",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "idEmpresa": {
+                        "type": "string",
+                        "description": "UUID de la empresa destino",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    },
+                    "idSecretaria": {
+                        "type": "string",
+                        "description": "UUID de la secretaria asignada (referencia a ppp_auth.secretarias)",
+                        "example": "123e4567-e89b-12d3-a456-426614174002"
+                    },
+                    "areaPractica": {
+                        "type": "string",
+                        "description": "Área de práctica dentro de la empresa",
+                        "example": "Desarrollo de Software",
+                        "maxLength": 100
+                    },
+                    "fechaInicio": {
+                        "type": "string",
+                        "description": "Fecha de inicio de prácticas (formato ISO 8601)",
+                        "example": "2024-03-15"
+                    },
+                    "motivoRechazo": {
+                        "type": "string",
+                        "description": "Motivo de rechazo de la carta (si aplica)"
+                    },
+                    "estado": {
+                        "type": "string",
+                        "description": "Estado de la carta de presentación",
+                        "enum": [
+                            "borrador",
+                            "presentada",
+                            "en_revision",
+                            "aprobada",
+                            "rechazada",
+                            "cancelada"
+                        ],
+                        "example": "borrador",
+                        "default": "borrador"
+                    }
+                },
+                "required": [
+                    "idAlumno",
+                    "idEmpresa",
+                    "fechaInicio"
+                ]
+            },
+            "UpdateCartaPresentacionDto": {
+                "type": "object",
+                "properties": {
+                    "idAlumno": {
+                        "type": "string",
+                        "description": "UUID del alumno (referencia a ppp_auth.alumnos)",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "idEmpresa": {
+                        "type": "string",
+                        "description": "UUID de la empresa destino",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    },
+                    "idSecretaria": {
+                        "type": "string",
+                        "description": "UUID de la secretaria asignada (referencia a ppp_auth.secretarias)",
+                        "example": "123e4567-e89b-12d3-a456-426614174002"
+                    },
+                    "areaPractica": {
+                        "type": "string",
+                        "description": "Área de práctica dentro de la empresa",
+                        "example": "Desarrollo de Software",
+                        "maxLength": 100
+                    },
+                    "fechaInicio": {
+                        "type": "string",
+                        "description": "Fecha de inicio de prácticas (formato ISO 8601)",
+                        "example": "2024-03-15"
+                    },
+                    "motivoRechazo": {
+                        "type": "string",
+                        "description": "Motivo de rechazo de la carta (si aplica)"
+                    },
+                    "estado": {
+                        "type": "string",
+                        "description": "Estado de la carta de presentación",
+                        "enum": [
+                            "borrador",
+                            "presentada",
+                            "en_revision",
+                            "aprobada",
+                            "rechazada",
+                            "cancelada"
+                        ],
+                        "example": "borrador",
+                        "default": "borrador"
+                    }
+                }
+            },
+            "CreateSolicitudPppDto": {
+                "type": "object",
+                "properties": {
+                    "idSupervisor": {
+                        "type": "string",
+                        "description": "UUID del supervisor asignado",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "idAlumno": {
+                        "type": "string",
+                        "description": "UUID del alumno solicitante",
+                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                    },
+                    "idEmpresa": {
+                        "type": "string",
+                        "description": "UUID de la empresa",
+                        "example": "550e8400-e29b-41d4-a716-446655440002"
+                    }
+                },
+                "required": [
+                    "idSupervisor",
+                    "idAlumno",
+                    "idEmpresa"
+                ]
+            },
+            "CreateReunionDto": {
+                "type": "object",
+                "properties": {
+                    "idSolicitud": {
+                        "type": "string",
+                        "description": "UUID de la solicitud PPP asociada",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                },
+                "required": [
+                    "idSolicitud"
+                ]
+            },
+            "CreateTipoDocumentoDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre del tipo de documento",
+                        "example": "Carta de Presentación"
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "description": "Descripción del tipo de documento",
+                        "example": "Documento formal de presentación del estudiante"
+                    }
+                },
+                "required": [
+                    "nombre"
+                ]
+            },
+            "UpdateTipoDocumentoDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre del tipo de documento",
+                        "example": "Carta de Presentación"
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "description": "Descripción del tipo de documento",
+                        "example": "Documento formal de presentación del estudiante"
+                    }
+                }
+            },
+            "CreateDocumentoDto": {
+                "type": "object",
+                "properties": {
+                    "idTipoDocumento": {
+                        "type": "string",
+                        "description": "ID del tipo de documento",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "nombreArchivo": {
+                        "type": "string",
+                        "description": "Nombre del archivo",
+                        "example": "Carta_Presentacion_Juan_Perez.pdf"
+                    },
+                    "rutaArchivo": {
+                        "type": "string",
+                        "description": "Ruta o URL del documento",
+                        "example": "/uploads/documentos/carta_123.pdf"
+                    },
+                    "subidoPor": {
+                        "type": "string",
+                        "description": "ID del usuario que subió el documento",
+                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                    },
+                    "generadoPor": {
+                        "type": "string",
+                        "description": "ID del usuario que generó el documento",
+                        "example": "550e8400-e29b-41d4-a716-446655440002"
+                    }
+                },
+                "required": [
+                    "idTipoDocumento",
+                    "nombreArchivo",
+                    "rutaArchivo"
+                ]
+            },
+            "UpdateDocumentoDto": {
+                "type": "object",
+                "properties": {
+                    "idTipoDocumento": {
+                        "type": "string",
+                        "description": "ID del tipo de documento",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "nombreArchivo": {
+                        "type": "string",
+                        "description": "Nombre del archivo",
+                        "example": "Carta_Presentacion_Juan_Perez.pdf"
+                    },
+                    "rutaArchivo": {
+                        "type": "string",
+                        "description": "Ruta o URL del documento",
+                        "example": "/uploads/documentos/carta_123.pdf"
+                    },
+                    "subidoPor": {
+                        "type": "string",
+                        "description": "ID del usuario que subió el documento",
+                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                    },
+                    "generadoPor": {
+                        "type": "string",
+                        "description": "ID del usuario que generó el documento",
+                        "example": "550e8400-e29b-41d4-a716-446655440002"
+                    }
+                }
+            },
+            "CreatePreguntaDto": {
+                "type": "object",
+                "properties": {
+                    "preguntas": {
+                        "type": "string",
+                        "description": "Texto de la pregunta",
+                        "example": "¿Cómo calificaría el desempeño general del estudiante?"
+                    }
+                },
+                "required": [
+                    "preguntas"
+                ]
+            },
+            "CreatePreguntaLineaDto": {
+                "type": "object",
+                "properties": {
+                    "idLineaFacultad": {
+                        "type": "string",
+                        "description": "UUID de la línea de facultad",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "idEvaluacionPracticante": {
+                        "type": "string",
+                        "description": "UUID de la evaluación practicante",
+                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                    },
+                    "preguntas": {
+                        "type": "string",
+                        "description": "Texto de las preguntas específicas de la línea",
+                        "example": "¿Aplicó los conocimientos de programación en el proyecto?"
+                    }
+                },
+                "required": [
+                    "idLineaFacultad",
+                    "idEvaluacionPracticante",
+                    "preguntas"
+                ]
+            },
+            "CreateEvaluacionPreguntaDto": {
+                "type": "object",
+                "properties": {
+                    "idEvaluacion": {
+                        "type": "string",
+                        "description": "UUID de la evaluación",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "idPregunta": {
+                        "type": "string",
+                        "description": "UUID de la pregunta",
+                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                    },
+                    "valor": {
+                        "type": "string",
+                        "description": "Valor de la respuesta",
+                        "example": "Excelente",
+                        "maxLength": 255
+                    }
+                },
+                "required": [
+                    "idEvaluacion",
+                    "idPregunta",
+                    "valor"
+                ]
+            },
+            "CreateEvaluacionSupervisorDto": {
+                "type": "object",
+                "properties": {
+                    "idSupervisor": {
+                        "type": "string",
+                        "description": "UUID del supervisor",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "idAlumno": {
+                        "type": "string",
+                        "description": "UUID del alumno",
+                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                    },
+                    "comentario": {
+                        "type": "string",
+                        "description": "Comentarios adicionales sobre la evaluación",
+                        "example": "El estudiante mostró excelente desempeño en todas las áreas"
+                    }
+                },
+                "required": [
+                    "idSupervisor",
+                    "idAlumno"
+                ]
+            },
+            "CreateEvaluacionPracticanteDto": {
+                "type": "object",
+                "properties": {
+                    "idSolicitud": {
+                        "type": "string",
+                        "description": "UUID de la solicitud PPP",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "comentario": {
+                        "type": "string",
+                        "description": "Comentarios adicionales sobre la evaluación del practicante",
+                        "example": "Buen desempeño durante el período de prácticas"
+                    }
+                },
+                "required": [
+                    "idSolicitud"
+                ]
+            },
+            "CreateEvaluacionPracticanteSolicitudDto": {
+                "type": "object",
+                "properties": {
+                    "idDimensionTransversal": {
+                        "type": "string",
+                        "description": "UUID de la dimensión transversal",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "idEvaluacionPracticante": {
+                        "type": "string",
+                        "description": "UUID de la evaluación practicante",
+                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                    },
+                    "valor": {
+                        "type": "string",
+                        "description": "Valor de la evaluación",
+                        "example": "Muy bueno",
+                        "maxLength": 255
+                    }
+                },
+                "required": [
+                    "idDimensionTransversal",
+                    "idEvaluacionPracticante",
+                    "valor"
+                ]
+            },
+            "CreateDimensionTransversalDto": {
+                "type": "object",
+                "properties": {
+                    "pregunta": {
+                        "type": "string",
+                        "description": "Texto de la pregunta de dimensión transversal",
+                        "example": "¿Demuestra capacidad de trabajo en equipo?"
+                    }
+                },
+                "required": [
+                    "pregunta"
+                ]
+            }
+        }
+    }
+}

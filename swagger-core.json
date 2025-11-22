@@ -1,0 +1,937 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+        "/health": {
+            "get": {
+                "operationId": "HealthController_check",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The Health Check is successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        },
+                                        "info": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "example": {},
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "details": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "The Health Check is not successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "info": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "example": {
+                                                "redis": {
+                                                    "status": "down",
+                                                    "message": "Could not connect"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "details": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                },
+                                                "redis": {
+                                                    "status": "down",
+                                                    "message": "Could not connect"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Health"
+                ]
+            }
+        },
+        "/health/ready": {
+            "get": {
+                "operationId": "HealthController_ready",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The Health Check is successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        },
+                                        "info": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "example": {},
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "details": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "The Health Check is not successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "info": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "example": {
+                                                "redis": {
+                                                    "status": "down",
+                                                    "message": "Could not connect"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            },
+                                            "nullable": true
+                                        },
+                                        "details": {
+                                            "type": "object",
+                                            "example": {
+                                                "database": {
+                                                    "status": "up"
+                                                },
+                                                "redis": {
+                                                    "status": "down",
+                                                    "message": "Could not connect"
+                                                }
+                                            },
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "required": [
+                                                    "status"
+                                                ],
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "additionalProperties": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Health"
+                ]
+            }
+        },
+        "/health/live": {
+            "get": {
+                "operationId": "HealthController_live",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Health"
+                ]
+            }
+        },
+        "/facultades": {
+            "post": {
+                "operationId": "FacultadesController_createHttp",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateFacultadDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Facultad creada exitosamente"
+                    },
+                    "409": {
+                        "description": "El código de facultad ya existe"
+                    }
+                },
+                "summary": "Crear una nueva facultad",
+                "tags": [
+                    "Facultades"
+                ]
+            },
+            "get": {
+                "operationId": "FacultadesController_findAllHttp",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de facultades con sus escuelas"
+                    }
+                },
+                "summary": "Obtener todas las facultades",
+                "tags": [
+                    "Facultades"
+                ]
+            }
+        },
+        "/facultades/{id}": {
+            "get": {
+                "operationId": "FacultadesController_findOneHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la facultad",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Facultad encontrada"
+                    },
+                    "404": {
+                        "description": "Facultad no encontrada"
+                    }
+                },
+                "summary": "Obtener una facultad por ID",
+                "tags": [
+                    "Facultades"
+                ]
+            },
+            "patch": {
+                "operationId": "FacultadesController_updateHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la facultad",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateFacultadDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Facultad actualizada"
+                    },
+                    "404": {
+                        "description": "Facultad no encontrada"
+                    }
+                },
+                "summary": "Actualizar una facultad",
+                "tags": [
+                    "Facultades"
+                ]
+            },
+            "delete": {
+                "operationId": "FacultadesController_removeHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la facultad",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Facultad eliminada"
+                    },
+                    "404": {
+                        "description": "Facultad no encontrada"
+                    },
+                    "409": {
+                        "description": "No se puede eliminar, tiene escuelas asociadas"
+                    }
+                },
+                "summary": "Eliminar una facultad",
+                "tags": [
+                    "Facultades"
+                ]
+            }
+        },
+        "/escuelas": {
+            "post": {
+                "operationId": "EscuelasController_createHttp",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEscuelaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Escuela creada exitosamente"
+                    },
+                    "404": {
+                        "description": "Facultad no encontrada"
+                    },
+                    "409": {
+                        "description": "El código de escuela ya existe"
+                    }
+                },
+                "summary": "Crear una nueva escuela profesional",
+                "tags": [
+                    "Escuelas"
+                ]
+            },
+            "get": {
+                "operationId": "EscuelasController_findAllHttp",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de escuelas con sus facultades y líneas"
+                    }
+                },
+                "summary": "Obtener todas las escuelas",
+                "tags": [
+                    "Escuelas"
+                ]
+            }
+        },
+        "/escuelas/facultad/{idFacultad}": {
+            "get": {
+                "operationId": "EscuelasController_findByFacultadHttp",
+                "parameters": [
+                    {
+                        "name": "idFacultad",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la facultad",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de escuelas de la facultad"
+                    }
+                },
+                "summary": "Obtener escuelas por facultad",
+                "tags": [
+                    "Escuelas"
+                ]
+            }
+        },
+        "/escuelas/{id}": {
+            "get": {
+                "operationId": "EscuelasController_findOneHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Escuela encontrada"
+                    },
+                    "404": {
+                        "description": "Escuela no encontrada"
+                    }
+                },
+                "summary": "Obtener una escuela por ID",
+                "tags": [
+                    "Escuelas"
+                ]
+            },
+            "patch": {
+                "operationId": "EscuelasController_updateHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEscuelaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Escuela actualizada"
+                    },
+                    "404": {
+                        "description": "Escuela no encontrada"
+                    }
+                },
+                "summary": "Actualizar una escuela",
+                "tags": [
+                    "Escuelas"
+                ]
+            },
+            "delete": {
+                "operationId": "EscuelasController_removeHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Escuela eliminada"
+                    },
+                    "404": {
+                        "description": "Escuela no encontrada"
+                    },
+                    "409": {
+                        "description": "No se puede eliminar, tiene líneas asociadas"
+                    }
+                },
+                "summary": "Eliminar una escuela",
+                "tags": [
+                    "Escuelas"
+                ]
+            }
+        },
+        "/lineas-facultad": {
+            "post": {
+                "operationId": "LineasFacultadController_createHttp",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateLineaFacultadDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Línea creada exitosamente"
+                    },
+                    "404": {
+                        "description": "Escuela no encontrada"
+                    },
+                    "409": {
+                        "description": "El código de línea ya existe"
+                    }
+                },
+                "summary": "Crear una nueva línea de práctica/investigación",
+                "tags": [
+                    "Líneas de Facultad"
+                ]
+            },
+            "get": {
+                "operationId": "LineasFacultadController_findAllHttp",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de líneas con sus escuelas y facultades"
+                    }
+                },
+                "summary": "Obtener todas las líneas de facultad",
+                "tags": [
+                    "Líneas de Facultad"
+                ]
+            }
+        },
+        "/lineas-facultad/escuela/{idEscuela}": {
+            "get": {
+                "operationId": "LineasFacultadController_findByEscuelaHttp",
+                "parameters": [
+                    {
+                        "name": "idEscuela",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de líneas de la escuela"
+                    }
+                },
+                "summary": "Obtener líneas por escuela",
+                "tags": [
+                    "Líneas de Facultad"
+                ]
+            }
+        },
+        "/lineas-facultad/{id}": {
+            "get": {
+                "operationId": "LineasFacultadController_findOneHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la línea",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Línea encontrada"
+                    },
+                    "404": {
+                        "description": "Línea no encontrada"
+                    }
+                },
+                "summary": "Obtener una línea por ID",
+                "tags": [
+                    "Líneas de Facultad"
+                ]
+            },
+            "patch": {
+                "operationId": "LineasFacultadController_updateHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la línea",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateLineaFacultadDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Línea actualizada"
+                    },
+                    "404": {
+                        "description": "Línea no encontrada"
+                    }
+                },
+                "summary": "Actualizar una línea",
+                "tags": [
+                    "Líneas de Facultad"
+                ]
+            },
+            "delete": {
+                "operationId": "LineasFacultadController_removeHttp",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID de la línea",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Línea eliminada"
+                    },
+                    "404": {
+                        "description": "Línea no encontrada"
+                    }
+                },
+                "summary": "Eliminar una línea",
+                "tags": [
+                    "Líneas de Facultad"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "PPP Core Service API",
+        "description": "Gestión Académica - Facultades, Escuelas, Líneas",
+        "version": "1.0",
+        "contact": {}
+    },
+    "tags": [],
+    "servers": [],
+    "components": {
+        "schemas": {
+            "CreateFacultadDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la facultad",
+                        "example": "Facultad de Ingeniería",
+                        "maxLength": 255
+                    },
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código único de la facultad",
+                        "example": "FI",
+                        "maxLength": 50
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "description": "Descripción de la facultad",
+                        "example": "Facultad dedicada a la formación de ingenieros"
+                    },
+                    "estado": {
+                        "type": "string",
+                        "description": "Estado de la facultad (activo/inactivo)",
+                        "example": "ACTIVO",
+                        "default": "ACTIVO"
+                    }
+                },
+                "required": [
+                    "nombre",
+                    "codigo"
+                ]
+            },
+            "UpdateFacultadDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "CreateEscuelaDto": {
+                "type": "object",
+                "properties": {
+                    "idFacultad": {
+                        "type": "string",
+                        "description": "UUID de la facultad a la que pertenece",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la escuela profesional",
+                        "example": "Ingeniería de Sistemas",
+                        "maxLength": 255
+                    },
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código único de la escuela",
+                        "example": "IS",
+                        "maxLength": 50
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "description": "Descripción de la escuela profesional",
+                        "example": "Escuela dedicada a la formación de ingenieros de sistemas"
+                    },
+                    "estado": {
+                        "type": "string",
+                        "description": "Estado de la escuela (ACTIVO/INACTIVO)",
+                        "example": "ACTIVO",
+                        "default": "ACTIVO"
+                    }
+                },
+                "required": [
+                    "idFacultad",
+                    "nombre",
+                    "codigo"
+                ]
+            },
+            "UpdateEscuelaDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "CreateLineaFacultadDto": {
+                "type": "object",
+                "properties": {
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "UUID de la escuela a la que pertenece",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la línea de práctica o investigación",
+                        "example": "Desarrollo de Software",
+                        "maxLength": 255
+                    },
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código único de la línea",
+                        "example": "DS",
+                        "maxLength": 50
+                    },
+                    "estado": {
+                        "type": "boolean",
+                        "description": "Estado de la línea (activo/inactivo)",
+                        "example": true,
+                        "default": true
+                    }
+                },
+                "required": [
+                    "idEscuela",
+                    "nombre",
+                    "codigo"
+                ]
+            },
+            "UpdateLineaFacultadDto": {
+                "type": "object",
+                "properties": {}
+            }
+        }
+    }
+}
