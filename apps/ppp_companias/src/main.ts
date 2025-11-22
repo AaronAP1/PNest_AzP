@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { PppCompañiasModule } from './ppp_compañias.module';
+import { PppCompaniasModule } from './ppp_companias.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
@@ -8,7 +8,7 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
   // Crear aplicación híbrida (HTTP + Microservice patterns)
-  const app = await NestFactory.create(PppCompañiasModule);
+  const app = await NestFactory.create(PppCompaniasModule);
   
   const configService = app.get(ConfigService);
   const httpPort = parseInt(process.env.PORT || '3003'); // HTTP - Lee de env o usa 3003 por defecto

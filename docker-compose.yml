@@ -20,7 +20,7 @@ services:
       - pnest_network
 
   # ============================================
-  # PostgreSQL para ppp_compañias (separado)
+  # PostgreSQL para ppp_companias (separado)
   # ============================================
   postgres_companias:
     image: postgres:15-alpine

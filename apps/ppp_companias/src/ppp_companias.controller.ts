@@ -1,14 +1,14 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { PppCompañiasService } from './ppp_compañias.service';
+import { PppCompaniasService } from './ppp_companias.service';
 
 @Controller()
-export class PppCompañiasController {
-  constructor(private readonly pppCompañiasService: PppCompañiasService) {}
+export class PppCompaniasController {
+  constructor(private readonly pppCompaniasService: PppCompaniasService) {}
 
   @MessagePattern({ cmd: 'get_hello_companias' })
   getHello(): string {
-    return this.pppCompañiasService.getHello();
+    return this.pppCompaniasService.getHello();
   }
 
   @MessagePattern({ cmd: 'get_all_companies' })

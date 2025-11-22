@@ -6,7 +6,8 @@ import {
 } from '@nestjs/common';
 import { CreateEmpresaDto, UpdateEmpresaDto } from './dto';
 import { PrismaCompaniasService } from '../../prisma/prisma.service';
-import { Prisma } from '../../../../../node_modules/.prisma/client-core';
+import { Prisma } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class EmpresasService {
@@ -18,7 +19,7 @@ export class EmpresasService {
         data: createEmpresaDto,
       });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new ConflictException(
             `Ya existe una empresa con el RUC ${createEmpresaDto.ruc}`,
@@ -84,7 +85,7 @@ export class EmpresasService {
         data: updateEmpresaDto,
       });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new ConflictException(
             `Ya existe una empresa con el RUC ${updateEmpresaDto.ruc}`,

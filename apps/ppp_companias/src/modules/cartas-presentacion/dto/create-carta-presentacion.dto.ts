@@ -12,6 +12,15 @@ export enum CartaEstado {
 
 export class CreateCartaPresentacionDto {
   @ApiProperty({
+    description: 'UUID de la solicitud PPP asociada (opcional)',
+    example: '123e4567-e89b-12d3-a456-426614174999',
+    required: false,
+  })
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID de la solicitud debe ser un UUID válido' })
+  idSolicitud?: string;
+
+  @ApiProperty({
     description: 'UUID del alumno (referencia a ppp_auth.alumnos)',
     example: '123e4567-e89b-12d3-a456-426614174000',
   })

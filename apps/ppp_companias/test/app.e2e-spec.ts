@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { PppCompañiasModule } from './../src/ppp_compañias.module';
+import { PppCompaniasModule } from './../src/ppp_companias.module';
 
-describe('PppCompañiasController (e2e)', () => {
+describe('PppCompaniasController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [PppCompañiasModule],
+      imports: [PppCompaniasModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();

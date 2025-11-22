@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { PppCompañiasController } from './ppp_compañias.controller';
-import { PppCompañiasService } from './ppp_compañias.service';
+import { PppCompaniasController } from './ppp_companias.controller';
+import { PppCompaniasService } from './ppp_companias.service';
 import { PrismaCompaniasModule } from './prisma/prisma.module';
 import { TipoDocumentosModule } from './modules/tipo-documentos/tipo-documentos.module';
 import { DocumentosModule } from './modules/documentos/documentos.module';
@@ -17,7 +17,7 @@ import { HealthModule } from './health/health.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['apps/ppp_compañias/.env', '.env', '.env.local'],
+      envFilePath: ['apps/ppp_companias/.env', '.env', '.env.local'],
       validationSchema: configValidationSchema,
       validationOptions: {
         abortEarly: false,
@@ -33,7 +33,7 @@ import { HealthModule } from './health/health.module';
     ReunionesModule,
     SunatModule,
   ],
-  controllers: [PppCompañiasController],
-  providers: [PppCompañiasService],
+  controllers: [PppCompaniasController],
+  providers: [PppCompaniasService],
 })
-export class PppCompañiasModule {}
+export class PppCompaniasModule {}
