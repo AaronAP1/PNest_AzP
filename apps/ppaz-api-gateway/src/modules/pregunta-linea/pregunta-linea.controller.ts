@@ -26,8 +26,9 @@ export class PreguntaLineaController {
 
   @Post()
   @ApiOperation({ summary: 'Asignar pregunta a línea de facultad' })
+  @ApiBody({ type: CreatePreguntaLineaDto })
   @ApiResponse({ status: 201, description: 'Asignación creada exitosamente' })
-  create(@Body() createDto: any): Observable<any> {
+  create(@Body() createDto: CreatePreguntaLineaDto): Observable<any> {
     return this.httpService
       .post(`${this.evaluacionesServiceUrl}/pregunta-linea`, createDto)
       .pipe(map((response) => response.data));

@@ -26,8 +26,9 @@ export class EvaluacionPracticanteSolicitudController {
 
   @Post()
   @ApiOperation({ summary: 'Crear solicitud de evaluación de practicante' })
+  @ApiBody({ type: CreateEvaluacionPracticanteSolicitudDto })
   @ApiResponse({ status: 201, description: 'Solicitud creada exitosamente' })
-  create(@Body() createDto: any): Observable<any> {
+  create(@Body() createDto: CreateEvaluacionPracticanteSolicitudDto): Observable<any> {
     return this.httpService
       .post(`${this.evaluacionesServiceUrl}/evaluacion-practicante-solicitud`, createDto)
       .pipe(map((response) => response.data));
