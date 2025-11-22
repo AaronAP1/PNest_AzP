@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CreatePreguntaLineaDto } from './dto/create-pregunta-linea.dto';
 
 @ApiTags('pregunta-linea')
 @Controller('pregunta-linea')

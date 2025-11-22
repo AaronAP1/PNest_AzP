@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { DimensionTransversalService } from './dimension-transversal.service';
 import { CreateDimensionTransversalDto } from './dto/create-dimension-transversal.dto';
 import { UpdateDimensionTransversalDto } from './dto/update-dimension-transversal.dto';
@@ -13,6 +13,7 @@ export class DimensionTransversalController {
   // ========== REST ENDPOINTS ==========
   @Post()
   @ApiOperation({ summary: 'Crear una nueva dimensión transversal' })
+  @ApiBody({ type: CreateDimensionTransversalDto })
   @ApiResponse({ status: 201, description: 'Dimensión transversal creada exitosamente' })
   createRest(@Body() createDto: CreateDimensionTransversalDto) {
     return this.dimensionTransversalService.create(createDto);

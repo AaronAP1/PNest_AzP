@@ -14,6 +14,7 @@ export class UsuariosController {
   @Post()
   @MessagePattern('usuarios.create')
   @ApiOperation({ summary: 'Crear un nuevo usuario con roles asignados' })
+  @ApiBody({ type: CreateUsuarioDto })
   @ApiResponse({ 
     status: 201, 
     description: 'Usuario creado exitosamente',

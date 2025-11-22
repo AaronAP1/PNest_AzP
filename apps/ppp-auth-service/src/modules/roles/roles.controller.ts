@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { RolesService } from './roles.service';
 import { CreateRolDto } from './dto/create-rol.dto';
@@ -13,6 +13,7 @@ export class RolesController {
 
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo rol' })
+  @ApiBody({ type: CreateRolDto })
   @ApiResponse({ status: 201, description: 'Rol creado exitosamente' })
   @MessagePattern('roles.create')
   create(@Body() @Payload() createRolDto: CreateRolDto) {

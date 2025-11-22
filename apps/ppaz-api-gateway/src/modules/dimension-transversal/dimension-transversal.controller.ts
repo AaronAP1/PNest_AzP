@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CreateDimensionTransversalDto } from './dto/create-dimension-transversal.dto';
 
 @ApiTags('dimension-transversal')
 @Controller('dimension-transversal')
@@ -25,8 +26,9 @@ export class DimensionTransversalController {
 
   @Post()
   @ApiOperation({ summary: 'Crear una nueva dimensión transversal' })
+  @ApiBody({ type: CreateDimensionTransversalDto })
   @ApiResponse({ status: 201, description: 'Dimensión transversal creada exitosamente' })
-  create(@Body() createDto: any): Observable<any> {
+  create(@Body() createDto: CreateDimensionTransversalDto): Observable<any> {
     return this.httpService
       .post(`${this.evaluacionesServiceUrl}/dimension-transversal`, createDto)
       .pipe(map((response) => response.data));

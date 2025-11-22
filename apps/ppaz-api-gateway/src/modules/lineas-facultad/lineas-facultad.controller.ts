@@ -1,9 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CreateLineaFacultadDto } from './dto/create-linea-facultad.dto';
+import { UpdateLineaFacultadDto } from './dto/update-linea-facultad.dto';
 
 @ApiTags('lineas-facultad')
 @Controller('lineas-facultad')
@@ -25,8 +27,9 @@ export class LineasFacultadController {
 
   @Post()
   @ApiOperation({ summary: 'Crear una nueva línea de facultad' })
+  @ApiBody({ type: CreateLineaFacultadDto })
   @ApiResponse({ status: 201, description: 'Línea creada exitosamente' })
-  create(@Body() createDto: any): Observable<any> {
+  create(@Body() createDto: CreateLineaFacultadDto): Observable<any> {
     return this.httpService
       .post(`${this.academicServiceUrl}/lineas-facultad`, createDto)
       .pipe(map((response) => response.data));

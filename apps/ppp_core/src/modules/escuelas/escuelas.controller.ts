@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { EscuelasService } from './escuelas.service';
 import { CreateEscuelaDto } from './dto/create-escuela.dto';
@@ -13,6 +13,7 @@ export class EscuelasController {
   // HTTP REST Endpoints (Azure Container Apps)
   @Post()
   @ApiOperation({ summary: 'Crear una nueva escuela profesional' })
+  @ApiBody({ type: CreateEscuelaDto })
   @ApiResponse({ status: 201, description: 'Escuela creada exitosamente' })
   @ApiResponse({ status: 404, description: 'Facultad no encontrada' })
   @ApiResponse({ status: 409, description: 'El código de escuela ya existe' })

@@ -1,14 +1,19 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { PreguntasService } from './preguntas.service';
 import { CreatePreguntaDto } from './dto/create-pregunta.dto';
 import { UpdatePreguntaDto } from './dto/update-pregunta.dto';
 
+@ApiTags('Preguntas')
 @Controller('preguntas')
 export class PreguntasController {
   constructor(private readonly preguntasService: PreguntasService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Crear una nueva pregunta' })
+  @ApiBody({ type: CreatePreguntaDto })
+  @ApiResponse({ status: 201, description: 'Pregunta creada exitosamente' })
   @MessagePattern({ cmd: 'create-pregunta' })
   create(@Body() @Payload() createDto: CreatePreguntaDto) {
     return this.preguntasService.create(createDto);

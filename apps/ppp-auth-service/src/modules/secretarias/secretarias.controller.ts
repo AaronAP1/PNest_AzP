@@ -10,7 +10,7 @@ import {
   HttpStatus,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { SecretariasService } from './secretarias.service';
 import { CreateSecretariaDto } from './dto/create-secretaria.dto';
 import { UpdateSecretariaDto } from './dto/update-secretaria.dto';
@@ -22,6 +22,7 @@ export class SecretariasController {
 
   @Post()
   @ApiOperation({ summary: 'Crear una nueva secretaria' })
+  @ApiBody({ type: CreateSecretariaDto })
   @ApiResponse({ status: 201, description: 'Secretaria creada exitosamente' })
   create(@Body() createDto: CreateSecretariaDto) {
     return this.secretariasService.create(createDto);

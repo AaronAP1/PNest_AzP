@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CreateEvaluacionPracticanteSolicitudDto } from './dto/create-evaluacion-practicante-solicitud.dto';
 
 @ApiTags('evaluacion-practicante-solicitud')
 @Controller('evaluacion-practicante-solicitud')

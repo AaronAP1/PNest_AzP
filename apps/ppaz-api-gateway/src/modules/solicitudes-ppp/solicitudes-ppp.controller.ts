@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CreateSolicitudPppDto } from './dto/create-solicitud-ppp.dto';
 
 @ApiTags('solicitudes-ppp')
 @Controller('solicitudes-ppp')
@@ -25,8 +26,9 @@ export class SolicitudesPppController {
 
   @Post()
   @ApiOperation({ summary: 'Crear una nueva solicitud de PPP' })
+  @ApiBody({ type: CreateSolicitudPppDto })
   @ApiResponse({ status: 201, description: 'Solicitud creada exitosamente' })
-  create(@Body() createDto: any): Observable<any> {
+  create(@Body() createDto: CreateSolicitudPppDto): Observable<any> {
     return this.httpService
       .post(`${this.coreServiceUrl}/solicitudes-ppp`, createDto)
       .pipe(map((response) => response.data));

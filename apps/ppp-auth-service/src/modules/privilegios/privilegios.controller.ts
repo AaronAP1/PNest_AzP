@@ -9,7 +9,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { PrivilegiosService } from './privilegios.service';
 import { CreatePrivilegioDto } from './dto/create-privilegio.dto';
 import { UpdatePrivilegioDto } from './dto/update-privilegio.dto';
@@ -21,6 +21,7 @@ export class PrivilegiosController {
 
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo privilegio' })
+  @ApiBody({ type: CreatePrivilegioDto })
   @ApiResponse({ status: 201, description: 'Privilegio creado exitosamente' })
   @ApiResponse({ status: 409, description: 'El privilegio ya existe' })
   create(@Body() createPrivilegioDto: CreatePrivilegioDto) {

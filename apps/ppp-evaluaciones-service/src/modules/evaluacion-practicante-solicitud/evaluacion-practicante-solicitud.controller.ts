@@ -1,15 +1,20 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { EvaluacionPracticanteSolicitudService } from './evaluacion-practicante-solicitud.service';
 import { CreateEvaluacionPracticanteSolicitudDto } from './dto/create-evaluacion-practicante-solicitud.dto';
 import { UpdateEvaluacionPracticanteSolicitudDto } from './dto/update-evaluacion-practicante-solicitud.dto';
 
+@ApiTags('Evaluación Practicante Solicitud')
 @Controller('evaluacion-practicante-solicitud')
 export class EvaluacionPracticanteSolicitudController {
   constructor(private readonly evaluacionPracticanteSolicitudService: EvaluacionPracticanteSolicitudService) {}
 
   // HTTP REST Endpoints (Azure Container Apps)
   @Post()
+  @ApiOperation({ summary: 'Crear una nueva evaluación practicante solicitud' })
+  @ApiBody({ type: CreateEvaluacionPracticanteSolicitudDto })
+  @ApiResponse({ status: 201, description: 'Evaluación creada exitosamente' })
   createHttp(@Body() createDto: CreateEvaluacionPracticanteSolicitudDto) {
     return this.evaluacionPracticanteSolicitudService.create(createDto);
   }

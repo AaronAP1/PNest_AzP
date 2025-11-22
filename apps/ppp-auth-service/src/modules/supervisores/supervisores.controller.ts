@@ -10,7 +10,7 @@ import {
   HttpStatus,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { SupervisoresService } from './supervisores.service';
 import { CreateSupervisorDto } from './dto/create-supervisor.dto';
 import { UpdateSupervisorDto } from './dto/update-supervisor.dto';
@@ -22,6 +22,7 @@ export class SupervisoresController {
 
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo supervisor' })
+  @ApiBody({ type: CreateSupervisorDto })
   @ApiResponse({ status: 201, description: 'Supervisor creado exitosamente' })
   create(@Body() createDto: CreateSupervisorDto) {
     return this.supervisoresService.create(createDto);
