@@ -69,7 +69,6 @@ export class CartasPresentacionService {
       },
       include: {
         empresa: true,
-        solicitud: true,
       },
     });
   }
@@ -78,7 +77,6 @@ export class CartasPresentacionService {
     return await this.prisma.cartaPresentacion.findMany({
       include: {
         empresa: true,
-        solicitud: true,
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -89,7 +87,6 @@ export class CartasPresentacionService {
       where: { id },
       include: {
         empresa: true,
-        solicitud: true,
       },
     });
 
@@ -107,7 +104,6 @@ export class CartasPresentacionService {
       where: { idAlumno },
       include: {
         empresa: true,
-        solicitud: true,
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -118,7 +114,6 @@ export class CartasPresentacionService {
       where: { idEmpresa },
       include: {
         empresa: true,
-        solicitud: true,
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -129,7 +124,6 @@ export class CartasPresentacionService {
       where: { idSecretaria },
       include: {
         empresa: true,
-        solicitud: true,
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -140,7 +134,6 @@ export class CartasPresentacionService {
       where: { estado: estado as any },
       include: {
         empresa: true,
-        solicitud: true,
       },
       orderBy: { createdAt: 'desc' },
     });

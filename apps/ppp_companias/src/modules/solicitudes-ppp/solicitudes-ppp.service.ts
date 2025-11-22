@@ -74,7 +74,6 @@ export class SolicitudesPppService {
     return this.prisma.solicitudPpp.findMany({
       include: {
         empresa: true,
-        cartaPresentacion: true,
         reuniones: true,
         documentos: true,
       },
@@ -87,7 +86,6 @@ export class SolicitudesPppService {
       where: { id },
       include: {
         empresa: true,
-        cartaPresentacion: true,
         reuniones: true,
         documentos: true,
       },
@@ -105,7 +103,6 @@ export class SolicitudesPppService {
       where: { idAlumno },
       include: {
         empresa: true,
-        cartaPresentacion: true,
         reuniones: true,
         documentos: true,
       },
@@ -118,7 +115,6 @@ export class SolicitudesPppService {
       where: { idSupervisor },
       include: {
         empresa: true,
-        cartaPresentacion: true,
         reuniones: true,
         documentos: true,
       },
@@ -131,7 +127,6 @@ export class SolicitudesPppService {
       where: { estado: estado as any },
       include: {
         empresa: true,
-        cartaPresentacion: true,
         reuniones: true,
         documentos: true,
       },
