@@ -13,8 +13,8 @@ datasource db {
 /// =========================
 model EvaluacionSupervisor {
   id           String   @id @default(uuid()) @db.Uuid
-  idSupervisor String   @map("id_supervisor") @db.Uuid
-  idAlumno     String   @map("id_alumno") @db.Uuid
+  idSupervisor String   @map("id_supervisor") @db.Uuid // Referencia a ppp_auth.supervisores (sin @relation)
+  idAlumno     String   @map("id_alumno") @db.Uuid // Referencia a ppp_auth.alumnos (sin @relation)
   comentario   String?  @db.Text
   estado       Boolean  @default(true)
   createdAt    DateTime @default(now()) @map("created_at")
@@ -67,7 +67,7 @@ model Pregunta {
 /// =========================
 model EvaluacionPracticante {
   id          String   @id @default(uuid()) @db.Uuid
-  idSolicitud String   @map("id_solicitud") @db.Uuid
+  idSolicitud String   @map("id_solicitud") @db.Uuid // Referencia a ppp_companias.solicitud_ppp (sin @relation)
   comentario  String?  @db.Text
   estado      Boolean  @default(true)
   createdAt   DateTime @default(now()) @map("created_at")
@@ -104,7 +104,7 @@ model EvaluacionPracticanteSolicitud {
 /// =========================
 model PreguntaLinea {
   id                       String   @id @default(uuid()) @db.Uuid
-  idLineaFacultad          String   @map("id_linea_facultad") @db.Uuid
+  idLineaFacultad          String   @map("id_linea_facultad") @db.Uuid // Referencia a ppp_core.linea_facultad (sin @relation)
   idEvaluacionPracticante  String   @map("id_evaluacion_practicante") @db.Uuid
   preguntas                String   @db.Text
   estado                   Boolean  @default(true)

@@ -35,8 +35,8 @@ model Empresa {
 /// =========================
 model SolicitudPpp {
   id           String          @id @default(uuid()) @db.Uuid
-  idSupervisor String          @map("id_supervisor") @db.Uuid
-  idAlumno     String          @map("id_alumno") @db.Uuid
+  idSupervisor String          @map("id_supervisor") @db.Uuid // Referencia a ppp_auth.supervisores (sin @relation)
+  idAlumno     String          @map("id_alumno") @db.Uuid // Referencia a ppp_auth.alumnos (sin @relation)
   idEmpresa    String          @map("id_empresa") @db.Uuid
   estado       EstadoSolicitud @default(pendiente)
   createdAt    DateTime        @default(now()) @map("created_at")
@@ -58,9 +58,9 @@ model SolicitudPpp {
 /// =========================
 model CartaPresentacion {
   id            String         @id @default(uuid()) @db.Uuid
-  idAlumno      String         @map("id_alumno") @db.Uuid
+  idAlumno      String         @map("id_alumno") @db.Uuid // Referencia a ppp_auth.alumnos (sin @relation)
   idEmpresa     String         @map("id_empresa") @db.Uuid
-  idSecretaria  String?        @map("id_secretaria") @db.Uuid
+  idSecretaria  String?        @map("id_secretaria") @db.Uuid // Referencia a ppp_auth.secretarias (sin @relation)
   areaPractica  String?        @map("area_practica") @db.VarChar(255)
   fechaInicio   DateTime       @map("fecha_inicio") @db.Date
   archivo       String?        @db.Text
@@ -119,8 +119,8 @@ model Documento {
   idSolicitudPpp  String   @map("id_solicitud_ppp") @db.Uuid
   nombreArchivo   String   @map("nombre_archivo") @db.VarChar(255)
   rutaArchivo     String   @map("ruta_archivo") @db.Text
-  subidoPor       String?  @map("subido_por") @db.Uuid
-  generadoPor     String?  @map("generado_por") @db.Uuid
+  subidoPor       String?  @map("subido_por") @db.Uuid // Referencia a ppp_auth.usuarios (sin @relation)
+  generadoPor     String?  @map("generado_por") @db.Uuid // Referencia a ppp_auth.usuarios (sin @relation)
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 

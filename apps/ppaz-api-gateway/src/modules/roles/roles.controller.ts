@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CreateRolDto } from './dto/create-rol.dto';
+import { UpdateRolDto } from './dto/update-rol.dto';
+import { AssignPrivilegiosDto } from './dto/assign-privilegios.dto';
 
 @ApiTags('roles')
 @Controller('roles')
@@ -55,6 +57,18 @@ export class RolesController {
       .pipe(map((response) => response.data));
   }
 
+  @Patch(':id')
+  @ApiOperation({ summary: 'Actualizar rol', description: 'Actualiza la información de un rol' })
+  @ApiParam({ name: 'id', description: 'UUID del rol', type: 'string', example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiBody({ type: UpdateRolDto })
+  @ApiResponse({ status: 200, description: 'Rol actualizado exitosamente' })
+  @ApiResponse({ status: 404, description: 'Rol no encontrado' })
+  update(@Param('id') id: string, @Body() updateRolDto: UpdateRolDto): Observable<any> {
+    return this.httpService
+      .patch(`${this.authServiceUrl}/roles/${id}`, updateRolDto)
+      .pipe(map((response) => response.data));
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar rol', description: 'Elimina un rol del sistema' })
   @ApiParam({ name: 'id', description: 'UUID del rol', type: 'string', example: '550e8400-e29b-41d4-a716-446655440000' })
@@ -64,6 +78,51 @@ export class RolesController {
   remove(@Param('id') id: string): Observable<any> {
     return this.httpService
       .delete(`${this.authServiceUrl}/roles/${id}`)
+      .pipe(map((response) => response.data));
+  }
+
+  // ==========================================
+  // ENDPOINTS PARA GESTIÓN DE PRIVILEGIOS
+  // ==========================================
+
+  @Post(':id/privilegios')
+  @ApiOperation({ summary: 'Asignar privilegios a un rol', description: 'Asigna uno o más privilegios a un rol específico' })
+  @ApiParam({ name: 'id', description: 'UUID del rol', type: 'string' })
+  @ApiBody({ type: AssignPrivilegiosDto })
+  @ApiResponse({ status: 200, description: 'Privilegios asignados correctamente' })
+  @ApiResponse({ status: 404, description: 'Rol no encontrado' })
+  assignPrivilegios(
+    @Param('id') id: string,
+    @Body() assignPrivilegiosDto: AssignPrivilegiosDto,
+  ): Observable<any> {
+    return this.httpService
+      .post(`${this.authServiceUrl}/roles/${id}/privilegios`, assignPrivilegiosDto)
+      .pipe(map((response) => response.data));
+  }
+
+  @Get(':id/privilegios')
+  @ApiOperation({ summary: 'Obtener privilegios de un rol', description: 'Lista todos los privilegios asignados a un rol' })
+  @ApiParam({ name: 'id', description: 'UUID del rol', type: 'string' })
+  @ApiResponse({ status: 200, description: 'Lista de privilegios del rol' })
+  @ApiResponse({ status: 404, description: 'Rol no encontrado' })
+  getPrivilegios(@Param('id') id: string): Observable<any> {
+    return this.httpService
+      .get(`${this.authServiceUrl}/roles/${id}/privilegios`)
+      .pipe(map((response) => response.data));
+  }
+
+  @Delete(':id/privilegios/:privilegioId')
+  @ApiOperation({ summary: 'Remover un privilegio de un rol', description: 'Elimina la asignación de un privilegio específico de un rol' })
+  @ApiParam({ name: 'id', description: 'UUID del rol', type: 'string' })
+  @ApiParam({ name: 'privilegioId', description: 'UUID del privilegio a remover', type: 'string' })
+  @ApiResponse({ status: 204, description: 'Privilegio removido del rol' })
+  @ApiResponse({ status: 404, description: 'Rol o privilegio no encontrado' })
+  removePrivilegio(
+    @Param('id') id: string,
+    @Param('privilegioId') privilegioId: string,
+  ): Observable<any> {
+    return this.httpService
+      .delete(`${this.authServiceUrl}/roles/${id}/privilegios/${privilegioId}`)
       .pipe(map((response) => response.data));
   }
 }

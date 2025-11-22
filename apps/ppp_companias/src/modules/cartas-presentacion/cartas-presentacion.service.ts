@@ -3,14 +3,49 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
+import { firstValueFrom } from 'rxjs';
 import { CreateCartaPresentacionDto, UpdateCartaPresentacionDto } from './dto';
 import { PrismaCompaniasService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class CartasPresentacionService {
-  constructor(private prisma: PrismaCompaniasService) {}
+  private authServiceUrl: string;
+
+  constructor(
+    private prisma: PrismaCompaniasService,
+    private httpService: HttpService,
+    private configService: ConfigService,
+  ) {
+    const authHost = this.configService.get<string>('PPP_AUTH_HOST', 'localhost');
+    const authPort = this.configService.get<string>('PPP_AUTH_PORT', '3001');
+    this.authServiceUrl = authPort === '443' 
+      ? `https://${authHost}` 
+      : `http://${authHost}:${authPort}`;
+  }
 
   async create(createCartaPresentacionDto: CreateCartaPresentacionDto) {
+    // Validar que el alumno existe en ppp_auth
+    try {
+      await firstValueFrom(
+        this.httpService.get(`${this.authServiceUrl}/alumnos/${createCartaPresentacionDto.idAlumno}`)
+      );
+    } catch (error) {
+      throw new BadRequestException(`Alumno con ID ${createCartaPresentacionDto.idAlumno} no encontrado en el servicio de autenticación`);
+    }
+
+    // Validar que la secretaria existe en ppp_auth (si se proporcionó)
+    if (createCartaPresentacionDto.idSecretaria) {
+      try {
+        await firstValueFrom(
+          this.httpService.get(`${this.authServiceUrl}/secretarias/${createCartaPresentacionDto.idSecretaria}`)
+        );
+      } catch (error) {
+        throw new BadRequestException(`Secretaria con ID ${createCartaPresentacionDto.idSecretaria} no encontrada en el servicio de autenticación`);
+      }
+    }
+
     // Verificar que la empresa existe
     const empresa = await this.prisma.empresa.findUnique({
       where: { id: createCartaPresentacionDto.idEmpresa },

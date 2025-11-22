@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
-import { PrivilegiosService } from './privilegios.service';
+import { HttpModule } from '@nestjs/axios';
+import { ConfigModule } from '@nestjs/config';
 import { PrivilegiosController } from './privilegios.controller';
 
 @Module({
-  imports: [],
+  imports: [
+    HttpModule,
+    ConfigModule,
+  ],
   controllers: [PrivilegiosController],
-  providers: [PrivilegiosService],
-  exports: [PrivilegiosService],
 })
 export class PrivilegiosModule {}
