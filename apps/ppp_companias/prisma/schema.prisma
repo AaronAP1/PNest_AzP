@@ -44,7 +44,6 @@ model SolicitudPpp {
 
   empresa             Empresa             @relation(fields: [idEmpresa], references: [id], onDelete: Restrict)
   documentos          Documento[]
-  cartaPresentacion   CartaPresentacion?
   reuniones           Reunion[]
 
   @@index([idSupervisor])
@@ -59,7 +58,6 @@ model SolicitudPpp {
 /// =========================
 model CartaPresentacion {
   id            String         @id @default(uuid()) @db.Uuid
-  idSolicitud   String?        @unique @map("id_solicitud") @db.Uuid
   idAlumno      String         @map("id_alumno") @db.Uuid
   idEmpresa     String         @map("id_empresa") @db.Uuid
   idSecretaria  String?        @map("id_secretaria") @db.Uuid
@@ -72,7 +70,6 @@ model CartaPresentacion {
   updatedAt     DateTime       @updatedAt @map("updated_at")
 
   // Relations
-  solicitud     SolicitudPpp?  @relation(fields: [idSolicitud], references: [id], onDelete: SetNull)
   empresa       Empresa        @relation(fields: [idEmpresa], references: [id], onDelete: Restrict)
 
   @@index([idAlumno])

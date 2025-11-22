@@ -20,26 +20,18 @@ export class CreateCartaPresentacionDto {
 
   @ApiProperty({ 
     description: 'UUID de la empresa destino', 
-    example: '550e8400-e29b-41d4-a716-446655440001'
+    example: '550e8400-e29b-41d4-a716-446655440002'
   })
   @IsUUID()
   idEmpresa: string;
 
   @ApiPropertyOptional({ 
     description: 'UUID de la secretaria que gestiona (opcional)', 
-    example: '550e8400-e29b-41d4-a716-446655440002'
-  })
-  @IsOptional()
-  @IsUUID()
-  idSecretaria?: string;
-
-  @ApiPropertyOptional({ 
-    description: 'UUID del documento generado (opcional)', 
     example: '550e8400-e29b-41d4-a716-446655440003'
   })
   @IsOptional()
   @IsUUID()
-  documentoId?: string;
+  idSecretaria?: string;
 
   @ApiPropertyOptional({ 
     description: 'Área de práctica o departamento', 
