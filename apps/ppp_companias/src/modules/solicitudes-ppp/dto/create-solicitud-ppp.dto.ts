@@ -1,13 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID, IsEnum, IsOptional, IsNotEmpty } from 'class-validator';
-
-export enum EstadoSolicitud {
-  pendiente = 'pendiente',
-  en_proceso = 'en_proceso',
-  aprobado = 'aprobado',
-  rechazado = 'rechazado',
-  cancelado = 'cancelado'
-}
+import { IsUUID, IsInt, IsIn, IsOptional, IsNotEmpty } from 'class-validator';
+import { ESTADO_SOLICITUD, VALORES_ESTADO_SOLICITUD } from '../../../constants/estados.constants';
 
 export class CreateSolicitudPppDto {
   @ApiProperty({
@@ -36,12 +29,13 @@ export class CreateSolicitudPppDto {
 
   @ApiProperty({
     description: 'Estado de la solicitud',
-    enum: EstadoSolicitud,
-    example: EstadoSolicitud.pendiente,
+    enum: [ESTADO_SOLICITUD.EN_PROCESO, ESTADO_SOLICITUD.ASIGNADO, ESTADO_SOLICITUD.FINALIZADO, ESTADO_SOLICITUD.RECHAZADO],
+    example: ESTADO_SOLICITUD.EN_PROCESO,
     required: false,
-    default: EstadoSolicitud.pendiente,
+    default: ESTADO_SOLICITUD.EN_PROCESO,
   })
-  @IsEnum(EstadoSolicitud)
   @IsOptional()
-  estado?: EstadoSolicitud;
+  @IsInt()
+  @IsIn(VALORES_ESTADO_SOLICITUD, { message: 'Estado debe ser 0 (EN_PROCESO), 1 (ASIGNADO), 5 (FINALIZADO) o 99 (RECHAZADO)' })
+  estado?: number;
 }

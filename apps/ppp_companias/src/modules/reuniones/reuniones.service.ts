@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaCompaniasService } from '../../prisma/prisma.service';
-import { CreateReunionDto, EstadoReunion } from './dto/create-reunion.dto';
+import { CreateReunionDto } from './dto/create-reunion.dto';
 import { UpdateReunionDto } from './dto/update-reunion.dto';
+import { ESTADO_REUNION } from '../../constants/estados.constants';
 
 @Injectable()
 export class ReunionesService {
@@ -12,7 +13,7 @@ export class ReunionesService {
       return await this.prisma.reunion.create({
         data: {
           idSolicitud: createDto.idSolicitud,
-          estado: createDto.estado as any || 'pendiente' as any,
+          estado: createDto.estado ?? ESTADO_REUNION.PENDIENTE,
         },
       });
     } catch (error) {
@@ -54,9 +55,9 @@ export class ReunionesService {
     });
   }
 
-  async findByEstado(estado: EstadoReunion) {
+  async findByEstado(estado: number) {
     return this.prisma.reunion.findMany({
-      where: { estado: estado as any },
+      where: { estado },
       include: {
         solicitud: true,
       },
@@ -71,7 +72,7 @@ export class ReunionesService {
       return await this.prisma.reunion.update({
         where: { id },
         data: {
-          ...(updateDto.estado && { estado: updateDto.estado as any }),
+          ...(updateDto.estado !== undefined && { estado: updateDto.estado }),
         },
       });
     } catch (error) {
@@ -91,11 +92,16 @@ export class ReunionesService {
   }
 
   async countByEstado() {
-    const estados = ['pendiente', 'realizada', 'cancelada'];
+    const estados = [
+      { nombre: 'PENDIENTE', valor: ESTADO_REUNION.PENDIENTE },
+      { nombre: 'REALIZADA', valor: ESTADO_REUNION.REALIZADA },
+      { nombre: 'CANCELADA', valor: ESTADO_REUNION.CANCELADA },
+    ];
     const counts = await Promise.all(
       estados.map(async (estado) => ({
-        estado,
-        count: await this.prisma.reunion.count({ where: { estado: estado as any } }),
+        estado: estado.nombre,
+        valor: estado.valor,
+        count: await this.prisma.reunion.count({ where: { estado: estado.valor } }),
       }))
     );
     return counts;

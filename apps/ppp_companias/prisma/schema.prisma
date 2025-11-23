@@ -38,7 +38,7 @@ model SolicitudPpp {
   idSupervisor String          @map("id_supervisor") @db.Uuid // Referencia a ppp_auth.supervisores (sin @relation)
   idAlumno     String          @map("id_alumno") @db.Uuid // Referencia a ppp_auth.alumnos (sin @relation)
   idEmpresa    String          @map("id_empresa") @db.Uuid
-  estado       EstadoSolicitud @default(pendiente)
+  estado       Int             @default(0) // 0=EN_PROCESO, 1=ASIGNADO, 5=FINALIZADO, 99=RECHAZADO
   createdAt    DateTime        @default(now()) @map("created_at")
   updatedAt    DateTime        @updatedAt @map("updated_at")
 
@@ -65,7 +65,7 @@ model CartaPresentacion {
   fechaInicio   DateTime       @map("fecha_inicio") @db.Date
   archivo       String?        @db.Text
   motivoRechazo String?        @map("motivo_rechazo") @db.Text
-  estado        CartaEstado    @default(borrador)
+  estado        Int            @default(0) // 0=PENDIENTE, 1=EN_PROCESO, 5=ENTREGADO, 99=RECHAZADO
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
 
@@ -85,7 +85,7 @@ model CartaPresentacion {
 model Reunion {
   id           String          @id @default(uuid()) @db.Uuid
   idSolicitud  String          @map("id_solicitud") @db.Uuid
-  estado       EstadoReunion   @default(pendiente)
+  estado       Int             @default(0) // 0=PENDIENTE, 5=REALIZADA, 99=CANCELADA
   createdAt    DateTime        @default(now()) @map("created_at")
   updatedAt    DateTime        @updatedAt @map("updated_at")
 
@@ -131,26 +131,4 @@ model Documento {
   @@map("documento")
 }
 
-/// =========================
-///    ENUMS
-/// =========================
-enum EstadoSolicitud {
-  pendiente
-  en_proceso
-  aprobado
-  rechazado
-  cancelado
-}
 
-enum CartaEstado {
-  borrador
-  enviada
-  aprobada
-  rechazada
-}
-
-enum EstadoReunion {
-  pendiente
-  realizada
-  cancelada
-}

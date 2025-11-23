@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateEvaluacionPracticanteDto } from './dto/create-evaluacion-practicante.dto';
 import { UpdateEvaluacionPracticanteDto } from './dto/update-evaluacion-practicante.dto';
+import { ESTADO_EVALUACION_PRACTICANTE } from '../../constants/estados.constants';
 
 @Injectable()
 export class EvaluacionPracticanteService {
@@ -36,7 +37,7 @@ export class EvaluacionPracticanteService {
       data: {
         idSolicitud: createDto.idSolicitud,
         comentario: createDto.comentario,
-        estado: createDto.estado ?? true,
+        estado: createDto.estado ?? ESTADO_EVALUACION_PRACTICANTE.PENDIENTE,
       },
     });
   }

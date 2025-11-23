@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { CreateCartaPresentacionDto, UpdateCartaPresentacionDto } from './dto';
 import { PrismaCompaniasService } from '../../prisma/prisma.service';
+import { ESTADO_CARTA } from '../../constants/estados.constants';
 
 @Injectable()
 export class CartasPresentacionService {
@@ -65,7 +66,7 @@ export class CartasPresentacionService {
         areaPractica: createCartaPresentacionDto.areaPractica,
         fechaInicio: new Date(createCartaPresentacionDto.fechaInicio),
         motivoRechazo: createCartaPresentacionDto.motivoRechazo,
-        estado: (createCartaPresentacionDto.estado as any) || 'borrador' as any,
+        estado: createCartaPresentacionDto.estado ?? ESTADO_CARTA.PENDIENTE,
       },
       include: {
         empresa: true,
@@ -129,9 +130,9 @@ export class CartasPresentacionService {
     });
   }
 
-  async findByEstado(estado: string) {
+  async findByEstado(estado: number) {
     return await this.prisma.cartaPresentacion.findMany({
-      where: { estado: estado as any },
+      where: { estado },
       include: {
         empresa: true,
       },
@@ -168,8 +169,8 @@ export class CartasPresentacionService {
       dataToUpdate.motivoRechazo = updateCartaPresentacionDto.motivoRechazo;
     }
 
-    if (updateCartaPresentacionDto.estado) {
-      dataToUpdate.estado = updateCartaPresentacionDto.estado as any;
+    if (updateCartaPresentacionDto.estado !== undefined) {
+      dataToUpdate.estado = updateCartaPresentacionDto.estado;
     }
 
     return await this.prisma.cartaPresentacion.update({
@@ -195,47 +196,47 @@ export class CartasPresentacionService {
   async submit(id: string) {
     const carta = await this.findOne(id);
     
-    if (carta.estado !== 'borrador' as any) {
-      throw new BadRequestException('Solo se pueden enviar cartas en estado borrador');
+    if (carta.estado !== ESTADO_CARTA.PENDIENTE) {
+      throw new BadRequestException('Solo se pueden enviar cartas en estado PENDIENTE');
     }
 
     return await this.prisma.cartaPresentacion.update({
       where: { id },
-      data: { estado: 'enviada' as any },
+      data: { estado: ESTADO_CARTA.EN_PROCESO },
     });
   }
 
   async review(id: string) {
     const carta = await this.findOne(id);
     
-    if (carta.estado !== 'enviada' as any) {
-      throw new BadRequestException('Solo se pueden revisar cartas enviadas');
+    if (carta.estado !== ESTADO_CARTA.EN_PROCESO) {
+      throw new BadRequestException('Solo se pueden revisar cartas en proceso');
     }
 
     return await this.prisma.cartaPresentacion.update({
       where: { id },
-      data: { estado: 'en_revision' as any },
+      data: { estado: ESTADO_CARTA.ENTREGADO },
     });
   }
 
   async approve(id: string) {
     const carta = await this.findOne(id);
     
-    if (carta.estado !== 'en_revision' as any) {
-      throw new BadRequestException('Solo se pueden aprobar cartas en revisión');
+    if (carta.estado !== ESTADO_CARTA.EN_PROCESO) {
+      throw new BadRequestException('Solo se pueden aprobar cartas en proceso');
     }
 
     return await this.prisma.cartaPresentacion.update({
       where: { id },
-      data: { estado: 'aprobada' as any },
+      data: { estado: ESTADO_CARTA.ENTREGADO },
     });
   }
 
   async reject(id: string, motivoRechazo: string) {
     const carta = await this.findOne(id);
     
-    if (carta.estado !== 'en_revision' as any) {
-      throw new BadRequestException('Solo se pueden rechazar cartas en revisión');
+    if (carta.estado !== ESTADO_CARTA.EN_PROCESO) {
+      throw new BadRequestException('Solo se pueden rechazar cartas en proceso');
     }
 
     if (!motivoRechazo) {
@@ -245,7 +246,7 @@ export class CartasPresentacionService {
     return await this.prisma.cartaPresentacion.update({
       where: { id },
       data: { 
-        estado: 'rechazada' as any,
+        estado: ESTADO_CARTA.RECHAZADO,
         motivoRechazo,
       },
     });
@@ -254,13 +255,13 @@ export class CartasPresentacionService {
   async cancel(id: string) {
     const carta = await this.findOne(id);
     
-    if (carta.estado === 'aprobada' as any) {
-      throw new BadRequestException('No se pueden cancelar cartas aprobadas');
+    if (carta.estado === ESTADO_CARTA.ENTREGADO) {
+      throw new BadRequestException('No se pueden cancelar cartas entregadas');
     }
 
     return await this.prisma.cartaPresentacion.update({
       where: { id },
-      data: { estado: 'cancelada' as any },
+      data: { estado: ESTADO_CARTA.RECHAZADO },
     });
   }
 }

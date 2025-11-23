@@ -3,8 +3,9 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { PrismaCompaniasService } from '../../prisma/prisma.service';
-import { CreateSolicitudPppDto, EstadoSolicitud } from './dto/create-solicitud-ppp.dto';
+import { CreateSolicitudPppDto } from './dto/create-solicitud-ppp.dto';
 import { UpdateSolicitudPppDto } from './dto/update-solicitud-ppp.dto';
+import { ESTADO_SOLICITUD } from '../../constants/estados.constants';
 
 @Injectable()
 export class SolicitudesPppService {
@@ -56,7 +57,7 @@ export class SolicitudesPppService {
           idSupervisor: createDto.idSupervisor,
           idAlumno: createDto.idAlumno,
           idEmpresa: createDto.idEmpresa,
-          estado: createDto.estado || ('pendiente' as any),
+          estado: createDto.estado ?? ESTADO_SOLICITUD.EN_PROCESO,
         },
         include: {
           empresa: true,
@@ -122,9 +123,9 @@ export class SolicitudesPppService {
     });
   }
 
-  async findByEstado(estado: string) {
+  async findByEstado(estado: number) {
     return this.prisma.solicitudPpp.findMany({
-      where: { estado: estado as any },
+      where: { estado },
       include: {
         empresa: true,
         reuniones: true,
@@ -143,7 +144,7 @@ export class SolicitudesPppService {
         data: {
           ...(updateDto.idSupervisor && { idSupervisor: updateDto.idSupervisor }),
           ...(updateDto.idAlumno && { idAlumno: updateDto.idAlumno }),
-          ...(updateDto.estado && { estado: updateDto.estado as any }),
+          ...(updateDto.estado !== undefined && { estado: updateDto.estado }),
         },
       });
     } catch (error) {
@@ -163,11 +164,17 @@ export class SolicitudesPppService {
   }
 
   async countByEstado() {
-    const estados = ['pendiente', 'en_proceso', 'aprobado', 'rechazado', 'cancelado'];
+    const estados = [
+      { nombre: 'EN_PROCESO', valor: ESTADO_SOLICITUD.EN_PROCESO },
+      { nombre: 'ASIGNADO', valor: ESTADO_SOLICITUD.ASIGNADO },
+      { nombre: 'FINALIZADO', valor: ESTADO_SOLICITUD.FINALIZADO },
+      { nombre: 'RECHAZADO', valor: ESTADO_SOLICITUD.RECHAZADO },
+    ];
     const counts = await Promise.all(
       estados.map(async (estado) => ({
-        estado,
-        count: await this.prisma.solicitudPpp.count({ where: { estado: estado as any } }),
+        estado: estado.nombre,
+        valor: estado.valor,
+        count: await this.prisma.solicitudPpp.count({ where: { estado: estado.valor } }),
       }))
     );
     return counts;

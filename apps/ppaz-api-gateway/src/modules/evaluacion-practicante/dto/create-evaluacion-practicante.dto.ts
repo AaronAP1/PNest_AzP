@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsUUID, IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsUUID, IsNotEmpty, IsString, IsOptional, IsInt, IsIn } from 'class-validator';
+import { ESTADO_EVALUACION_PRACTICANTE, VALORES_ESTADO_EVALUACION_PRACTICANTE } from '../../../constants/estados.constants';
 
 export class CreateEvaluacionPracticanteDto {
   @ApiProperty({
@@ -17,4 +18,15 @@ export class CreateEvaluacionPracticanteDto {
   @IsOptional()
   @IsString()
   comentario?: string;
+
+  @ApiPropertyOptional({
+    description: 'Estado de revisión de la evaluación',
+    enum: [ESTADO_EVALUACION_PRACTICANTE.PENDIENTE, ESTADO_EVALUACION_PRACTICANTE.EN_REVISION, ESTADO_EVALUACION_PRACTICANTE.CONFORME, ESTADO_EVALUACION_PRACTICANTE.RECHAZADO],
+    example: ESTADO_EVALUACION_PRACTICANTE.PENDIENTE,
+    default: ESTADO_EVALUACION_PRACTICANTE.PENDIENTE,
+  })
+  @IsOptional()
+  @IsInt()
+  @IsIn(VALORES_ESTADO_EVALUACION_PRACTICANTE, { message: 'Estado debe ser 0, 1, 5 o 99' })
+  estado?: number;
 }

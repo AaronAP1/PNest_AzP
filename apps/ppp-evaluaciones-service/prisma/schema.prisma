@@ -16,7 +16,7 @@ model EvaluacionSupervisor {
   idSupervisor String   @map("id_supervisor") @db.Uuid // Referencia a ppp_auth.supervisores (sin @relation)
   idAlumno     String   @map("id_alumno") @db.Uuid // Referencia a ppp_auth.alumnos (sin @relation)
   comentario   String?  @db.Text
-  estado       Boolean  @default(true)
+  estado       Int      @default(0) // 0=PENDIENTE, 5=EVALUADO
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
@@ -69,7 +69,7 @@ model EvaluacionPracticante {
   id          String   @id @default(uuid()) @db.Uuid
   idSolicitud String   @map("id_solicitud") @db.Uuid // Referencia a ppp_companias.solicitud_ppp (sin @relation)
   comentario  String?  @db.Text
-  estado      Boolean  @default(true)
+  estado      Int      @default(0) // 0=PENDIENTE, 1=EN_REVISION, 5=CONFORME, 99=RECHAZADO
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 

@@ -1,14 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsUUID, IsOptional, IsDateString, MaxLength, IsNotEmpty, IsEnum } from 'class-validator';
-
-export enum CartaEstado {
-  borrador = 'borrador',
-  presentada = 'presentada',
-  en_revision = 'en_revision',
-  aprobada = 'aprobada',
-  rechazada = 'rechazada',
-  cancelada = 'cancelada',
-}
+import { IsString, IsUUID, IsOptional, IsDateString, MaxLength, IsNotEmpty, IsInt, IsIn } from 'class-validator';
+import { ESTADO_CARTA, VALORES_ESTADO_CARTA } from '../../../constants/estados.constants';
 
 export class CreateCartaPresentacionDto {
   @ApiProperty({
@@ -65,12 +57,13 @@ export class CreateCartaPresentacionDto {
 
   @ApiProperty({
     description: 'Estado de la carta de presentación',
-    enum: CartaEstado,
-    example: CartaEstado.borrador,
+    enum: [ESTADO_CARTA.PENDIENTE, ESTADO_CARTA.EN_PROCESO, ESTADO_CARTA.ENTREGADO, ESTADO_CARTA.RECHAZADO],
+    example: ESTADO_CARTA.PENDIENTE,
     required: false,
-    default: CartaEstado.borrador,
+    default: ESTADO_CARTA.PENDIENTE,
   })
   @IsOptional()
-  @IsEnum(CartaEstado)
-  estado?: string;
+  @IsInt()
+  @IsIn(VALORES_ESTADO_CARTA, { message: 'Estado debe ser 0, 1, 5 o 99' })
+  estado?: number;
 }
