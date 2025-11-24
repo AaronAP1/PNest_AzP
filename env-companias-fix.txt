@@ -1,0 +1,8 @@
+DATABASE_URL_COMPANIAS=postgresql://pppadmin:PppSecure2025!@ppp-postgres-local.postgres.database.azure.com:5432/ppp_companias?schema=public&sslmode=require
+DATABASE_URL_CORE=postgresql://pppadmin:PppSecure2025!@ppp-postgres-local.postgres.database.azure.com:5432/ppp_core?schema=public&sslmode=require
+APP_NAME=ppp_companias
+PORT=3003
+HOST=0.0.0.0
+NODE_ENV=production
+LOG_LEVEL=info
+CORE_SERVICE_URL=http://ppp-core.internal.calmplant-63fb30e9.brazilsouth.azurecontainerapps.io

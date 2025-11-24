@@ -1,0 +1,7 @@
+DATABASE_URL_CORE=postgresql://pppadmin:PppSecure2025!@ppp-postgres-local.postgres.database.azure.com:5432/ppp_core?schema=public&sslmode=require
+DATABASE_URL_ACADEMIC=postgresql://pppadmin:PppSecure2025!@ppp-postgres-local.postgres.database.azure.com:5432/ppp_core?schema=public&sslmode=require
+APP_NAME=ppp_core
+PORT=3002
+HOST=0.0.0.0
+NODE_ENV=production
+LOG_LEVEL=info
