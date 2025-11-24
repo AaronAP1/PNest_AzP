@@ -8,17 +8,46 @@ export class RolesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createRolDto: CreateRolDto) {
+    const { privilegiosIds, ...rolData } = createRolDto;
+
     // Verificar si el nombre ya existe
     const existingRol = await this.prisma.rol.findFirst({
-      where: { nombre: createRolDto.nombre },
+      where: { nombre: rolData.nombre },
     });
 
     if (existingRol) {
       throw new ConflictException('Ya existe un rol con ese nombre');
     }
 
+    // Si se proporcionan privilegios, verificar que existen
+    if (privilegiosIds && privilegiosIds.length > 0) {
+      const privilegios = await this.prisma.privilegio.findMany({
+        where: { id: { in: privilegiosIds } },
+      });
+
+      if (privilegios.length !== privilegiosIds.length) {
+        throw new NotFoundException('Uno o más privilegios no existen');
+      }
+    }
+
     return this.prisma.rol.create({
-      data: createRolDto,
+      data: {
+        ...rolData,
+        privilegios: privilegiosIds
+          ? {
+              create: privilegiosIds.map((idPrivilegio) => ({
+                idPrivilegio,
+              })),
+            }
+          : undefined,
+      },
+      include: {
+        privilegios: {
+          include: {
+            privilegio: true,
+          },
+        },
+      },
     });
   }
 
@@ -26,7 +55,12 @@ export class RolesService {
     return this.prisma.rol.findMany({
       include: {
         _count: {
-          select: { usuarios: true },
+          select: { usuarios: true, privilegios: true },
+        },
+        privilegios: {
+          include: {
+            privilegio: true,
+          },
         },
       },
       orderBy: {
@@ -52,6 +86,11 @@ export class RolesService {
             },
           },
         },
+        privilegios: {
+          include: {
+            privilegio: true,
+          },
+        },
       },
     });
 
@@ -65,11 +104,13 @@ export class RolesService {
   async update(id: string, updateRolDto: UpdateRolDto) {
     await this.findOne(id); // Verificar existencia
 
+    const { privilegiosIds, ...rolData } = updateRolDto;
+
     // Si se actualiza el nombre, verificar que no exista
-    if (updateRolDto.nombre) {
+    if (rolData.nombre) {
       const existingRol = await this.prisma.rol.findFirst({
         where: {
-          nombre: updateRolDto.nombre,
+          nombre: rolData.nombre,
           NOT: { id },
         },
       });
@@ -79,9 +120,53 @@ export class RolesService {
       }
     }
 
+    // Si se proporcionan privilegios, reemplazar las relaciones
+    if (privilegiosIds) {
+      // Verificar que todos los privilegios existen
+      const privilegios = await this.prisma.privilegio.findMany({
+        where: { id: { in: privilegiosIds } },
+      });
+
+      if (privilegios.length !== privilegiosIds.length) {
+        throw new NotFoundException('Uno o más privilegios no existen');
+      }
+
+      // Eliminar relaciones existentes y crear nuevas
+      await this.prisma.rolPrivilegio.deleteMany({
+        where: { idRol: id },
+      });
+
+      return this.prisma.rol.update({
+        where: { id },
+        data: {
+          ...rolData,
+          privilegios: {
+            create: privilegiosIds.map((idPrivilegio) => ({
+              idPrivilegio,
+            })),
+          },
+        },
+        include: {
+          privilegios: {
+            include: {
+              privilegio: true,
+            },
+          },
+        },
+      });
+    }
+
+    // Si no hay privilegios, solo actualizar datos del rol
     return this.prisma.rol.update({
       where: { id },
-      data: updateRolDto,
+      data: rolData,
+      include: {
+        privilegios: {
+          include: {
+            privilegio: true,
+          },
+        },
+      },
     });
   }
 
