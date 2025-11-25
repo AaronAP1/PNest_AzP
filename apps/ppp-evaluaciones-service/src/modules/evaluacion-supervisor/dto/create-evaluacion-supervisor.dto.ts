@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID, IsString, IsInt, IsIn, IsOptional, IsNotEmpty } from 'class-validator';
-import { ESTADO_EVALUACION_SUPERVISOR, VALORES_ESTADO_EVALUACION_SUPERVISOR } from '../../../constants/estados.constants';
+import { IsUUID, IsString, IsBoolean, IsOptional, IsNotEmpty } from 'class-validator';
 
 export class CreateEvaluacionSupervisorDto {
   @ApiProperty({
@@ -29,14 +28,12 @@ export class CreateEvaluacionSupervisorDto {
   comentario?: string;
 
   @ApiProperty({
-    description: 'Estado de la evaluación',
-    enum: [ESTADO_EVALUACION_SUPERVISOR.PENDIENTE, ESTADO_EVALUACION_SUPERVISOR.EVALUADO],
-    example: ESTADO_EVALUACION_SUPERVISOR.PENDIENTE,
+    description: 'Estado de la evaluación (activo/inactivo)',
+    example: true,
     required: false,
-    default: ESTADO_EVALUACION_SUPERVISOR.PENDIENTE,
+    default: true,
   })
   @IsOptional()
-  @IsInt()
-  @IsIn(VALORES_ESTADO_EVALUACION_SUPERVISOR, { message: 'Estado debe ser 0 (PENDIENTE) o 5 (EVALUADO)' })
-  estado?: number;
+  @IsBoolean()
+  estado?: boolean;
 }

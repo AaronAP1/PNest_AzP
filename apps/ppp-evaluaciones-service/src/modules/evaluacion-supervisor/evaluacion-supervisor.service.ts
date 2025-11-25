@@ -5,7 +5,6 @@ import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateEvaluacionSupervisorDto } from './dto/create-evaluacion-supervisor.dto';
 import { UpdateEvaluacionSupervisorDto } from './dto/update-evaluacion-supervisor.dto';
-import { ESTADO_EVALUACION_SUPERVISOR } from '../../constants/estados.constants';
 
 @Injectable()
 export class EvaluacionSupervisorService {
@@ -47,7 +46,7 @@ export class EvaluacionSupervisorService {
         idSupervisor: createDto.idSupervisor,
         idAlumno: createDto.idAlumno,
         comentario: createDto.comentario,
-        estado: createDto.estado ?? ESTADO_EVALUACION_SUPERVISOR.PENDIENTE,
+        estado: createDto.estado ?? true,
       },
     });
   }
