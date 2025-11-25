@@ -1,0 +1,65 @@
+@startuml Secuencia_Crear_Solicitud
+title Secuencia: Creación de Solicitud de Práctica
+
+actor Alumno
+participant "API Gateway" as Gateway
+participant "Auth Service" as Auth
+participant "Compañías Service" as Companias
+participant "Core Service" as Core
+database "DB Compañías" as DBComp
+database "DB Core" as DBCore
+
+== Autenticación ==
+Alumno -> Gateway: POST /auth/login\n{email, password}
+Gateway -> Auth: Validar credenciales
+Auth --> Gateway: JWT Token
+Gateway --> Alumno: Token + Datos usuario
+
+== Obtener Datos Necesarios ==
+Alumno -> Gateway: GET /empresas\n[Authorization: Bearer token]
+Gateway -> Auth: Validar JWT
+Auth --> Gateway: Usuario válido
+Gateway -> Companias: GET /empresas
+Companias -> DBComp: SELECT * FROM empresa
+DBComp --> Companias: Lista empresas
+Companias --> Gateway: Empresas disponibles
+Gateway --> Alumno: Lista de empresas
+
+Alumno -> Gateway: GET /escuelas
+Gateway -> Core: GET /escuelas
+Core -> DBCore: SELECT * FROM escuela
+DBCore --> Core: Lista escuelas
+Core --> Gateway: Escuelas
+Gateway --> Alumno: Lista de escuelas
+
+== Crear Solicitud ==
+Alumno -> Gateway: POST /solicitudes\n{idEmpresa, fechaInicio, fechaFin, ...}
+Gateway -> Auth: Validar JWT y Rol
+Auth --> Gateway: Autorizado (ROL: ALUMNO)
+
+Gateway -> Companias: POST /solicitudes\n{idAlumno, idEmpresa, ...}
+
+Companias -> Companias: Validar datos
+Companias -> DBComp: SELECT * FROM empresa WHERE id = idEmpresa
+DBComp --> Companias: Empresa existe
+
+alt Empresa no existe
+    Companias --> Gateway: Error 404: Empresa no encontrada
+    Gateway --> Alumno: Error
+else Empresa existe
+    Companias -> DBComp: INSERT INTO solicitud_ppp\n(id, id_alumno, id_empresa, estado=0, ...)
+    DBComp --> Companias: Solicitud creada
+    
+    Companias -> Companias: Enviar notificación email
+    
+    Companias --> Gateway: Solicitud creada exitosamente
+    Gateway --> Alumno: 201 Created\n{solicitudId, estado: EN_PROCESO}
+    
+    note right of Alumno
+        El alumno puede ahora
+        adjuntar documentos a
+        la solicitud creada
+    end note
+end
+
+@enduml

@@ -1,0 +1,98 @@
+@startuml Secuencia_Evaluacion_Supervisor
+title Secuencia: Evaluación de Supervisor a Alumno
+
+actor Supervisor
+participant "API Gateway" as Gateway
+participant "Auth Service" as Auth
+participant "Evaluaciones Service" as Evaluaciones
+participant "Compañías Service" as Companias
+database "DB Evaluaciones" as DBEval
+database "DB Compañías" as DBComp
+participant "Email Service" as Email
+
+== Obtener Alumnos Asignados ==
+Supervisor -> Gateway: GET /solicitudes/asignadas\n[Authorization: Bearer token]
+Gateway -> Auth: Validar JWT
+Auth --> Gateway: Autorizado (SUPERVISOR)
+
+Gateway -> Companias: GET /solicitudes?idSupervisor={id}
+Companias -> DBComp: SELECT * FROM solicitud_ppp\nWHERE id_supervisor = {id} AND estado = 1
+DBComp --> Companias: Solicitudes asignadas
+Companias --> Gateway: Lista de alumnos en práctica
+Gateway --> Supervisor: Alumnos para evaluar
+
+== Iniciar Evaluación ==
+Supervisor -> Gateway: POST /evaluaciones-supervisor\n{idAlumno}
+Gateway -> Auth: Validar JWT
+Auth --> Gateway: Autorizado (SUPERVISOR)
+
+Gateway -> Evaluaciones: POST /evaluaciones-supervisor
+Evaluaciones -> DBEval: INSERT INTO evaluacion_supervisor\n(id, id_supervisor, id_alumno, estado=0)
+DBEval --> Evaluaciones: Evaluación creada (PENDIENTE)
+
+Evaluaciones -> DBEval: SELECT * FROM preguntas WHERE estado = true
+DBEval --> Evaluaciones: Lista de preguntas
+
+Evaluaciones --> Gateway: Evaluación iniciada\n{evaluacionId, preguntas[]}
+Gateway --> Supervisor: Formulario de evaluación
+
+== Responder Preguntas ==
+loop Para cada pregunta
+    Supervisor -> Gateway: POST /evaluaciones-supervisor/{id}/respuestas\n{idPregunta, valor}
+    Gateway -> Evaluaciones: POST /evaluaciones-preguntas
+    
+    Evaluaciones -> DBEval: INSERT INTO evaluacion_preguntas\n(id_evaluacion, id_pregunta, valor)
+    DBEval --> Evaluaciones: Respuesta guardada
+    
+    Evaluaciones --> Gateway: Respuesta registrada
+    Gateway --> Supervisor: Pregunta respondida
+end
+
+== Finalizar Evaluación ==
+Supervisor -> Gateway: PUT /evaluaciones-supervisor/{id}/finalizar\n{comentario}
+Gateway -> Auth: Validar JWT
+Auth --> Gateway: Autorizado
+
+Gateway -> Evaluaciones: PUT /evaluaciones-supervisor/{id}/finalizar
+
+Evaluaciones -> Evaluaciones: Validar todas las preguntas respondidas
+
+alt Preguntas incompletas
+    Evaluaciones --> Gateway: Error 400: Faltan preguntas por responder
+    Gateway --> Supervisor: Error de validación
+else Evaluación completa
+    Evaluaciones -> DBEval: UPDATE evaluacion_supervisor\nSET estado = 5, comentario = {...}
+    DBEval --> Evaluaciones: Evaluación FINALIZADA
+    
+    Evaluaciones -> Evaluaciones: Calcular promedio de respuestas
+    
+    Evaluaciones -> Email: Notificar al alumno\nsobre evaluación completada
+    Email --> Evaluaciones: Email enviado
+    
+    Evaluaciones --> Gateway: 200 OK\n{evaluacionId, promedio, estado: EVALUADO}
+    Gateway --> Supervisor: Evaluación enviada exitosamente
+    
+    note right of Supervisor
+        El alumno puede ver
+        su evaluación y
+        comentarios del supervisor
+    end note
+end
+
+== Alumno Consulta Evaluación ==
+actor Alumno
+Alumno -> Gateway: GET /evaluaciones-supervisor/mis-evaluaciones
+Gateway -> Auth: Validar JWT
+Auth --> Gateway: Autorizado (ALUMNO)
+
+Gateway -> Evaluaciones: GET /evaluaciones-supervisor?idAlumno={id}
+Evaluaciones -> DBEval: SELECT * FROM evaluacion_supervisor\nWHERE id_alumno = {id}
+DBEval --> Evaluaciones: Evaluaciones del alumno
+
+Evaluaciones -> DBEval: SELECT * FROM evaluacion_preguntas\nWHERE id_evaluacion IN (...)
+DBEval --> Evaluaciones: Respuestas detalladas
+
+Evaluaciones --> Gateway: Evaluaciones con detalle
+Gateway --> Alumno: {evaluaciones[], promedio, comentarios}
+
+@enduml

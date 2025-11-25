@@ -1,0 +1,93 @@
+@startuml Secuencia_Carta_Presentacion
+title Secuencia: Generación de Carta de Presentación
+
+actor Alumno
+actor Secretaria
+participant "API Gateway" as Gateway
+participant "Auth Service" as Auth
+participant "Compañías Service" as Companias
+participant "Email Service" as Email
+database "DB Compañías" as DBComp
+participant "Azure Storage" as Storage
+
+== Alumno Solicita Carta ==
+Alumno -> Gateway: POST /cartas-presentacion\n{idEmpresa, areaPractica, fechaInicio}
+Gateway -> Auth: Validar JWT
+Auth --> Gateway: Autorizado (ALUMNO)
+
+Gateway -> Companias: POST /cartas-presentacion
+Companias -> DBComp: INSERT INTO carta_presentacion\n(id_alumno, id_empresa, estado=0)
+DBComp --> Companias: Carta creada (PENDIENTE)
+
+Companias -> Email: Notificar a secretaria
+Email --> Companias: Email enviado
+
+Companias --> Gateway: 201 Created
+Gateway --> Alumno: Carta solicitada\n{cartaId, estado: PENDIENTE}
+
+note right of Alumno
+    El alumno espera que
+    la secretaria procese
+    su solicitud
+end note
+
+== Secretaria Revisa y Genera ==
+Secretaria -> Gateway: GET /cartas-presentacion?estado=PENDIENTE
+Gateway -> Auth: Validar JWT
+Auth --> Gateway: Autorizado (SECRETARIA)
+
+Gateway -> Companias: GET /cartas-presentacion?estado=0
+Companias -> DBComp: SELECT * FROM carta_presentacion\nWHERE estado = 0
+DBComp --> Companias: Lista de cartas pendientes
+Companias --> Gateway: Cartas pendientes
+Gateway --> Secretaria: Lista para revisar
+
+Secretaria -> Gateway: PUT /cartas-presentacion/{id}/procesar
+Gateway -> Companias: PUT /cartas-presentacion/{id}/procesar
+
+Companias -> Companias: Validar datos del alumno y empresa
+Companias -> DBComp: UPDATE carta_presentacion\nSET estado = 1 WHERE id = {id}
+DBComp --> Companias: Estado: EN_PROCESO
+
+alt Datos incompletos
+    Companias -> DBComp: UPDATE SET estado = 99, motivo_rechazo
+    Companias -> Email: Notificar rechazo al alumno
+    Companias --> Gateway: Carta rechazada
+    Gateway --> Secretaria: Rechazada con motivo
+else Datos completos
+    Companias -> Companias: Generar PDF de carta
+    
+    Companias -> Storage: PUT /cartas/carta-{id}.pdf
+    Storage --> Companias: URL del archivo
+    
+    Companias -> DBComp: UPDATE carta_presentacion\nSET estado = 5, archivo = URL
+    DBComp --> Companias: Carta entregada
+    
+    Companias -> Email: Notificar al alumno\ncon link de descarga
+    Email --> Companias: Email enviado
+    
+    Companias --> Gateway: 200 OK\n{cartaId, archivo: URL}
+    Gateway --> Secretaria: Carta generada exitosamente
+    
+    note right of Secretaria
+        La carta PDF está disponible
+        para descarga por el alumno
+    end note
+end
+
+== Alumno Descarga Carta ==
+Alumno -> Gateway: GET /cartas-presentacion/{id}/descargar
+Gateway -> Auth: Validar JWT
+Auth --> Gateway: Autorizado
+
+Gateway -> Companias: GET /cartas-presentacion/{id}
+Companias -> DBComp: SELECT * FROM carta_presentacion
+DBComp --> Companias: Datos de carta
+
+Companias -> Storage: GET /cartas/carta-{id}.pdf
+Storage --> Companias: Archivo PDF
+
+Companias --> Gateway: PDF Stream
+Gateway --> Alumno: Descarga carta.pdf
+
+@enduml

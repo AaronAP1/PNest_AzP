@@ -1,0 +1,254 @@
+@startuml Diagrama_Estados_Completo
+title Diagrama de Estados Completo - Sistema PPP
+
+' ===========================
+' ESTADOS DE SOLICITUD PPP
+' ===========================
+state "Estados de Solicitud PPP" as solicitud_states {
+    [*] --> EN_PROCESO : Alumno crea solicitud
+    
+    EN_PROCESO : Estado: 0
+    EN_PROCESO : Solicitud pendiente de asignación
+    EN_PROCESO : Acciones: Editar, Cancelar
+    
+    EN_PROCESO --> ASIGNADO : Supervisor acepta
+    EN_PROCESO --> RECHAZADO : Supervisor/Coordinador rechaza
+    
+    ASIGNADO : Estado: 1
+    ASIGNADO : Práctica en curso
+    ASIGNADO : Acciones: Subir documentos, Reuniones
+    
+    ASIGNADO --> FINALIZADO : Completa práctica
+    ASIGNADO --> RECHAZADO : Abandona práctica
+    
+    FINALIZADO : Estado: 5
+    FINALIZADO : Práctica exitosa
+    FINALIZADO : Trigger: Evaluación final
+    
+    RECHAZADO : Estado: 99
+    RECHAZADO : Solicitud rechazada
+    RECHAZADO : Motivo registrado
+    
+    FINALIZADO --> [*]
+    RECHAZADO --> [*]
+    
+    note right of EN_PROCESO
+        Transiciones:
+        - Supervisor asigna → ASIGNADO
+        - Rechaza → RECHAZADO
+        - Alumno cancela → RECHAZADO
+    end note
+}
+
+' ===========================
+' ESTADOS DE CARTA PRESENTACIÓN
+' ===========================
+state "Estados de Carta de Presentación" as carta_states {
+    [*] --> PENDIENTE : Alumno solicita carta
+    
+    PENDIENTE : Estado: 0
+    PENDIENTE : Esperando revisión
+    PENDIENTE : Actor: Secretaria
+    
+    PENDIENTE --> EN_PROCESO_CARTA : Secretaria revisa
+    
+    EN_PROCESO_CARTA : Estado: 1
+    EN_PROCESO_CARTA : En generación
+    EN_PROCESO_CARTA : Validando datos
+    
+    EN_PROCESO_CARTA --> ENTREGADO : Aprueba y genera PDF
+    EN_PROCESO_CARTA --> RECHAZADO_CARTA : Rechaza (datos incorrectos)
+    
+    ENTREGADO : Estado: 5
+    ENTREGADO : Carta disponible
+    ENTREGADO : PDF en Azure Storage
+    
+    RECHAZADO_CARTA : Estado: 99
+    RECHAZADO_CARTA : Carta rechazada
+    RECHAZADO_CARTA : Motivo documentado
+    
+    ENTREGADO --> [*]
+    RECHAZADO_CARTA --> [*] : Alumno corrige y re-solicita
+    
+    note right of PENDIENTE
+        Tiempo promedio:
+        24-48 horas
+    end note
+}
+
+' ===========================
+' ESTADOS DE EVALUACIÓN SUPERVISOR
+' ===========================
+state "Estados de Evaluación Supervisor" as eval_sup_states {
+    [*] --> PENDIENTE_EVAL_SUP : Supervisor inicia evaluación
+    
+    PENDIENTE_EVAL_SUP : Estado: 0
+    PENDIENTE_EVAL_SUP : Preguntas sin responder
+    PENDIENTE_EVAL_SUP : En progreso
+    
+    PENDIENTE_EVAL_SUP --> EVALUADO : Completa todas las preguntas
+    
+    EVALUADO : Estado: 5
+    EVALUADO : Evaluación finalizada
+    EVALUADO : Promedio calculado
+    EVALUADO : Alumno puede ver resultado
+    
+    EVALUADO --> [*]
+    
+    note right of PENDIENTE_EVAL_SUP
+        Puede guardar progreso
+        y continuar después
+    end note
+}
+
+' ===========================
+' ESTADOS DE EVALUACIÓN PRACTICANTE
+' ===========================
+state "Estados de Evaluación Practicante (Empresa)" as eval_prac_states {
+    [*] --> PENDIENTE_EVAL_PRAC : Empresa inicia evaluación
+    
+    PENDIENTE_EVAL_PRAC : Estado: 0
+    PENDIENTE_EVAL_PRAC : Sin iniciar
+    PENDIENTE_EVAL_PRAC : Actor: Empresa
+    
+    PENDIENTE_EVAL_PRAC --> EN_REVISION : Empresa evalúa
+    
+    EN_REVISION : Estado: 1
+    EN_REVISION : Evaluando dimensiones
+    EN_REVISION : Respondiendo preguntas
+    
+    EN_REVISION --> CONFORME : Aprueba desempeño
+    EN_REVISION --> RECHAZADO_EVAL : Desempeño insatisfactorio
+    
+    CONFORME : Estado: 5
+    CONFORME : Evaluación positiva
+    CONFORME : Certificado generado
+    
+    RECHAZADO_EVAL : Estado: 99
+    RECHAZADO_EVAL : Evaluación negativa
+    RECHAZADO_EVAL : Retroalimentación documentada
+    
+    CONFORME --> [*]
+    RECHAZADO_EVAL --> [*]
+    
+    note right of EN_REVISION
+        Incluye:
+        - Preguntas por línea
+        - Dimensiones transversales
+        - Comentarios generales
+    end note
+}
+
+' ===========================
+' ESTADOS DE REUNIÓN
+' ===========================
+state "Estados de Reunión" as reunion_states {
+    [*] --> PENDIENTE_REUNION : Programar reunión
+    
+    PENDIENTE_REUNION : Estado: 0
+    PENDIENTE_REUNION : Reunión agendada
+    PENDIENTE_REUNION : Fecha y hora definidas
+    
+    PENDIENTE_REUNION --> REALIZADA : Reunión completada
+    PENDIENTE_REUNION --> CANCELADA : Cancelar reunión
+    
+    REALIZADA : Estado: 5
+    REALIZADA : Acta generada
+    REALIZADA : Compromisos registrados
+    
+    CANCELADA : Estado: 99
+    CANCELADA : Motivo de cancelación
+    CANCELADA : Puede reprogramarse
+    
+    REALIZADA --> [*]
+    CANCELADA --> [*] : Puede crear nueva
+    
+    note right of PENDIENTE_REUNION
+        Notificaciones automáticas:
+        - 24h antes
+        - 1h antes
+    end note
+}
+
+' ===========================
+' ESTADOS DE DOCUMENTO
+' ===========================
+state "Estados de Documento" as documento_states {
+    [*] --> SUBIDO : Usuario sube documento
+    
+    SUBIDO : Archivo en Azure Storage
+    SUBIDO : Asociado a solicitud
+    SUBIDO : Puede eliminarse si aún no validado
+    
+    SUBIDO --> VALIDADO : Secretaria/Supervisor valida
+    SUBIDO --> RECHAZADO_DOC : No cumple requisitos
+    
+    VALIDADO : Documento aprobado
+    VALIDADO : No puede eliminarse
+    VALIDADO : Parte oficial del expediente
+    
+    RECHAZADO_DOC : Documento rechazado
+    RECHAZADO_DOC : Debe volver a subirse
+    
+    VALIDADO --> [*]
+    RECHAZADO_DOC --> [*] : Usuario sube nuevo
+    
+    note right of SUBIDO
+        Tipos de documento:
+        - CV
+        - Carta de compromiso
+        - Plan de trabajo
+        - Informes
+    end note
+}
+
+' ===========================
+' FLUJO INTEGRADO
+' ===========================
+state "Flujo Completo de Práctica" as flujo_completo {
+    state "1. Preparación" as prep {
+        [*] --> CARTA_PENDIENTE
+        CARTA_PENDIENTE --> CARTA_ENTREGADA
+    }
+    
+    state "2. Solicitud" as solic {
+        [*] --> SOLICITUD_EN_PROCESO
+        SOLICITUD_EN_PROCESO --> SOLICITUD_ASIGNADA
+    }
+    
+    state "3. Ejecución" as ejec {
+        [*] --> PRACTICA_EN_CURSO
+        PRACTICA_EN_CURSO : Documentos subiéndose
+        PRACTICA_EN_CURSO : Reuniones periódicas
+    }
+    
+    state "4. Evaluación" as eval {
+        [*] --> EVALUANDO
+        EVALUANDO : Supervisor evalúa
+        EVALUANDO : Empresa evalúa
+        EVALUANDO --> EVALUADO_COMPLETO
+    }
+    
+    state "5. Cierre" as cierre {
+        [*] --> PRACTICA_FINALIZADA
+    }
+    
+    prep --> solic : Carta aprobada
+    solic --> ejec : Solicitud asignada
+    ejec --> eval : Práctica completada
+    eval --> cierre : Evaluaciones conformes
+    cierre --> [*]
+}
+
+note bottom of flujo_completo
+    Duración típica del proceso completo:
+    3-6 meses desde solicitud hasta cierre
+    
+    Hitos críticos:
+    1. Carta de presentación (2-3 días)
+    2. Asignación de supervisor (1 semana)
+    3. Inicio de práctica (variable)
+    4. Evaluaciones (últimas 2 semanas)
+end note
+
+@enduml

@@ -1,0 +1,68 @@
+@startuml Diagrama_Despliegue
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
+
+title Diagrama de Despliegue - Sistema PPP en Azure
+
+Deployment_Node(azure, "Microsoft Azure", "Cloud Platform"){
+    Deployment_Node(rg, "Resource Group: ppp-upeu-prod"){
+        
+        Deployment_Node(appservice, "Azure App Service Plan", "Premium P1V2"){
+            Container(gateway, "API Gateway", "Node.js 20, NestJS", "Puerto: 3000")
+            Container(auth, "Auth Service", "Node.js 20, NestJS", "Puerto: 3001")
+            Container(core, "Core Service", "Node.js 20, NestJS", "Puerto: 3002")
+            Container(companias, "Compañías Service", "Node.js 20, NestJS", "Puerto: 3003")
+            Container(evaluaciones, "Evaluaciones Service", "Node.js 20, NestJS", "Puerto: 3004")
+        }
+        
+        Deployment_Node(postgres, "Azure Database for PostgreSQL", "Flexible Server, B_Gen5_2"){
+            ContainerDb(db_auth, "ppp_auth", "PostgreSQL 14", "Usuarios, Roles")
+            ContainerDb(db_core, "ppp_core", "PostgreSQL 14", "Facultades, Escuelas")
+            ContainerDb(db_companias, "ppp_companias", "PostgreSQL 14", "Empresas, Solicitudes")
+            ContainerDb(db_evaluaciones, "ppp_evaluaciones", "PostgreSQL 14", "Evaluaciones")
+        }
+        
+        Deployment_Node(storage, "Azure Blob Storage", "Hot Tier"){
+            Container(blobs, "Documentos Container", "Blob Storage", "PDFs, Archivos")
+        }
+        
+        Deployment_Node(insights, "Application Insights", "Standard"){
+            Container(monitoring, "Telemetría", "Application Insights", "Logs, Métricas, Trazas")
+        }
+        
+        Deployment_Node(acr, "Azure Container Registry", "Basic"){
+            Container(registry, "Imágenes Docker", "ACR", "auth:v1.0, core:v1.0, ...")
+        }
+    }
+}
+
+Deployment_Node(client, "Cliente", "Navegador Web"){
+    Container(spa, "Frontend", "React/Angular", "Single Page Application")
+}
+
+Deployment_Node(email_external, "Servidor Email Externo", "SMTP"){
+    Container(smtp, "Email Service", "Gmail/Office365", "Notificaciones")
+}
+
+' Relaciones
+Rel(spa, gateway, "HTTPS", "443")
+Rel(gateway, auth, "HTTP", "3001")
+Rel(gateway, core, "HTTP", "3002")
+Rel(gateway, companias, "HTTP", "3003")
+Rel(gateway, evaluaciones, "HTTP", "3004")
+
+Rel(auth, db_auth, "PostgreSQL Protocol", "5432")
+Rel(core, db_core, "PostgreSQL Protocol", "5432")
+Rel(companias, db_companias, "PostgreSQL Protocol", "5432")
+Rel(evaluaciones, db_evaluaciones, "PostgreSQL Protocol", "5432")
+
+Rel(companias, blobs, "Azure SDK", "HTTPS")
+Rel(auth, smtp, "SMTP", "587")
+Rel(companias, smtp, "SMTP", "587")
+
+Rel(gateway, monitoring, "Telemetría", "HTTPS")
+Rel(auth, monitoring, "Telemetría", "HTTPS")
+Rel(core, monitoring, "Telemetría", "HTTPS")
+Rel(companias, monitoring, "Telemetría", "HTTPS")
+Rel(evaluaciones, monitoring, "Telemetría", "HTTPS")
+
+@enduml

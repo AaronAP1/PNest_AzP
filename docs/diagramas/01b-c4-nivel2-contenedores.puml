@@ -1,0 +1,78 @@
+@startuml C4_Nivel2_Contenedores
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+' ===========================
+' NIVEL 2: DIAGRAMA DE CONTENEDORES
+' ===========================
+
+title Sistema PPP - Nivel 2: Contenedores (Microservicios)
+
+Person(usuario, "Usuario", "Alumno, Supervisor, Secretaria, Coordinador o Empresa")
+
+System_Boundary(ppp_system, "Sistema de Gestión de Prácticas Pre-Profesionales") {
+    
+    Container(gateway, "API Gateway", "NestJS, Node.js 20, Puerto 3000", "Punto de entrada único. Maneja enrutamiento, autenticación JWT, rate limiting y CORS")
+    
+    Container(auth_service, "Auth Service", "NestJS, Prisma, Puerto 3001", "Gestiona usuarios, roles, privilegios y autenticación JWT")
+    
+    Container(core_service, "Core Service", "NestJS, Prisma, Puerto 3002", "Gestiona estructura académica: facultades, escuelas, líneas y personal")
+    
+    Container(companias_service, "Compañías Service", "NestJS, Prisma, Azure SDK, Puerto 3003", "Gestiona empresas, solicitudes de prácticas, documentos y reuniones")
+    
+    Container(evaluaciones_service, "Evaluaciones Service", "NestJS, Prisma, Puerto 3004", "Gestiona evaluaciones de supervisores y empresas, preguntas y dimensiones")
+    
+    ContainerDb(auth_db, "Auth Database", "PostgreSQL 14", "Almacena usuarios, roles, privilegios y relaciones usuario-rol")
+    
+    ContainerDb(core_db, "Core Database", "PostgreSQL 14", "Almacena facultades, escuelas, líneas académicas y personal")
+    
+    ContainerDb(companias_db, "Compañías Database", "PostgreSQL 14", "Almacena empresas, solicitudes, documentos, cartas y reuniones")
+    
+    ContainerDb(evaluaciones_db, "Evaluaciones Database", "PostgreSQL 14", "Almacena evaluaciones, preguntas, respuestas y dimensiones")
+}
+
+System_Ext(azure_storage, "Azure Blob Storage", "Almacenamiento de archivos PDF y documentos")
+System_Ext(email_service, "Email Service", "Servidor SMTP para notificaciones")
+
+' Relaciones Usuario -> Gateway
+Rel(usuario, gateway, "Realiza peticiones API", "HTTPS/REST, JSON")
+
+' Relaciones Gateway -> Microservicios
+Rel(gateway, auth_service, "Valida credenciales, verifica permisos", "HTTP/REST")
+Rel(gateway, core_service, "Consulta datos académicos", "HTTP/REST")
+Rel(gateway, companias_service, "Gestiona solicitudes y empresas", "HTTP/REST")
+Rel(gateway, evaluaciones_service, "Gestiona evaluaciones", "HTTP/REST")
+
+' Relaciones Microservicios -> Bases de Datos
+Rel(auth_service, auth_db, "Lee/Escribe", "Prisma ORM, SQL")
+Rel(core_service, core_db, "Lee/Escribe", "Prisma ORM, SQL")
+Rel(companias_service, companias_db, "Lee/Escribe", "Prisma ORM, SQL")
+Rel(evaluaciones_service, evaluaciones_db, "Lee/Escribe", "Prisma ORM, SQL")
+
+' Relaciones con Servicios Externos
+Rel(companias_service, azure_storage, "Sube/Descarga documentos", "Azure SDK")
+Rel(auth_service, email_service, "Envía emails de bienvenida", "SMTP")
+Rel(companias_service, email_service, "Notifica cambios de estado", "SMTP")
+
+' Comunicación entre microservicios (cuando es necesario)
+Rel_Back(companias_service, auth_service, "Valida existencia de usuario", "HTTP/REST")
+Rel_Back(evaluaciones_service, companias_service, "Obtiene datos de solicitud", "HTTP/REST")
+
+note right of gateway
+  **API Gateway:**
+  - Autenticación centralizada
+  - Enrutamiento a microservicios
+  - Rate limiting por usuario
+  - Logging de requests
+  - Manejo de CORS
+end note
+
+note bottom of auth_db
+  **Separación de Bases de Datos:**
+  Cada microservicio tiene su propia
+  base de datos PostgreSQL para lograr
+  total independencia y escalabilidad
+end note
+
+SHOW_LEGEND()
+
+@enduml

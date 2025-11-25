@@ -1,0 +1,120 @@
+  @startuml Secuencia_Autenticacion
+title Secuencia: Autenticación y Autorización JWT
+
+actor Usuario
+participant "Frontend" as FE
+participant "API Gateway" as Gateway
+participant "Auth Service" as Auth
+database "DB Auth" as DBAuth
+
+== Login ==
+Usuario -> FE: Ingresa credenciales\n(email, password)
+FE -> Gateway: POST /auth/login\n{email, password}
+
+Gateway -> Auth: POST /auth/login
+Auth -> DBAuth: SELECT * FROM usuario\nWHERE email = {email}
+DBAuth --> Auth: Usuario encontrado
+
+Auth -> Auth: bcrypt.compare(password, hashedPassword)
+
+alt Contraseña incorrecta
+    Auth --> Gateway: 401 Unauthorized
+    Gateway --> FE: Error de autenticación
+    FE --> Usuario: Credenciales inválidas
+else Contraseña correcta
+    Auth -> DBAuth: SELECT rol.* FROM usuario_rol\nJOIN rol WHERE usuario_id = {id}
+    DBAuth --> Auth: Roles del usuario
+    
+    Auth -> DBAuth: SELECT privilegio.*\nFROM rol_privilegio\nJOIN privilegio WHERE rol_id IN (...)
+    DBAuth --> Auth: Privilegios
+    
+    Auth -> Auth: Generar JWT Token\npayload: {userId, email, roles[]}
+    
+    note right of Auth
+        JWT contiene:
+        - userId
+        - email
+        - roles[]
+        - iat (issued at)
+        - exp (expiration)
+    end note
+    
+    Auth --> Gateway: 200 OK\n{accessToken, refreshToken, user{}}
+    Gateway --> FE: Token + Datos usuario
+    FE -> FE: Almacenar token\n(localStorage/sessionStorage)
+    FE --> Usuario: Login exitoso\nRedirect a Dashboard
+end
+
+== Petición Protegida ==
+Usuario -> FE: Navega a página protegida
+FE -> Gateway: GET /solicitudes\n[Authorization: Bearer {token}]
+
+Gateway -> Gateway: Extraer token del header
+
+Gateway -> Auth: Validar JWT Token
+Auth -> Auth: jwt.verify(token, SECRET_KEY)
+
+alt Token expirado o inválido
+    Auth --> Gateway: 401 Unauthorized
+    Gateway --> FE: Token inválido
+    FE --> Usuario: Sesión expirada\nRedirect a Login
+else Token válido
+    Auth -> Auth: Decodificar payload\n{userId, roles}
+    Auth --> Gateway: Usuario autenticado\n{userId, roles[]}
+    
+    Gateway -> Gateway: Verificar permisos\nRBAC: ¿Rol autorizado?
+    
+    alt Rol no autorizado
+        Gateway --> FE: 403 Forbidden
+        FE --> Usuario: Acceso denegado
+    else Rol autorizado
+        Gateway -> Gateway: Forward request a\nmicroservicio correspondiente
+        
+        note right of Gateway
+            El Gateway agrega headers:
+            - X-User-Id
+            - X-User-Roles
+            para los microservicios
+        end note
+        
+        Gateway --> FE: 200 OK + Datos
+        FE --> Usuario: Muestra información
+    end
+end
+
+== Refresh Token ==
+FE -> FE: Detectar token próximo a expirar
+
+FE -> Gateway: POST /auth/refresh\n{refreshToken}
+Gateway -> Auth: POST /auth/refresh
+
+Auth -> DBAuth: SELECT * FROM usuario WHERE id = {userId}
+DBAuth --> Auth: Usuario activo
+
+Auth -> Auth: Validar refreshToken
+
+alt RefreshToken inválido
+    Auth --> Gateway: 401 Unauthorized
+    Gateway --> FE: RefreshToken inválido
+    FE --> Usuario: Sesión expirada\nRedirect a Login
+else RefreshToken válido
+    Auth -> Auth: Generar nuevo accessToken
+    Auth --> Gateway: Nuevo accessToken
+    Gateway --> FE: {accessToken}
+    FE -> FE: Actualizar token almacenado
+    FE --> Usuario: Sesión extendida\n(transparente)
+end
+
+== Logout ==
+Usuario -> FE: Click en Cerrar Sesión
+FE -> FE: Eliminar tokens almacenados
+FE -> Gateway: POST /auth/logout\n[Authorization: Bearer {token}]
+
+Gateway -> Auth: POST /auth/logout
+Auth -> Auth: Invalidar token\n(opcional: blacklist)
+
+Auth --> Gateway: 200 OK
+Gateway --> FE: Logout exitoso
+FE --> Usuario: Redirect a Login
+
+@enduml

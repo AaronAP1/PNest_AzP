@@ -1,0 +1,63 @@
+@startuml C4_Nivel1_Contexto
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+' ===========================
+' NIVEL 1: DIAGRAMA DE CONTEXTO
+' ===========================
+
+title Sistema de Gestión de Prácticas Pre-Profesionales - Nivel 1: Contexto
+
+' Actores del Sistema
+Person(alumno, "Alumno", "Estudiante que realiza prácticas pre-profesionales")
+Person(supervisor, "Supervisor", "Docente que supervisa las prácticas")
+Person(secretaria, "Secretaria", "Gestiona documentación académica")
+Person(coordinador, "Coordinador", "Coordina prácticas de la escuela")
+Person(empresa, "Empresa/Jefe", "Representante de empresa que ofrece prácticas")
+
+' Sistema Principal
+System(ppp_system, "Sistema PPP", "Permite gestionar todo el ciclo de vida de las prácticas pre-profesionales: solicitudes, documentos, evaluaciones y seguimiento")
+
+' Sistemas Externos
+System_Ext(azure_storage, "Azure Blob Storage", "Almacenamiento de documentos PDF, cartas de presentación y archivos adjuntos")
+System_Ext(email_service, "Servicio de Email", "Envío de notificaciones automáticas por correo electrónico (SMTP)")
+System_Ext(azure_db, "Azure PostgreSQL", "Base de datos relacional para persistencia de información del sistema")
+
+' Relaciones de Usuarios con el Sistema Principal
+Rel(alumno, ppp_system, "Solicita prácticas, sube documentos, consulta estado", "HTTPS")
+Rel(supervisor, ppp_system, "Evalúa alumnos, aprueba solicitudes, realiza seguimiento", "HTTPS")
+Rel(secretaria, ppp_system, "Genera cartas de presentación, valida documentos", "HTTPS")
+Rel(coordinador, ppp_system, "Administra líneas académicas, genera reportes", "HTTPS")
+Rel(empresa, ppp_system, "Consulta solicitudes, evalúa practicantes", "HTTPS")
+
+' Relaciones del Sistema con Sistemas Externos
+Rel(ppp_system, azure_storage, "Almacena y recupera documentos", "Azure SDK/HTTPS")
+Rel(ppp_system, email_service, "Envía notificaciones de cambios de estado", "SMTP")
+Rel(ppp_system, azure_db, "Lee y escribe datos", "PostgreSQL Protocol")
+
+' Notas explicativas
+note right of ppp_system
+  **Sistema Principal**
+  - Gestión de solicitudes
+  - Generación de documentos
+  - Evaluaciones digitales
+  - Reportes y dashboards
+  - Flujo de estados
+end note
+
+note right of alumno
+  **Usuarios Principales**
+  Total aprox: 500-1000 alumnos
+  Uso concurrente: 50-100
+end note
+
+note bottom of azure_storage
+  **Documentos almacenados:**
+  - Cartas de presentación (PDF)
+  - CVs de alumnos
+  - Informes de prácticas
+  - Documentos adjuntos
+end note
+
+SHOW_LEGEND()
+
+@enduml
