@@ -68,6 +68,15 @@ export class CartasPresentacionController {
       .pipe(map((response) => response.data));
   }
 
+  @Get('secretaria/:idSecretaria')
+  @ApiOperation({ summary: 'Listar cartas por secretaria', description: 'Obtiene todas las cartas asignadas a una secretaria' })
+  @ApiParam({ name: 'idSecretaria', description: 'UUID de la secretaria (referencia a ppp_auth.secretarias)', type: 'string' })
+  @ApiResponse({ status: 200, description: 'Lista de cartas de la secretaria' })
+  findBySecretaria(@Param('idSecretaria') idSecretaria: string): Observable<any> {
+    return this.httpService.get(`${this.companiasServiceUrl}/cartas-presentacion/secretaria/${idSecretaria}`)
+      .pipe(map((response) => response.data));
+  }
+
   @Get('estado/:estado')
   @ApiOperation({ summary: 'Listar cartas por estado', description: 'Obtiene cartas filtradas por su estado actual' })
   @ApiParam({ name: 'estado', description: 'Estado de la carta', enum: ['draft', 'submitted', 'reviewing', 'approved', 'rejected', 'cancelled'] })
@@ -77,6 +86,7 @@ export class CartasPresentacionController {
       .pipe(map((response) => response.data));
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar carta', description: 'Actualiza los datos de una carta existente' })
   @ApiParam({ name: 'id', description: 'UUID de la carta', type: 'string' })

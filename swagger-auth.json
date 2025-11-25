@@ -1,0 +1,1562 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+        "/health": {
+            "get": {
+                "operationId": "HealthController_check",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Health"
+                ]
+            }
+        },
+        "/usuarios": {
+            "post": {
+                "operationId": "UsuariosController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUsuarioDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuarioResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Datos inválidos"
+                    }
+                },
+                "summary": "Crear un nuevo usuario con roles asignados",
+                "tags": [
+                    "usuarios"
+                ]
+            },
+            "get": {
+                "operationId": "UsuariosController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de usuarios",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UsuarioResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Listar todos los usuarios con sus roles",
+                "tags": [
+                    "usuarios"
+                ]
+            }
+        },
+        "/usuarios/{id}": {
+            "get": {
+                "operationId": "UsuariosController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del usuario",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuarioResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "summary": "Obtener un usuario por ID con sus roles",
+                "tags": [
+                    "usuarios"
+                ]
+            },
+            "patch": {
+                "operationId": "UsuariosController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del usuario",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUsuarioDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario actualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuarioResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "summary": "Actualizar un usuario y sus roles",
+                "tags": [
+                    "usuarios"
+                ]
+            },
+            "delete": {
+                "operationId": "UsuariosController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del usuario",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario eliminado"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "summary": "Eliminar un usuario",
+                "tags": [
+                    "usuarios"
+                ]
+            }
+        },
+        "/usuarios/email/{email}": {
+            "get": {
+                "operationId": "UsuariosController_findByEmail",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "required": true,
+                        "in": "path",
+                        "description": "Email del usuario",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuarioResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "summary": "Buscar usuario por email",
+                "tags": [
+                    "usuarios"
+                ]
+            }
+        },
+        "/usuarios/{id}/roles": {
+            "post": {
+                "operationId": "UsuariosController_assignRoles",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "UUID del usuario",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "rolesIds": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "uuid"
+                                        },
+                                        "example": [
+                                            "550e8400-e29b-41d4-a716-446655440000"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Roles asignados exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuarioResponseDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Asignar roles a un usuario (relación many-to-many)",
+                "tags": [
+                    "usuarios"
+                ]
+            }
+        },
+        "/roles": {
+            "post": {
+                "operationId": "RolesController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateRolDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rol creado exitosamente"
+                    }
+                },
+                "summary": "Crear un nuevo rol",
+                "tags": [
+                    "Roles"
+                ]
+            },
+            "get": {
+                "operationId": "RolesController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de roles"
+                    }
+                },
+                "summary": "Obtener todos los roles",
+                "tags": [
+                    "Roles"
+                ]
+            }
+        },
+        "/roles/{id}": {
+            "get": {
+                "operationId": "RolesController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rol encontrado"
+                    }
+                },
+                "summary": "Obtener un rol por ID",
+                "tags": [
+                    "Roles"
+                ]
+            },
+            "patch": {
+                "operationId": "RolesController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRolDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rol actualizado"
+                    }
+                },
+                "summary": "Actualizar un rol",
+                "tags": [
+                    "Roles"
+                ]
+            },
+            "delete": {
+                "operationId": "RolesController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Rol eliminado"
+                    }
+                },
+                "summary": "Eliminar un rol",
+                "tags": [
+                    "Roles"
+                ]
+            }
+        },
+        "/roles/{id}/privilegios": {
+            "post": {
+                "operationId": "RolesController_assignPrivilegios",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssignPrivilegiosDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Privilegios asignados correctamente"
+                    }
+                },
+                "summary": "Asignar privilegios a un rol",
+                "tags": [
+                    "Roles"
+                ]
+            },
+            "get": {
+                "operationId": "RolesController_getPrivilegios",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de privilegios del rol"
+                    }
+                },
+                "summary": "Obtener privilegios de un rol",
+                "tags": [
+                    "Roles"
+                ]
+            }
+        },
+        "/roles/{id}/privilegios/{privilegioId}": {
+            "delete": {
+                "operationId": "RolesController_removePrivilegio",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "privilegioId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Privilegio removido del rol"
+                    }
+                },
+                "summary": "Remover un privilegio de un rol",
+                "tags": [
+                    "Roles"
+                ]
+            }
+        },
+        "/privilegios": {
+            "post": {
+                "operationId": "PrivilegiosController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreatePrivilegioDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Privilegio creado exitosamente"
+                    },
+                    "409": {
+                        "description": "El privilegio ya existe"
+                    }
+                },
+                "summary": "Crear un nuevo privilegio",
+                "tags": [
+                    "Privilegios"
+                ]
+            },
+            "get": {
+                "operationId": "PrivilegiosController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de privilegios"
+                    }
+                },
+                "summary": "Obtener todos los privilegios",
+                "tags": [
+                    "Privilegios"
+                ]
+            }
+        },
+        "/privilegios/{id}": {
+            "get": {
+                "operationId": "PrivilegiosController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Privilegio encontrado"
+                    },
+                    "404": {
+                        "description": "Privilegio no encontrado"
+                    }
+                },
+                "summary": "Obtener un privilegio por ID",
+                "tags": [
+                    "Privilegios"
+                ]
+            },
+            "patch": {
+                "operationId": "PrivilegiosController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePrivilegioDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Privilegio actualizado"
+                    },
+                    "404": {
+                        "description": "Privilegio no encontrado"
+                    }
+                },
+                "summary": "Actualizar un privilegio",
+                "tags": [
+                    "Privilegios"
+                ]
+            },
+            "delete": {
+                "operationId": "PrivilegiosController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Privilegio eliminado"
+                    },
+                    "404": {
+                        "description": "Privilegio no encontrado"
+                    }
+                },
+                "summary": "Eliminar un privilegio",
+                "tags": [
+                    "Privilegios"
+                ]
+            }
+        },
+        "/alumnos": {
+            "post": {
+                "operationId": "AlumnosController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAlumnoDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Alumno creado exitosamente"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    },
+                    "409": {
+                        "description": "El usuario ya tiene perfil de alumno o código duplicado"
+                    }
+                },
+                "summary": "Crear un nuevo alumno",
+                "tags": [
+                    "Alumnos"
+                ]
+            },
+            "get": {
+                "operationId": "AlumnosController_findAll",
+                "parameters": [
+                    {
+                        "name": "escuela",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filtrar por ID de escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de alumnos"
+                    }
+                },
+                "summary": "Obtener todos los alumnos",
+                "tags": [
+                    "Alumnos"
+                ]
+            }
+        },
+        "/alumnos/{id}": {
+            "get": {
+                "operationId": "AlumnosController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Alumno encontrado"
+                    },
+                    "404": {
+                        "description": "Alumno no encontrado"
+                    }
+                },
+                "summary": "Obtener un alumno por ID",
+                "tags": [
+                    "Alumnos"
+                ]
+            },
+            "patch": {
+                "operationId": "AlumnosController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAlumnoDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Alumno actualizado"
+                    },
+                    "404": {
+                        "description": "Alumno no encontrado"
+                    }
+                },
+                "summary": "Actualizar un alumno",
+                "tags": [
+                    "Alumnos"
+                ]
+            },
+            "delete": {
+                "operationId": "AlumnosController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Alumno eliminado"
+                    },
+                    "404": {
+                        "description": "Alumno no encontrado"
+                    }
+                },
+                "summary": "Eliminar un alumno",
+                "tags": [
+                    "Alumnos"
+                ]
+            }
+        },
+        "/alumnos/usuario/{usuarioId}": {
+            "get": {
+                "operationId": "AlumnosController_findByUsuario",
+                "parameters": [
+                    {
+                        "name": "usuarioId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Alumno encontrado"
+                    },
+                    "404": {
+                        "description": "Alumno no encontrado"
+                    }
+                },
+                "summary": "Obtener alumno por usuario ID",
+                "tags": [
+                    "Alumnos"
+                ]
+            }
+        },
+        "/secretarias": {
+            "post": {
+                "operationId": "SecretariasController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateSecretariaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Secretaria creada exitosamente"
+                    }
+                },
+                "summary": "Crear una nueva secretaria",
+                "tags": [
+                    "Secretarias"
+                ]
+            },
+            "get": {
+                "operationId": "SecretariasController_findAll",
+                "parameters": [
+                    {
+                        "name": "escuela",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filtrar por ID de escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de secretarias"
+                    }
+                },
+                "summary": "Obtener todas las secretarias",
+                "tags": [
+                    "Secretarias"
+                ]
+            }
+        },
+        "/secretarias/{id}": {
+            "get": {
+                "operationId": "SecretariasController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Secretaria encontrada"
+                    }
+                },
+                "summary": "Obtener una secretaria por ID",
+                "tags": [
+                    "Secretarias"
+                ]
+            },
+            "patch": {
+                "operationId": "SecretariasController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateSecretariaDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Secretaria actualizada"
+                    }
+                },
+                "summary": "Actualizar una secretaria",
+                "tags": [
+                    "Secretarias"
+                ]
+            },
+            "delete": {
+                "operationId": "SecretariasController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Secretaria eliminada"
+                    }
+                },
+                "summary": "Eliminar una secretaria",
+                "tags": [
+                    "Secretarias"
+                ]
+            }
+        },
+        "/supervisores": {
+            "post": {
+                "operationId": "SupervisoresController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateSupervisorDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Supervisor creado exitosamente"
+                    }
+                },
+                "summary": "Crear un nuevo supervisor",
+                "tags": [
+                    "Supervisores"
+                ]
+            },
+            "get": {
+                "operationId": "SupervisoresController_findAll",
+                "parameters": [
+                    {
+                        "name": "escuela",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filtrar por ID de escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de supervisores"
+                    }
+                },
+                "summary": "Obtener todos los supervisores",
+                "tags": [
+                    "Supervisores"
+                ]
+            }
+        },
+        "/supervisores/{id}": {
+            "get": {
+                "operationId": "SupervisoresController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Supervisor encontrado"
+                    }
+                },
+                "summary": "Obtener un supervisor por ID",
+                "tags": [
+                    "Supervisores"
+                ]
+            },
+            "patch": {
+                "operationId": "SupervisoresController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateSupervisorDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Supervisor actualizado"
+                    }
+                },
+                "summary": "Actualizar un supervisor",
+                "tags": [
+                    "Supervisores"
+                ]
+            },
+            "delete": {
+                "operationId": "SupervisoresController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Supervisor eliminado"
+                    }
+                },
+                "summary": "Eliminar un supervisor",
+                "tags": [
+                    "Supervisores"
+                ]
+            }
+        },
+        "/coordinadores": {
+            "post": {
+                "operationId": "CoordinadoresController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCoordinadorDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Coordinador creado exitosamente"
+                    }
+                },
+                "summary": "Crear un nuevo coordinador",
+                "tags": [
+                    "Coordinadores"
+                ]
+            },
+            "get": {
+                "operationId": "CoordinadoresController_findAll",
+                "parameters": [
+                    {
+                        "name": "escuela",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filtrar por ID de escuela",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de coordinadores"
+                    }
+                },
+                "summary": "Obtener todos los coordinadores",
+                "tags": [
+                    "Coordinadores"
+                ]
+            }
+        },
+        "/coordinadores/{id}": {
+            "get": {
+                "operationId": "CoordinadoresController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Coordinador encontrado"
+                    }
+                },
+                "summary": "Obtener un coordinador por ID",
+                "tags": [
+                    "Coordinadores"
+                ]
+            },
+            "patch": {
+                "operationId": "CoordinadoresController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCoordinadorDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Coordinador actualizado"
+                    }
+                },
+                "summary": "Actualizar un coordinador",
+                "tags": [
+                    "Coordinadores"
+                ]
+            },
+            "delete": {
+                "operationId": "CoordinadoresController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Coordinador eliminado"
+                    }
+                },
+                "summary": "Eliminar un coordinador",
+                "tags": [
+                    "Coordinadores"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "PPP Auth Service API",
+        "description": "Autenticación y Autorización - Usuarios, Roles, Privilegios",
+        "version": "1.0",
+        "contact": {}
+    },
+    "tags": [],
+    "servers": [],
+    "components": {
+        "schemas": {
+            "CreateUsuarioDto": {
+                "type": "object",
+                "properties": {
+                    "nombres": {
+                        "type": "string",
+                        "description": "Nombres del usuario",
+                        "example": "Juan Carlos",
+                        "minLength": 2,
+                        "maxLength": 120
+                    },
+                    "apellidos": {
+                        "type": "string",
+                        "description": "Apellidos del usuario",
+                        "example": "Pérez García",
+                        "minLength": 2,
+                        "maxLength": 120
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email del usuario",
+                        "example": "juan.perez@upeu.edu.pe",
+                        "maxLength": 150
+                    },
+                    "telefono": {
+                        "type": "string",
+                        "description": "Teléfono del usuario",
+                        "example": "987654321",
+                        "maxLength": 20
+                    },
+                    "contraseña": {
+                        "type": "string",
+                        "description": "Contraseña del usuario",
+                        "example": "Secure@Pass123",
+                        "minLength": 6,
+                        "maxLength": 255
+                    },
+                    "activo": {
+                        "type": "boolean",
+                        "description": "Estado activo del usuario",
+                        "example": true,
+                        "default": true
+                    },
+                    "rolesIds": {
+                        "description": "IDs de los roles a asignar al usuario (relación many-to-many)",
+                        "example": [
+                            "550e8400-e29b-41d4-a716-446655440000"
+                        ],
+                        "items": {
+                            "type": "array"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "nombres",
+                    "apellidos",
+                    "email",
+                    "contraseña"
+                ]
+            },
+            "UsuarioResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "ID del usuario",
+                        "example": "660e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "nombres": {
+                        "type": "string",
+                        "description": "Nombres del usuario",
+                        "example": "Juan Carlos"
+                    },
+                    "apellidos": {
+                        "type": "string",
+                        "description": "Apellidos del usuario",
+                        "example": "Pérez García"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email del usuario",
+                        "example": "juan.perez@upeu.edu.pe"
+                    },
+                    "telefono": {
+                        "type": "string",
+                        "description": "Teléfono del usuario",
+                        "example": "987654321"
+                    },
+                    "activo": {
+                        "type": "boolean",
+                        "description": "Estado activo del usuario",
+                        "example": true
+                    },
+                    "roles": {
+                        "description": "Roles asignados al usuario (relación many-to-many)",
+                        "items": {
+                            "type": "array"
+                        },
+                        "type": "array"
+                    },
+                    "createdAt": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "Fecha de creación",
+                        "example": "2025-11-18T10:00:00.000Z"
+                    },
+                    "updatedAt": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "Fecha de actualización",
+                        "example": "2025-11-18T10:00:00.000Z"
+                    }
+                },
+                "required": [
+                    "id",
+                    "nombres",
+                    "apellidos",
+                    "email",
+                    "activo",
+                    "roles",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "UpdateUsuarioDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "CreateRolDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre del rol",
+                        "example": "Alumno",
+                        "minLength": 3,
+                        "maxLength": 100
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "description": "Descripción del rol",
+                        "example": "Estudiante de la universidad",
+                        "maxLength": 500
+                    }
+                },
+                "required": [
+                    "nombre"
+                ]
+            },
+            "UpdateRolDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "AssignPrivilegiosDto": {
+                "type": "object",
+                "properties": {
+                    "privilegiosIds": {
+                        "description": "Array de IDs de privilegios a asignar al rol",
+                        "example": [
+                            "123e4567-e89b-12d3-a456-426614174000",
+                            "123e4567-e89b-12d3-a456-426614174001"
+                        ],
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "privilegiosIds"
+                ]
+            },
+            "CreatePrivilegioDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre del privilegio",
+                        "example": "crear_usuario",
+                        "maxLength": 100
+                    }
+                },
+                "required": [
+                    "nombre"
+                ]
+            },
+            "UpdatePrivilegioDto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "description": "Nombre del privilegio",
+                        "example": "crear_usuario",
+                        "maxLength": 100
+                    }
+                }
+            },
+            "CreateAlumnoDto": {
+                "type": "object",
+                "properties": {
+                    "usuarioId": {
+                        "type": "string",
+                        "description": "ID del usuario asociado",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "ID de la escuela profesional",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    },
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código del alumno",
+                        "example": "2020-123456",
+                        "maxLength": 30
+                    },
+                    "ciclo": {
+                        "type": "string",
+                        "description": "Ciclo actual del alumno",
+                        "example": "VIII",
+                        "maxLength": 20
+                    },
+                    "año": {
+                        "type": "string",
+                        "description": "Año de ingreso",
+                        "example": "2020",
+                        "maxLength": 4
+                    }
+                },
+                "required": [
+                    "usuarioId",
+                    "idEscuela",
+                    "codigo",
+                    "ciclo",
+                    "año"
+                ]
+            },
+            "UpdateAlumnoDto": {
+                "type": "object",
+                "properties": {
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "ID de la escuela profesional",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    },
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código del alumno",
+                        "example": "2020-123456",
+                        "maxLength": 30
+                    },
+                    "ciclo": {
+                        "type": "string",
+                        "description": "Ciclo actual del alumno",
+                        "example": "VIII",
+                        "maxLength": 20
+                    },
+                    "año": {
+                        "type": "string",
+                        "description": "Año de ingreso",
+                        "example": "2020",
+                        "maxLength": 4
+                    }
+                }
+            },
+            "CreateSecretariaDto": {
+                "type": "object",
+                "properties": {
+                    "usuarioId": {
+                        "type": "string",
+                        "description": "ID del usuario asociado",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "ID de la escuela profesional",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    }
+                },
+                "required": [
+                    "usuarioId",
+                    "idEscuela"
+                ]
+            },
+            "UpdateSecretariaDto": {
+                "type": "object",
+                "properties": {
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "ID de la escuela profesional",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    }
+                }
+            },
+            "CreateSupervisorDto": {
+                "type": "object",
+                "properties": {
+                    "usuarioId": {
+                        "type": "string",
+                        "description": "ID del usuario asociado",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "ID de la escuela profesional",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    }
+                },
+                "required": [
+                    "usuarioId",
+                    "idEscuela"
+                ]
+            },
+            "UpdateSupervisorDto": {
+                "type": "object",
+                "properties": {
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "ID de la escuela profesional",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    }
+                }
+            },
+            "CreateCoordinadorDto": {
+                "type": "object",
+                "properties": {
+                    "usuarioId": {
+                        "type": "string",
+                        "description": "ID del usuario asociado",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "ID de la escuela profesional",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    }
+                },
+                "required": [
+                    "usuarioId",
+                    "idEscuela"
+                ]
+            },
+            "UpdateCoordinadorDto": {
+                "type": "object",
+                "properties": {
+                    "idEscuela": {
+                        "type": "string",
+                        "description": "ID de la escuela profesional",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    }
+                }
+            }
+        }
+    }
+}

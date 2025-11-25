@@ -1,0 +1,56 @@
+@startuml C4_Architecture
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+' ===========================
+' NIVEL 1: DIAGRAMA DE CONTEXTO
+' ===========================
+
+title Sistema de Gestión de Prácticas Pre-Profesionales (PPP) - Arquitectura C4
+
+Person(alumno, "Alumno", "Estudiante que realiza prácticas pre-profesionales")
+Person(supervisor, "Supervisor", "Docente que supervisa las prácticas")
+Person(secretaria, "Secretaria", "Gestiona documentación académica")
+Person(coordinador, "Coordinador", "Coordina prácticas de la escuela")
+Person(empresa, "Empresa", "Organización que ofrece prácticas")
+
+System_Boundary(ppp_system, "Sistema PPP") {
+    Container(gateway, "API Gateway", "NestJS, Node.js", "Punto de entrada único, enrutamiento y autenticación")
+    Container(auth_service, "Auth Service", "NestJS, Prisma", "Gestión de usuarios, roles y autenticación")
+    Container(core_service, "Core Service", "NestJS, Prisma", "Gestión académica: facultades, escuelas, alumnos")
+    Container(companias_service, "Compañías Service", "NestJS, Prisma", "Gestión de empresas, solicitudes y documentos")
+    Container(evaluaciones_service, "Evaluaciones Service", "NestJS, Prisma", "Gestión de evaluaciones de supervisor y practicantes")
+    
+    ContainerDb(auth_db, "Auth DB", "PostgreSQL", "Usuarios, roles, privilegios")
+    ContainerDb(core_db, "Core DB", "PostgreSQL", "Facultades, escuelas, líneas")
+    ContainerDb(companias_db, "Compañías DB", "PostgreSQL", "Empresas, solicitudes, documentos")
+    ContainerDb(evaluaciones_db, "Evaluaciones DB", "PostgreSQL", "Evaluaciones, preguntas")
+}
+
+System_Ext(azure_storage, "Azure Storage", "Almacenamiento de documentos y archivos")
+System_Ext(email_service, "Email Service", "Notificaciones por correo")
+
+' Relaciones de Usuarios con el Sistema
+Rel(alumno, gateway, "Solicita prácticas, sube documentos", "HTTPS/REST")
+Rel(supervisor, gateway, "Evalúa alumnos, revisa solicitudes", "HTTPS/REST")
+Rel(secretaria, gateway, "Genera cartas de presentación", "HTTPS/REST")
+Rel(coordinador, gateway, "Administra líneas y prácticas", "HTTPS/REST")
+Rel(empresa, gateway, "Consulta solicitudes", "HTTPS/REST")
+
+' Relaciones del Gateway con Microservicios
+Rel(gateway, auth_service, "Valida credenciales y permisos", "HTTP/REST")
+Rel(gateway, core_service, "Consulta datos académicos", "HTTP/REST")
+Rel(gateway, companias_service, "Gestiona solicitudes y empresas", "HTTP/REST")
+Rel(gateway, evaluaciones_service, "Gestiona evaluaciones", "HTTP/REST")
+
+' Relaciones de Microservicios con Bases de Datos
+Rel(auth_service, auth_db, "Lee/Escribe", "Prisma ORM")
+Rel(core_service, core_db, "Lee/Escribe", "Prisma ORM")
+Rel(companias_service, companias_db, "Lee/Escribe", "Prisma ORM")
+Rel(evaluaciones_service, evaluaciones_db, "Lee/Escribe", "Prisma ORM")
+
+' Relaciones con Servicios Externos
+Rel(companias_service, azure_storage, "Almacena documentos PDF", "Azure SDK")
+Rel(auth_service, email_service, "Envía notificaciones", "SMTP")
+Rel(companias_service, email_service, "Notifica cambios de estado", "SMTP")
+
+@enduml

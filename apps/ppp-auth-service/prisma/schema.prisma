@@ -38,6 +38,7 @@ model Rol {
   id          String   @id @default(uuid()) @db.Uuid
   nombre      String   @db.VarChar(100)
   descripcion String?  @db.Text
+  estado      Int      @default(1) @db.SmallInt
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -67,6 +68,7 @@ model UsuarioRol {
 model Privilegio {
   id        String   @id @default(uuid()) @db.Uuid
   nombre    String   @db.VarChar(100)
+  estado    Int      @default(1) @db.SmallInt
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

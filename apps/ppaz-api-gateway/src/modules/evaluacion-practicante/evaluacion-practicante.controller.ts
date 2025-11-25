@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CreateEvaluacionPracticanteDto } from './dto/create-evaluacion-practicante.dto';
 
 @ApiTags('evaluacion-practicante')
 @Controller('evaluacion-practicante')
@@ -24,9 +25,10 @@ export class EvaluacionPracticanteController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Crear evaluación de practicante' })
+  @ApiOperation({ summary: 'Crear una nueva evaluación de practicante' })
+  @ApiBody({ type: CreateEvaluacionPracticanteDto })
   @ApiResponse({ status: 201, description: 'Evaluación creada exitosamente' })
-  create(@Body() createDto: any): Observable<any> {
+  create(@Body() createDto: CreateEvaluacionPracticanteDto): Observable<any> {
     return this.httpService
       .post(`${this.evaluacionesServiceUrl}/evaluacion-practicante`, createDto)
       .pipe(map((response) => response.data));
@@ -59,6 +61,7 @@ export class EvaluacionPracticanteController {
       .pipe(map((response) => response.data));
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar evaluación de practicante' })
   @ApiParam({ name: 'id', description: 'UUID de la evaluación' })

@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { LineasFacultadService } from './lineas-facultad.service';
 import { CreateLineaFacultadDto } from './dto/create-linea-facultad.dto';
@@ -13,6 +13,7 @@ export class LineasFacultadController {
   // HTTP REST Endpoints (Azure Container Apps)
   @Post()
   @ApiOperation({ summary: 'Crear una nueva línea de práctica/investigación' })
+  @ApiBody({ type: CreateLineaFacultadDto })
   @ApiResponse({ status: 201, description: 'Línea creada exitosamente' })
   @ApiResponse({ status: 404, description: 'Escuela no encontrada' })
   @ApiResponse({ status: 409, description: 'El código de línea ya existe' })
@@ -44,6 +45,7 @@ export class LineasFacultadController {
     return this.lineasFacultadService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar una línea' })
   @ApiParam({ name: 'id', description: 'UUID de la línea' })

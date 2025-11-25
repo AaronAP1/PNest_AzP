@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsBoolean, IsOptional, MaxLength, IsNotEmpty } from 'class-validator';
+import { IsString, IsIn, IsOptional, MaxLength, IsNotEmpty } from 'class-validator';
 
 export class CreateFacultadDto {
   @ApiProperty({
@@ -33,11 +33,12 @@ export class CreateFacultadDto {
 
   @ApiProperty({
     description: 'Estado de la facultad (activo/inactivo)',
-    example: true,
+    example: 'ACTIVO',
     required: false,
-    default: true,
+    default: 'ACTIVO',
   })
   @IsOptional()
-  @IsBoolean()
-  estado?: boolean;
+  @IsString()
+  @IsIn(['ACTIVO', 'INACTIVO'])
+  estado?: string;
 }

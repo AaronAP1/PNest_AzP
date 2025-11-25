@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { PppEvaluacionesServiceModule } from './ppp-evaluaciones-service.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -24,6 +25,15 @@ async function bootstrap() {
   // Habilitar CORS para comunicación con API Gateway
   app.enableCors();
 
+  // Configurar Swagger
+  const config = new DocumentBuilder()
+    .setTitle('PPP Evaluaciones Service API')
+    .setDescription('Evaluaciones - Preguntas, Evaluación Supervisor, Practicante, Dimensiones')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
   // Conectar microservice TCP
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.TCP,
@@ -37,6 +47,7 @@ async function bootstrap() {
   await app.listen(httpPort, host);
   
   logger.log(`📊 EVALUACIONES Service HTTP server running on http://${host}:${httpPort}`);
+  logger.log(`📚 Swagger docs: http://${host}:${httpPort}/api/docs`);
   logger.log(`🔗 EVALUACIONES Service TCP microservice patterns enabled on port ${tcpPort}`);
 }
 bootstrap();

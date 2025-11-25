@@ -1,0 +1,157 @@
+@startuml Dominio_Practicas_Evaluaciones
+!define Table(name,desc) class name as "desc" << (T,#AAAAFF) >>
+!define primary_key(x) <b><u>x</u></b>
+!define foreign_key(x) <i>x</i>
+
+title Diagrama de Entidades - Dominio de Prácticas y Evaluaciones (Evaluaciones Service)
+
+' ===========================
+' EVALUACIONES DE SUPERVISOR
+' ===========================
+
+entity "EvaluacionSupervisor" as eval_sup {
+  primary_key(id): UUID
+  --
+  foreign_key(id_supervisor): UUID
+  foreign_key(id_alumno): UUID
+  comentario: TEXT
+  estado: INT
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "Pregunta" as pregunta {
+  primary_key(id): UUID
+  --
+  preguntas: TEXT
+  estado: BOOLEAN
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "EvaluacionPregunta" as eval_pregunta {
+  primary_key(id): UUID
+  --
+  foreign_key(id_evaluacion): UUID
+  foreign_key(id_pregunta): UUID
+  valor: VARCHAR(255)
+  estado: BOOLEAN
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+' ===========================
+' EVALUACIONES DE PRACTICANTE
+' ===========================
+
+entity "EvaluacionPracticante" as eval_prac {
+  primary_key(id): UUID
+  --
+  foreign_key(id_solicitud): UUID
+  comentario: TEXT
+  estado: INT
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "PreguntaLinea" as pregunta_linea {
+  primary_key(id): UUID
+  --
+  foreign_key(id_linea_facultad): UUID
+  foreign_key(id_evaluacion_practicante): UUID
+  preguntas: TEXT
+  estado: BOOLEAN
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "DimensionTransversal" as dimension {
+  primary_key(id): UUID
+  --
+  pregunta: TEXT
+  estado: BOOLEAN
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "EvaluacionPracticanteSolicitud" as eval_prac_sol {
+  primary_key(id): UUID
+  --
+  foreign_key(id_dimension_transversal): UUID
+  foreign_key(id_evaluacion_practicante): UUID
+  valor: VARCHAR(255)
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+' Relaciones - Evaluación Supervisor
+eval_sup ||--o{ eval_pregunta : "contiene"
+pregunta ||--o{ eval_pregunta : "referencia"
+
+' Relaciones - Evaluación Practicante
+eval_prac ||--o{ pregunta_linea : "incluye"
+eval_prac ||--o{ eval_prac_sol : "evalúa"
+dimension ||--o{ eval_prac_sol : "mide"
+
+' Notas explicativas
+note right of eval_sup
+  **Estados:**
+  0 = PENDIENTE
+  5 = EVALUADO
+  
+  Evaluación realizada por
+  el supervisor al alumno
+  
+  Referencias:
+  - id_supervisor → Auth Service
+  - id_alumno → Auth Service
+end note
+
+note right of eval_prac
+  **Estados:**
+  0 = PENDIENTE
+  1 = EN_REVISION
+  5 = CONFORME
+  99 = RECHAZADO
+  
+  Evaluación del desempeño
+  del practicante por la empresa
+  
+  Referencia:
+  - id_solicitud → Compañías Service
+end note
+
+note bottom of pregunta
+  Banco de preguntas
+  genéricas para evaluaciones
+  de supervisor
+end note
+
+note bottom of pregunta_linea
+  Preguntas específicas
+  según línea académica
+  
+  Referencia:
+  - id_linea_facultad → Core Service
+end note
+
+note right of dimension
+  Dimensiones transversales
+  comunes a todas las
+  evaluaciones (competencias
+  genéricas)
+end note
+
+note bottom of eval_pregunta
+  Respuestas del supervisor
+  a cada pregunta de la
+  evaluación
+end note
+
+note bottom of eval_prac_sol
+  Calificación de cada
+  dimensión transversal
+  en la evaluación
+end note
+
+@enduml

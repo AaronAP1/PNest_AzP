@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsBoolean, IsOptional, MaxLength, IsUUID, IsNotEmpty } from 'class-validator';
+import { IsString, IsIn, IsOptional, MaxLength, IsUUID, IsNotEmpty } from 'class-validator';
 
 export class CreateEscuelaDto {
   @ApiProperty({
@@ -40,12 +40,13 @@ export class CreateEscuelaDto {
   descripcion?: string;
 
   @ApiProperty({
-    description: 'Estado de la escuela (activo/inactivo)',
-    example: true,
+    description: 'Estado de la escuela (ACTIVO/INACTIVO)',
+    example: 'ACTIVO',
     required: false,
-    default: true,
+    default: 'ACTIVO',
   })
   @IsOptional()
-  @IsBoolean()
-  estado?: boolean;
+  @IsString()
+  @IsIn(['ACTIVO', 'INACTIVO'])
+  estado?: string;
 }

@@ -1,0 +1,6 @@
+﻿{
+    "Swagger":  "https://ppp-gateway.calmplant-63fb30e9.brazilsouth.azurecontainerapps.io/api",
+    "Health":  "https://ppp-gateway.calmplant-63fb30e9.brazilsouth.azurecontainerapps.io/health",
+    "Location":  "Brazil South",
+    "Gateway":  "https://ppp-gateway.calmplant-63fb30e9.brazilsouth.azurecontainerapps.io"
+}

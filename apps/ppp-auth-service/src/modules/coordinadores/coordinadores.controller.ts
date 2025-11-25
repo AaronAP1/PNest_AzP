@@ -4,13 +4,14 @@ import {
   Post,
   Body,
   Patch,
+  Put,
   Param,
   Delete,
   HttpCode,
   HttpStatus,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { CoordinadoresService } from './coordinadores.service';
 import { CreateCoordinadorDto } from './dto/create-coordinador.dto';
 import { UpdateCoordinadorDto } from './dto/update-coordinador.dto';
@@ -22,6 +23,7 @@ export class CoordinadoresController {
 
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo coordinador' })
+  @ApiBody({ type: CreateCoordinadorDto })
   @ApiResponse({ status: 201, description: 'Coordinador creado exitosamente' })
   create(@Body() createDto: CreateCoordinadorDto) {
     return this.coordinadoresService.create(createDto);
@@ -45,6 +47,7 @@ export class CoordinadoresController {
     return this.coordinadoresService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar un coordinador' })
   @ApiResponse({ status: 200, description: 'Coordinador actualizado' })

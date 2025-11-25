@@ -1,0 +1,62 @@
+@startuml C4_Components
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+' ===========================
+' NIVEL 2: DIAGRAMA DE COMPONENTES
+' ===========================
+
+title Sistema PPP - Diagrama de Componentes (Microservicios)
+
+Container_Boundary(gateway_boundary, "API Gateway") {
+    Component(auth_middleware, "Auth Middleware", "NestJS Guard", "Valida JWT y permisos")
+    Component(routing, "Router", "NestJS Controller", "Enruta peticiones a microservicios")
+}
+
+Container_Boundary(auth_boundary, "Auth Service") {
+    Component(auth_controller, "Auth Controller", "Controller", "API de autenticación")
+    Component(usuarios_module, "Usuarios Module", "Module", "CRUD de usuarios")
+    Component(roles_module, "Roles Module", "Module", "Gestión de roles y privilegios")
+    Component(jwt_strategy, "JWT Strategy", "Passport", "Estrategia de autenticación")
+}
+
+Container_Boundary(core_boundary, "Core Service") {
+    Component(facultades_module, "Facultades Module", "Module", "CRUD de facultades")
+    Component(escuelas_module, "Escuelas Module", "Module", "CRUD de escuelas")
+    Component(alumnos_module, "Alumnos Module", "Module", "CRUD de alumnos")
+    Component(lineas_module, "Líneas Module", "Module", "Gestión de líneas académicas")
+}
+
+Container_Boundary(companias_boundary, "Compañías Service") {
+    Component(empresas_module, "Empresas Module", "Module", "CRUD de empresas")
+    Component(solicitudes_module, "Solicitudes PPP Module", "Module", "Gestión de solicitudes")
+    Component(cartas_module, "Cartas Presentación Module", "Module", "Generación de cartas")
+    Component(documentos_module, "Documentos Module", "Module", "Gestión de documentos")
+    Component(reuniones_module, "Reuniones Module", "Module", "Gestión de reuniones")
+}
+
+Container_Boundary(evaluaciones_boundary, "Evaluaciones Service") {
+    Component(eval_supervisor_module, "Eval. Supervisor Module", "Module", "Evaluaciones de supervisor")
+    Component(eval_practicante_module, "Eval. Practicante Module", "Module", "Evaluaciones de practicante")
+    Component(preguntas_module, "Preguntas Module", "Module", "Banco de preguntas")
+    Component(dimensiones_module, "Dimensiones Module", "Module", "Dimensiones transversales")
+}
+
+' Relaciones entre componentes
+Rel(routing, auth_controller, "Autentica usuario", "HTTP")
+Rel(auth_middleware, jwt_strategy, "Valida token", "Internal")
+Rel(usuarios_module, roles_module, "Verifica permisos", "Internal")
+
+Rel(routing, facultades_module, "Consulta facultades", "HTTP")
+Rel(escuelas_module, facultades_module, "Obtiene facultad", "Internal")
+Rel(alumnos_module, escuelas_module, "Obtiene escuela", "Internal")
+
+Rel(routing, solicitudes_module, "Gestiona solicitudes", "HTTP")
+Rel(solicitudes_module, empresas_module, "Obtiene empresa", "Internal")
+Rel(documentos_module, solicitudes_module, "Asocia documentos", "Internal")
+Rel(cartas_module, empresas_module, "Genera carta", "Internal")
+
+Rel(routing, eval_supervisor_module, "Registra evaluación", "HTTP")
+Rel(eval_supervisor_module, preguntas_module, "Obtiene preguntas", "Internal")
+Rel(eval_practicante_module, dimensiones_module, "Obtiene dimensiones", "Internal")
+
+@enduml

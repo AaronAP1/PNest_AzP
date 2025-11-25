@@ -1,15 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { EvaluacionPreguntaService } from './evaluacion-pregunta.service';
 import { CreateEvaluacionPreguntaDto } from './dto/create-evaluacion-pregunta.dto';
 import { UpdateEvaluacionPreguntaDto } from './dto/update-evaluacion-pregunta.dto';
 
+@ApiTags('Evaluación Pregunta')
 @Controller('evaluacion-pregunta')
 export class EvaluacionPreguntaController {
   constructor(private readonly evaluacionPreguntaService: EvaluacionPreguntaService) {}
 
   // HTTP REST Endpoints (Azure Container Apps)
   @Post()
+  @ApiOperation({ summary: 'Crear una nueva respuesta de evaluación' })
+  @ApiBody({ type: CreateEvaluacionPreguntaDto })
+  @ApiResponse({ status: 201, description: 'Respuesta creada exitosamente' })
   createHttp(@Body() createDto: CreateEvaluacionPreguntaDto) {
     return this.evaluacionPreguntaService.create(createDto);
   }
@@ -34,6 +39,7 @@ export class EvaluacionPreguntaController {
     return this.evaluacionPreguntaService.findByPregunta(idPregunta);
   }
 
+  @Put(':id')
   @Patch(':id')
   updateHttp(@Param('id') id: string, @Body() updateDto: UpdateEvaluacionPreguntaDto) {
     return this.evaluacionPreguntaService.update(id, updateDto);

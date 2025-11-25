@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CreatePreguntaLineaDto } from './dto/create-pregunta-linea.dto';
 
 @ApiTags('pregunta-linea')
 @Controller('pregunta-linea')
@@ -25,8 +26,9 @@ export class PreguntaLineaController {
 
   @Post()
   @ApiOperation({ summary: 'Asignar pregunta a línea de facultad' })
+  @ApiBody({ type: CreatePreguntaLineaDto })
   @ApiResponse({ status: 201, description: 'Asignación creada exitosamente' })
-  create(@Body() createDto: any): Observable<any> {
+  create(@Body() createDto: CreatePreguntaLineaDto): Observable<any> {
     return this.httpService
       .post(`${this.evaluacionesServiceUrl}/pregunta-linea`, createDto)
       .pipe(map((response) => response.data));

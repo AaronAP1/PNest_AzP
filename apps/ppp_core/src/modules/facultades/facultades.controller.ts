@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { FacultadesService } from './facultades.service';
 import { CreateFacultadDto } from './dto/create-facultad.dto';
@@ -13,6 +13,7 @@ export class FacultadesController {
   // HTTP REST Endpoints (Azure Container Apps)
   @Post()
   @ApiOperation({ summary: 'Crear una nueva facultad' })
+  @ApiBody({ type: CreateFacultadDto })
   @ApiResponse({ status: 201, description: 'Facultad creada exitosamente' })
   @ApiResponse({ status: 409, description: 'El código de facultad ya existe' })
   createHttp(@Body() createFacultadDto: CreateFacultadDto) {
@@ -35,6 +36,7 @@ export class FacultadesController {
     return this.facultadesService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar una facultad' })
   @ApiParam({ name: 'id', description: 'UUID de la facultad' })

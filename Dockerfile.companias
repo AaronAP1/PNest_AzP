@@ -27,8 +27,8 @@ WORKDIR /app
 
 # Copiar dependencias y build
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist/apps/ppp_compañias ./dist
-COPY --from=builder /app/apps/ppp_compañias/prisma ./prisma
+COPY --from=builder /app/dist/apps/ppp_companias ./dist
+COPY --from=builder /app/apps/ppp_companias/prisma ./prisma
 COPY --from=builder /app/package*.json ./
 
 # Generar Prisma Client en producción  

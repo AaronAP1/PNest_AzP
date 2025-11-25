@@ -37,13 +37,13 @@
         "tsConfigPath": "apps/ppp_core/tsconfig.app.json"
       }
     },
-    "ppp_compañias": {
+    "ppp_companias": {
       "type": "application",
-      "root": "apps/ppp_compañias",
+      "root": "apps/ppp_companias",
       "entryFile": "main",
-      "sourceRoot": "apps/ppp_compañias/src",
+      "sourceRoot": "apps/ppp_companias/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/ppp_compañias/tsconfig.app.json"
+        "tsConfigPath": "apps/ppp_companias/tsconfig.app.json"
       }
     },
     "ppp_core": {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
@@ -10,17 +10,17 @@ import { UpdateSecretariaDto } from './dto/update-secretaria.dto';
 @ApiTags('secretarias')
 @Controller('secretarias')
 export class SecretariasController {
-  private readonly coreServiceUrl: string;
+  private readonly authServiceUrl: string;
 
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    const host = this.configService.get<string>('PPP_CORE_HOST');
-    const port = this.configService.get<number>('PPP_CORE_PORT');
+    const host = this.configService.get<string>('PPP_AUTH_HOST');
+    const port = this.configService.get<number>('PPP_AUTH_PORT');
     const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
     
-    this.coreServiceUrl = isProduction 
+    this.authServiceUrl = isProduction 
       ? `https://${host}` 
       : `http://${host}:${port}`;
   }
@@ -32,7 +32,7 @@ export class SecretariasController {
   @ApiResponse({ status: 400, description: 'Datos inválidos o escuela no existe' })
   create(@Body() createSecretariaDto: CreateSecretariaDto): Observable<any> {
     return this.httpService
-      .post(`${this.coreServiceUrl}/secretarias`, createSecretariaDto)
+      .post(`${this.authServiceUrl}/secretarias`, createSecretariaDto)
       .pipe(map((response) => response.data));
   }
 
@@ -41,7 +41,7 @@ export class SecretariasController {
   @ApiResponse({ status: 200, description: 'Lista de secretarias obtenida exitosamente' })
   findAll(): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/secretarias`)
+      .get(`${this.authServiceUrl}/secretarias`)
       .pipe(map((response) => response.data));
   }
 
@@ -52,7 +52,7 @@ export class SecretariasController {
   @ApiResponse({ status: 404, description: 'Secretaria no encontrada' })
   findOne(@Param('id') id: string): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/secretarias/${id}`)
+      .get(`${this.authServiceUrl}/secretarias/${id}`)
       .pipe(map((response) => response.data));
   }
 
@@ -62,10 +62,11 @@ export class SecretariasController {
   @ApiResponse({ status: 200, description: 'Lista de secretarias obtenida' })
   findByEscuela(@Param('idEscuela') idEscuela: string): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/secretarias/escuela/${idEscuela}`)
+      .get(`${this.authServiceUrl}/secretarias/escuela/${idEscuela}`)
       .pipe(map((response) => response.data));
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar secretaria', description: 'Actualiza los datos de una secretaria existente' })
   @ApiParam({ name: 'id', description: 'UUID de la secretaria', type: 'string' })
@@ -74,7 +75,7 @@ export class SecretariasController {
   @ApiResponse({ status: 404, description: 'Secretaria no encontrada' })
   update(@Param('id') id: string, @Body() updateSecretariaDto: UpdateSecretariaDto): Observable<any> {
     return this.httpService
-      .patch(`${this.coreServiceUrl}/secretarias/${id}`, updateSecretariaDto)
+      .patch(`${this.authServiceUrl}/secretarias/${id}`, updateSecretariaDto)
       .pipe(map((response) => response.data));
   }
 
@@ -85,7 +86,7 @@ export class SecretariasController {
   @ApiResponse({ status: 404, description: 'Secretaria no encontrada' })
   remove(@Param('id') id: string): Observable<any> {
     return this.httpService
-      .delete(`${this.coreServiceUrl}/secretarias/${id}`)
+      .delete(`${this.authServiceUrl}/secretarias/${id}`)
       .pipe(map((response) => response.data));
   }
 }

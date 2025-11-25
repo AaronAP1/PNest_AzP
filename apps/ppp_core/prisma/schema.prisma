@@ -16,7 +16,7 @@ model Facultad {
   nombre      String    @db.VarChar(255)
   codigo      String    @db.VarChar(50)
   descripcion String?   @db.Text
-  estado      Boolean   @default(true)
+  estado      String    @default("ACTIVO") @db.VarChar(20)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
@@ -34,7 +34,7 @@ model Escuela {
   nombre      String    @db.VarChar(255)
   codigo      String    @db.VarChar(50)
   descripcion String?   @db.Text
-  estado      Boolean   @default(true)
+  estado      String    @default("ACTIVO") @db.VarChar(20)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 

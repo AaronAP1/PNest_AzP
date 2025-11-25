@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CreatePreguntaDto } from './dto/create-pregunta.dto';
 
 @ApiTags('preguntas')
 @Controller('preguntas')
@@ -25,8 +26,9 @@ export class PreguntasController {
 
   @Post()
   @ApiOperation({ summary: 'Crear una nueva pregunta' })
+  @ApiBody({ type: CreatePreguntaDto })
   @ApiResponse({ status: 201, description: 'Pregunta creada exitosamente' })
-  create(@Body() createDto: any): Observable<any> {
+  create(@Body() createDto: CreatePreguntaDto): Observable<any> {
     return this.httpService
       .post(`${this.evaluacionesServiceUrl}/preguntas`, createDto)
       .pipe(map((response) => response.data));
@@ -61,6 +63,7 @@ export class PreguntasController {
       .pipe(map((response) => response.data));
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar pregunta' })
   @ApiParam({ name: 'id', description: 'UUID de la pregunta' })

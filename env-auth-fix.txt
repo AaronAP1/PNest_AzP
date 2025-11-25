@@ -1,0 +1,9 @@
+DATABASE_URL_AUTH=postgresql://pppadmin:PppSecure2025!@ppp-postgres-local.postgres.database.azure.com:5432/ppp_auth?schema=public&sslmode=require
+JWT_SECRET=ppp-nest-production-jwt-secret-2024-change-this-in-production
+JWT_EXPIRATION=24h
+BCRYPT_ROUNDS=10
+APP_NAME=ppp_auth_service
+PORT=3001
+HOST=0.0.0.0
+NODE_ENV=production
+LOG_LEVEL=info

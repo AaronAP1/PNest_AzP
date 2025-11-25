@@ -1,0 +1,115 @@
+@startuml Dominio_Academico
+!define Table(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define primary_key(x) <b><u>x</u></b>
+!define foreign_key(x) <i>x</i>
+
+title Diagrama de Entidades - Dominio Académico (Core Service)
+
+' ===========================
+' DOMINIO ACADÉMICO
+' ===========================
+
+entity "Facultad" as facultad {
+  primary_key(id): UUID
+  --
+  nombre: VARCHAR(255)
+  codigo: VARCHAR(50) UNIQUE
+  descripcion: TEXT
+  estado: BOOLEAN
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "Escuela" as escuela {
+  primary_key(id): UUID
+  --
+  foreign_key(id_facultad): UUID
+  nombre: VARCHAR(255)
+  codigo: VARCHAR(50) UNIQUE
+  descripcion: TEXT
+  estado: BOOLEAN
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "LineaFacultad" as linea {
+  primary_key(id): UUID
+  --
+  foreign_key(id_escuela): UUID
+  nombre: VARCHAR(255)
+  codigo: VARCHAR(50)
+  estado: BOOLEAN
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "Alumno" as alumno {
+  primary_key(id): UUID
+  --
+  foreign_key(usuario_id): UUID
+  foreign_key(id_escuela): UUID
+  codigo: VARCHAR(30) UNIQUE
+  ciclo: VARCHAR(20)
+  año: VARCHAR(4)
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "Secretaria" as secretaria {
+  primary_key(id): UUID
+  --
+  foreign_key(usuario_id): UUID
+  foreign_key(id_escuela): UUID
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "Supervisor" as supervisor {
+  primary_key(id): UUID
+  --
+  foreign_key(usuario_id): UUID
+  foreign_key(id_escuela): UUID
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "Coordinador" as coordinador {
+  primary_key(id): UUID
+  --
+  foreign_key(usuario_id): UUID
+  foreign_key(id_escuela): UUID
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+' Relaciones
+facultad ||--o{ escuela : "contiene"
+escuela ||--o{ linea : "tiene"
+escuela ||--o{ alumno : "pertenece"
+escuela ||--o{ secretaria : "asignada"
+escuela ||--o{ supervisor : "asignado"
+escuela ||--o{ coordinador : "coordina"
+
+note right of facultad
+  Representa las facultades
+  de la universidad
+  Estado: activo/inactivo
+end note
+
+note right of escuela
+  Escuelas profesionales
+  asociadas a facultades
+end note
+
+note right of linea
+  Líneas de investigación
+  o especialización por escuela
+end note
+
+note bottom of alumno
+  Estudiantes matriculados
+  Referencias a usuario_id
+  de Auth Service
+end note
+
+@enduml

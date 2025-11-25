@@ -27,7 +27,7 @@ export class PpazApiGatewayController {
     return this.coreClient.send({ cmd: 'get_core_data' }, { info: 'Solicitud desde Gateway' });
   }
 
-  // Endpoints para ppp_compañias
+  // Endpoints para ppp_companias
   @Get('companies/hello')
   getCompaniasHello(): Observable<string> {
     return this.companiasClient.send({ cmd: 'get_hello_companias' }, {});

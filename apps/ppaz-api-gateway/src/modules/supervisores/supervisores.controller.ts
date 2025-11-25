@@ -1,34 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CreateSupervisorDto } from './dto/create-supervisor.dto';
+import { UpdateSupervisorDto } from './dto/update-supervisor.dto';
 
 @ApiTags('supervisores')
 @Controller('supervisores')
 export class SupervisoresController {
-  private readonly academicServiceUrl: string;
+  private readonly authServiceUrl: string;
 
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    const host = this.configService.get<string>('PPP_CORE_HOST');
-    const port = this.configService.get<number>('PPP_CORE_PORT');
+    const host = this.configService.get<string>('PPP_AUTH_HOST');
+    const port = this.configService.get<number>('PPP_AUTH_PORT');
     const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
     
-    this.academicServiceUrl = isProduction 
+    this.authServiceUrl = isProduction 
       ? `https://${host}` 
       : `http://${host}:${port}`;
   }
 
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo supervisor' })
+  @ApiBody({ type: CreateSupervisorDto })
   @ApiResponse({ status: 201, description: 'Supervisor creado exitosamente' })
-  create(@Body() createDto: any): Observable<any> {
+  create(@Body() createDto: CreateSupervisorDto): Observable<any> {
     return this.httpService
-      .post(`${this.academicServiceUrl}/supervisores`, createDto)
+      .post(`${this.authServiceUrl}/supervisores`, createDto)
       .pipe(map((response) => response.data));
   }
 
@@ -37,7 +40,7 @@ export class SupervisoresController {
   @ApiResponse({ status: 200, description: 'Lista de supervisores obtenida exitosamente' })
   findAll(): Observable<any> {
     return this.httpService
-      .get(`${this.academicServiceUrl}/supervisores`)
+      .get(`${this.authServiceUrl}/supervisores`)
       .pipe(map((response) => response.data));
   }
 
@@ -48,7 +51,7 @@ export class SupervisoresController {
   @ApiResponse({ status: 404, description: 'Supervisor no encontrado' })
   findOne(@Param('id') id: string): Observable<any> {
     return this.httpService
-      .get(`${this.academicServiceUrl}/supervisores/${id}`)
+      .get(`${this.authServiceUrl}/supervisores/${id}`)
       .pipe(map((response) => response.data));
   }
 
@@ -57,7 +60,7 @@ export class SupervisoresController {
   @ApiParam({ name: 'usuarioId', description: 'UUID del usuario' })
   findByUsuario(@Param('usuarioId') usuarioId: string): Observable<any> {
     return this.httpService
-      .get(`${this.academicServiceUrl}/supervisores/usuario/${usuarioId}`)
+      .get(`${this.authServiceUrl}/supervisores/usuario/${usuarioId}`)
       .pipe(map((response) => response.data));
   }
 
@@ -66,16 +69,17 @@ export class SupervisoresController {
   @ApiParam({ name: 'idEscuela', description: 'UUID de la escuela' })
   findByEscuela(@Param('idEscuela') idEscuela: string): Observable<any> {
     return this.httpService
-      .get(`${this.academicServiceUrl}/supervisores/escuela/${idEscuela}`)
+      .get(`${this.authServiceUrl}/supervisores/escuela/${idEscuela}`)
       .pipe(map((response) => response.data));
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar supervisor' })
   @ApiParam({ name: 'id', description: 'UUID del supervisor' })
   update(@Param('id') id: string, @Body() updateDto: any): Observable<any> {
     return this.httpService
-      .patch(`${this.academicServiceUrl}/supervisores/${id}`, updateDto)
+      .patch(`${this.authServiceUrl}/supervisores/${id}`, updateDto)
       .pipe(map((response) => response.data));
   }
 
@@ -84,7 +88,7 @@ export class SupervisoresController {
   @ApiParam({ name: 'id', description: 'UUID del supervisor' })
   remove(@Param('id') id: string): Observable<any> {
     return this.httpService
-      .delete(`${this.academicServiceUrl}/supervisores/${id}`)
+      .delete(`${this.authServiceUrl}/supervisores/${id}`)
       .pipe(map((response) => response.data));
   }
 }

@@ -1,15 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { PreguntaLineaService } from './pregunta-linea.service';
 import { CreatePreguntaLineaDto } from './dto/create-pregunta-linea.dto';
 import { UpdatePreguntaLineaDto } from './dto/update-pregunta-linea.dto';
 
+@ApiTags('Pregunta Línea')
 @Controller('pregunta-linea')
 export class PreguntaLineaController {
   constructor(private readonly preguntaLineaService: PreguntaLineaService) {}
 
   // HTTP REST Endpoints (Azure Container Apps)
   @Post()
+  @ApiOperation({ summary: 'Crear una nueva pregunta por línea' })
+  @ApiBody({ type: CreatePreguntaLineaDto })
+  @ApiResponse({ status: 201, description: 'Pregunta creada exitosamente' })
   createHttp(@Body() createDto: CreatePreguntaLineaDto) {
     return this.preguntaLineaService.create(createDto);
   }
@@ -34,6 +39,7 @@ export class PreguntaLineaController {
     return this.preguntaLineaService.findByEvaluacionPracticante(idEvaluacionPracticante);
   }
 
+  @Put(':id')
   @Patch(':id')
   updateHttp(@Param('id') id: string, @Body() updateDto: UpdatePreguntaLineaDto) {
     return this.preguntaLineaService.update(id, updateDto);

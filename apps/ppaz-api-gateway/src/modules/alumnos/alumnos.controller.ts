@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
@@ -10,17 +10,17 @@ import { UpdateAlumnoDto } from './dto/update-alumno.dto';
 @ApiTags('alumnos')
 @Controller('alumnos')
 export class AlumnosController {
-  private readonly coreServiceUrl: string;
+  private readonly authServiceUrl: string;
 
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    const host = this.configService.get<string>('PPP_CORE_HOST');
-    const port = this.configService.get<number>('PPP_CORE_PORT');
+    const host = this.configService.get<string>('PPP_AUTH_HOST');
+    const port = this.configService.get<number>('PPP_AUTH_PORT');
     const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
     
-    this.coreServiceUrl = isProduction 
+    this.authServiceUrl = isProduction 
       ? `https://${host}` 
       : `http://${host}:${port}`;
   }
@@ -33,7 +33,7 @@ export class AlumnosController {
   @ApiResponse({ status: 409, description: 'El código o usuario ya está registrado' })
   create(@Body() createAlumnoDto: CreateAlumnoDto): Observable<any> {
     return this.httpService
-      .post(`${this.coreServiceUrl}/alumnos`, createAlumnoDto)
+      .post(`${this.authServiceUrl}/alumnos`, createAlumnoDto)
       .pipe(map((response) => response.data));
   }
 
@@ -42,7 +42,7 @@ export class AlumnosController {
   @ApiResponse({ status: 200, description: 'Lista de alumnos obtenida exitosamente' })
   findAll(): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/alumnos`)
+      .get(`${this.authServiceUrl}/alumnos`)
       .pipe(map((response) => response.data));
   }
 
@@ -53,7 +53,7 @@ export class AlumnosController {
   @ApiResponse({ status: 404, description: 'Alumno no encontrado' })
   findOne(@Param('id') id: string): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/alumnos/${id}`)
+      .get(`${this.authServiceUrl}/alumnos/${id}`)
       .pipe(map((response) => response.data));
   }
 
@@ -64,7 +64,7 @@ export class AlumnosController {
   @ApiResponse({ status: 404, description: 'Alumno no encontrado' })
   findByUsuario(@Param('usuarioId') usuarioId: string): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/alumnos/usuario/${usuarioId}`)
+      .get(`${this.authServiceUrl}/alumnos/usuario/${usuarioId}`)
       .pipe(map((response) => response.data));
   }
 
@@ -75,7 +75,7 @@ export class AlumnosController {
   @ApiResponse({ status: 404, description: 'Alumno no encontrado' })
   findByCodigo(@Param('codigo') codigo: string): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/alumnos/codigo/${codigo}`)
+      .get(`${this.authServiceUrl}/alumnos/codigo/${codigo}`)
       .pipe(map((response) => response.data));
   }
 
@@ -85,10 +85,11 @@ export class AlumnosController {
   @ApiResponse({ status: 200, description: 'Lista de alumnos obtenida' })
   findByEscuela(@Param('idEscuela') idEscuela: string): Observable<any> {
     return this.httpService
-      .get(`${this.coreServiceUrl}/alumnos/escuela/${idEscuela}`)
+      .get(`${this.authServiceUrl}/alumnos/escuela/${idEscuela}`)
       .pipe(map((response) => response.data));
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar alumno', description: 'Actualiza los datos de un alumno existente' })
   @ApiParam({ name: 'id', description: 'UUID del alumno', type: 'string' })
@@ -97,7 +98,7 @@ export class AlumnosController {
   @ApiResponse({ status: 404, description: 'Alumno no encontrado' })
   update(@Param('id') id: string, @Body() updateAlumnoDto: UpdateAlumnoDto): Observable<any> {
     return this.httpService
-      .patch(`${this.coreServiceUrl}/alumnos/${id}`, updateAlumnoDto)
+      .patch(`${this.authServiceUrl}/alumnos/${id}`, updateAlumnoDto)
       .pipe(map((response) => response.data));
   }
 
@@ -108,7 +109,7 @@ export class AlumnosController {
   @ApiResponse({ status: 404, description: 'Alumno no encontrado' })
   remove(@Param('id') id: string): Observable<any> {
     return this.httpService
-      .delete(`${this.coreServiceUrl}/alumnos/${id}`)
+      .delete(`${this.authServiceUrl}/alumnos/${id}`)
       .pipe(map((response) => response.data));
   }
 }

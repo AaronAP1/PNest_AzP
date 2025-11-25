@@ -29,35 +29,35 @@
   },
   {
     "name": "PPP_CORE_HOST",
-    "value": "ppp-core-service.internal.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io"
+    "value": "ppp-core.mangostone-7d7c463e.eastus.azurecontainerapps.io"
   },
   {
     "name": "PPP_CORE_PORT",
-    "value": "3002"
+    "value": "443"
   },
   {
     "name": "PPP_COMPANIAS_HOST",
-    "value": "ppp-companias-service.internal.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io"
+    "value": "ppp-companias.mangostone-7d7c463e.eastus.azurecontainerapps.io"
   },
   {
     "name": "PPP_COMPANIAS_PORT",
-    "value": "3003"
+    "value": "443"
   },
   {
     "name": "PPP_AUTH_HOST",
-    "value": "ppp-auth-service.internal.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io"
+    "value": "ppp-auth.mangostone-7d7c463e.eastus.azurecontainerapps.io"
   },
   {
     "name": "PPP_AUTH_PORT",
-    "value": "3001"
+    "value": "443"
   },
   {
     "name": "PPP_EVALUACIONES_HOST",
-    "value": "ppp-evaluaciones-service.internal.whitesand-5e7ae56f.brazilsouth.azurecontainerapps.io"
+    "value": "ppp-evaluaciones.mangostone-7d7c463e.eastus.azurecontainerapps.io"
   },
   {
     "name": "PPP_EVALUACIONES_PORT",
-    "value": "3004"
+    "value": "443"
   },
   {
     "name": "SWAGGER_TITLE",

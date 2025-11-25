@@ -1,0 +1,17 @@
+DATABASE_URL_CORE=postgresql://pppadmin:PppSecure2025!@ppp-postgres-local.postgres.database.azure.com:5432/ppp_core?schema=public&sslmode=require
+DATABASE_URL_COMPANIAS=postgresql://pppadmin:PppSecure2025!@ppp-postgres-local.postgres.database.azure.com:5432/ppp_companias?schema=public&sslmode=require
+APP_NAME=ppaz_api_gateway
+PORT=3000
+HOST=0.0.0.0
+NODE_ENV=production
+LOG_LEVEL=info
+PPP_CORE_HOST=ppp-core.internal.calmplant-63fb30e9.brazilsouth.azurecontainerapps.io
+PPP_CORE_PORT=443
+PPP_COMPANIAS_HOST=ppp-companias.internal.calmplant-63fb30e9.brazilsouth.azurecontainerapps.io
+PPP_COMPANIAS_PORT=443
+PPP_AUTH_HOST=ppp-auth.internal.calmplant-63fb30e9.brazilsouth.azurecontainerapps.io
+PPP_AUTH_PORT=443
+PPP_EVALUACIONES_HOST=ppp-evaluaciones.internal.calmplant-63fb30e9.brazilsouth.azurecontainerapps.io
+PPP_EVALUACIONES_PORT=443
+JWT_SECRET=ppp-nest-production-jwt-secret-2024-change-this-in-production
+JWT_EXPIRATION=24h

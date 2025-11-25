@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { UsuarioResponseDto } from './dto/usuario-response.dto';
+import { AsignarUsuarioEntidadDto } from './dto/asignar-usuario-entidad.dto';
 
 @ApiTags('usuarios')
 @Controller('usuarios')
@@ -14,6 +15,7 @@ export class UsuariosController {
   @Post()
   @MessagePattern('usuarios.create')
   @ApiOperation({ summary: 'Crear un nuevo usuario con roles asignados' })
+  @ApiBody({ type: CreateUsuarioDto })
   @ApiResponse({ 
     status: 201, 
     description: 'Usuario creado exitosamente',
@@ -64,6 +66,7 @@ export class UsuariosController {
     return this.usuariosService.findByEmail(email);
   }
 
+  @Put(':id')
   @Patch(':id')
   @MessagePattern('usuarios.update')
   @ApiOperation({ summary: 'Actualizar un usuario y sus roles' })
@@ -111,5 +114,72 @@ export class UsuariosController {
   })
   assignRoles(@Param('id') usuarioId: string, @Body() rolesData: { rolesIds: string[] }) {
     return this.usuariosService.assignRoles(usuarioId, rolesData.rolesIds);
+  }
+
+  @Post('asignar-entidad')
+  @MessagePattern('usuarios.asignar-entidad')
+  @ApiOperation({ 
+    summary: 'Asignar un usuario a una entidad (alumno, secretaria, supervisor o coordinador)',
+    description: 'Permite asignar un usuario existente a uno de los tipos de entidad del sistema'
+  })
+  @ApiBody({ 
+    type: AsignarUsuarioEntidadDto,
+    examples: {
+      alumno: {
+        summary: 'Asignar a Alumno',
+        value: {
+          usuarioId: '123e4567-e89b-12d3-a456-426614174000',
+          tipoEntidad: 'alumno',
+          idEscuela: '123e4567-e89b-12d3-a456-426614174001',
+          codigo: '2020123456',
+          ciclo: 'IX',
+          año: '2020'
+        }
+      },
+      secretaria: {
+        summary: 'Asignar a Secretaria',
+        value: {
+          usuarioId: '123e4567-e89b-12d3-a456-426614174000',
+          tipoEntidad: 'secretaria',
+          idEscuela: '123e4567-e89b-12d3-a456-426614174001'
+        }
+      },
+      supervisor: {
+        summary: 'Asignar a Supervisor',
+        value: {
+          usuarioId: '123e4567-e89b-12d3-a456-426614174000',
+          tipoEntidad: 'supervisor',
+          idEscuela: '123e4567-e89b-12d3-a456-426614174001'
+        }
+      },
+      coordinador: {
+        summary: 'Asignar a Coordinador',
+        value: {
+          usuarioId: '123e4567-e89b-12d3-a456-426614174000',
+          tipoEntidad: 'coordinador',
+          idEscuela: '123e4567-e89b-12d3-a456-426614174001'
+        }
+      }
+    }
+  })
+  @ApiResponse({ 
+    status: 201, 
+    description: 'Usuario asignado exitosamente a la entidad',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        usuarioId: { type: 'string', format: 'uuid' },
+        idEscuela: { type: 'string', format: 'uuid' },
+        codigo: { type: 'string', nullable: true },
+        ciclo: { type: 'string', nullable: true },
+        año: { type: 'string', nullable: true }
+      }
+    }
+  })
+  @ApiResponse({ status: 400, description: 'Datos inválidos o usuario ya asignado a esta entidad' })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
+  asignarUsuarioEntidad(@Body() @Payload() asignarDto: AsignarUsuarioEntidadDto) {
+    return this.usuariosService.asignarUsuarioEntidad(asignarDto);
   }
 }

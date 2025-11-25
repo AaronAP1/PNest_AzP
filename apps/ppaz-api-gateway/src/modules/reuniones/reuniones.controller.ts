@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CreateReunionDto } from './dto/create-reunion.dto';
 
 @ApiTags('reuniones')
 @Controller('reuniones')
@@ -25,8 +26,9 @@ export class ReunionesController {
 
   @Post()
   @ApiOperation({ summary: 'Crear una nueva reunión' })
+  @ApiBody({ type: CreateReunionDto })
   @ApiResponse({ status: 201, description: 'Reunión creada exitosamente' })
-  create(@Body() createDto: any): Observable<any> {
+  create(@Body() createDto: CreateReunionDto): Observable<any> {
     return this.httpService
       .post(`${this.coreServiceUrl}/reuniones`, createDto)
       .pipe(map((response) => response.data));
@@ -78,6 +80,7 @@ export class ReunionesController {
       .pipe(map((response) => response.data));
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar reunión' })
   @ApiParam({ name: 'id', description: 'UUID de la reunión' })

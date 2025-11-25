@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CreateCoordinadorDto } from './dto/create-coordinador.dto';
 
 @ApiTags('coordinadores')
 @Controller('coordinadores')
@@ -25,8 +26,9 @@ export class CoordinadoresController {
 
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo coordinador' })
+  @ApiBody({ type: CreateCoordinadorDto })
   @ApiResponse({ status: 201, description: 'Coordinador creado exitosamente' })
-  create(@Body() createDto: any): Observable<any> {
+  create(@Body() createDto: CreateCoordinadorDto): Observable<any> {
     return this.httpService
       .post(`${this.academicServiceUrl}/coordinadores`, createDto)
       .pipe(map((response) => response.data));
@@ -52,6 +54,7 @@ export class CoordinadoresController {
       .pipe(map((response) => response.data));
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar coordinador' })
   @ApiParam({ name: 'id', description: 'UUID del coordinador' })
