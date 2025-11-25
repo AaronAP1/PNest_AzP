@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Patch,
+  Put,
   Param,
   Delete,
   HttpCode,
@@ -43,6 +44,7 @@ export class PrivilegiosController {
     return this.privilegiosService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar un privilegio' })
   @ApiResponse({ status: 200, description: 'Privilegio actualizado' })

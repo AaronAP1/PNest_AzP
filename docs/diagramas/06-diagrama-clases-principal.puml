@@ -1,0 +1,341 @@
+@startuml Diagrama_Clases_Principal
+!theme plain
+skinparam linetype ortho
+skinparam groupInheritance 2
+
+title Diagrama de Clases - Sistema de Gestión de Prácticas Pre-Profesionales
+
+' ===========================
+' CAPA DE AUTENTICACIÓN
+' ===========================
+package "Auth Service" #FFEBEE {
+  class Usuario {
+    - id: UUID
+    - nombres: string
+    - apellidos: string
+    - email: string
+    - telefono: string
+    - contraseña: string
+    - activo: boolean
+    - createdAt: DateTime
+    - updatedAt: DateTime
+    --
+    + registrar(): void
+    + autenticar(): JWT
+    + actualizarPerfil(): void
+    + cambiarContraseña(): void
+    + desactivar(): void
+  }
+
+  class Rol {
+    - id: UUID
+    - nombre: string
+    - descripcion: string
+    - estado: int
+    - createdAt: DateTime
+    - updatedAt: DateTime
+    --
+    + crear(): void
+    + asignarPrivilegios(): void
+    + listar(): Rol[]
+  }
+
+  class Privilegio {
+    - id: UUID
+    - nombre: string
+    - estado: int
+    --
+    + verificar(): boolean
+    + asignar(): void
+  }
+
+  abstract class UsuarioEspecializado {
+    - id: UUID
+    - usuarioId: UUID
+    - idEscuela: UUID
+    - createdAt: DateTime
+    - updatedAt: DateTime
+    --
+    + obtenerDatos(): object
+    + actualizarDatos(): void
+  }
+
+  class Alumno extends UsuarioEspecializado {
+    - codigo: string
+    - ciclo: string
+    - año: string
+    --
+    + solicitarPractica(): SolicitudPpp
+    + verEstadoSolicitud(): object
+    + subirDocumento(): Documento
+  }
+
+  class Supervisor extends UsuarioEspecializado {
+    --
+    + evaluarAlumno(): EvaluacionSupervisor
+    + asignarPractica(): void
+    + revisarSolicitudes(): SolicitudPpp[]
+  }
+
+  class Secretaria extends UsuarioEspecializado {
+    --
+    + generarCartaPresentacion(): CartaPresentacion
+    + aprobarDocumento(): void
+    + listarSolicitudes(): object[]
+  }
+
+  class Coordinador extends UsuarioEspecializado {
+    --
+    + gestionarLineas(): LineaFacultad[]
+    + supervisarPracticas(): void
+    + generarReportes(): object
+  }
+}
+
+' ===========================
+' CAPA ACADÉMICA
+' ===========================
+package "Core Service" #E8F5E9 {
+  class Facultad {
+    - id: UUID
+    - nombre: string
+    - codigo: string
+    - descripcion: string
+    - estado: boolean
+    --
+    + crear(): void
+    + actualizar(): void
+    + listarEscuelas(): Escuela[]
+  }
+
+  class Escuela {
+    - id: UUID
+    - idFacultad: UUID
+    - nombre: string
+    - codigo: string
+    - descripcion: string
+    - estado: boolean
+    --
+    + crear(): void
+    + asignarAlumno(): void
+    + listarAlumnos(): Alumno[]
+  }
+
+  class LineaFacultad {
+    - id: UUID
+    - idEscuela: UUID
+    - nombre: string
+    - codigo: string
+    - estado: boolean
+    --
+    + crear(): void
+    + asociarPregunta(): void
+    + obtenerPreguntas(): Pregunta[]
+  }
+}
+
+' ===========================
+' CAPA EMPRESARIAL
+' ===========================
+package "Compañías Service" #E3F2FD {
+  class Empresa {
+    - id: UUID
+    - nombre: string
+    - nombreRepresentante: string
+    - ruc: string
+    - sector: string
+    - telefono: string
+    - direccion: string
+    --
+    + registrar(): void
+    + actualizar(): void
+    + recibirSolicitud(): SolicitudPpp
+  }
+
+  class SolicitudPpp {
+    - id: UUID
+    - idSupervisor: UUID
+    - idAlumno: UUID
+    - idEmpresa: UUID
+    - fechaInicio: Date
+    - fechaFin: Date
+    - lugarRealizacion: string
+    - horarioTrabajo: string
+    - horasPorSemana: int
+    - areaPracticante: string
+    - estado: EstadoSolicitud
+    --
+    + crear(): void
+    + asignarSupervisor(): void
+    + cambiarEstado(): void
+    + adjuntarDocumento(): void
+    + programarReunion(): Reunion
+  }
+
+  enum EstadoSolicitud {
+    EN_PROCESO = 0
+    ASIGNADO = 1
+    FINALIZADO = 5
+    RECHAZADO = 99
+    --
+    + esValido(): boolean
+    + puedeTransicionar(): boolean
+  }
+
+  class CartaPresentacion {
+    - id: UUID
+    - idAlumno: UUID
+    - idEmpresa: UUID
+    - idSecretaria: UUID
+    - areaPractica: string
+    - fechaInicio: Date
+    - archivo: string
+    - motivoRechazo: string
+    - estado: int
+    --
+    + generar(): void
+    + aprobar(): void
+    + rechazar(): void
+    + descargar(): File
+  }
+
+  class Documento {
+    - id: UUID
+    - idTipoDocumento: UUID
+    - idSolicitudPpp: UUID
+    - nombreArchivo: string
+    - rutaArchivo: string
+    - subidoPor: UUID
+    --
+    + subir(): void
+    + descargar(): File
+    + eliminar(): void
+  }
+
+  class TipoDocumento {
+    - id: UUID
+    - nombre: string
+    - descripcion: string
+    --
+    + listar(): TipoDocumento[]
+  }
+
+  class Reunion {
+    - id: UUID
+    - idSolicitud: UUID
+    - estado: int
+    --
+    + programar(): void
+    + cancelar(): void
+    + marcarRealizada(): void
+  }
+}
+
+' ===========================
+' CAPA DE EVALUACIONES
+' ===========================
+package "Evaluaciones Service" #FFF3E0 {
+  class EvaluacionSupervisor {
+    - id: UUID
+    - idSupervisor: UUID
+    - idAlumno: UUID
+    - comentario: string
+    - estado: int
+    --
+    + crear(): void
+    + responderPreguntas(): void
+    + finalizar(): void
+    + calcularPromedio(): float
+  }
+
+  class EvaluacionPracticante {
+    - id: UUID
+    - idSolicitud: UUID
+    - comentario: string
+    - estado: int
+    --
+    + crear(): void
+    + evaluarDimensiones(): void
+    + enviarRevision(): void
+    + aprobar(): void
+  }
+
+  class Pregunta {
+    - id: UUID
+    - preguntas: string
+    - estado: boolean
+    --
+    + crear(): void
+    + listar(): Pregunta[]
+  }
+
+  class PreguntaLinea {
+    - id: UUID
+    - idLineaFacultad: UUID
+    - idEvaluacionPracticante: UUID
+    - preguntas: string
+    - estado: boolean
+    --
+    + asignarLinea(): void
+    + evaluar(): void
+  }
+
+  class DimensionTransversal {
+    - id: UUID
+    - pregunta: string
+    - estado: boolean
+    --
+    + crear(): void
+    + listar(): DimensionTransversal[]
+  }
+
+  class EvaluacionPregunta {
+    - id: UUID
+    - idEvaluacion: UUID
+    - idPregunta: UUID
+    - valor: string
+    - estado: boolean
+    --
+    + responder(): void
+    + actualizar(): void
+  }
+}
+
+' ===========================
+' RELACIONES
+' ===========================
+
+' Auth
+Usuario "1" --> "0..*" Rol : tiene >
+Rol "1" --> "0..*" Privilegio : posee >
+Usuario "1" <|-- "0..1" Alumno : especializa
+Usuario "1" <|-- "0..1" Supervisor : especializa
+Usuario "1" <|-- "0..1" Secretaria : especializa
+Usuario "1" <|-- "0..1" Coordinador : especializa
+
+' Core
+Facultad "1" --> "0..*" Escuela : contiene >
+Escuela "1" --> "0..*" LineaFacultad : define >
+Escuela "1" --> "0..*" Alumno : matricula >
+
+' Compañías
+Empresa "1" --> "0..*" SolicitudPpp : recibe >
+SolicitudPpp "1" --> "0..*" Documento : adjunta >
+SolicitudPpp "1" --> "0..*" Reunion : programa >
+TipoDocumento "1" --> "0..*" Documento : clasifica >
+Alumno "1" --> "0..*" SolicitudPpp : crea >
+Supervisor "1" --> "0..*" SolicitudPpp : supervisa >
+Empresa "1" --> "0..*" CartaPresentacion : destinataria >
+Alumno "1" --> "0..*" CartaPresentacion : solicita >
+
+' Evaluaciones
+Supervisor "1" --> "0..*" EvaluacionSupervisor : realiza >
+Alumno "1" --> "0..*" EvaluacionSupervisor : evaluado >
+EvaluacionSupervisor "1" --> "0..*" EvaluacionPregunta : contiene >
+Pregunta "1" --> "0..*" EvaluacionPregunta : referencia >
+SolicitudPpp "1" --> "0..1" EvaluacionPracticante : evalúa >
+EvaluacionPracticante "1" --> "0..*" PreguntaLinea : incluye >
+LineaFacultad "1" --> "0..*" PreguntaLinea : define >
+DimensionTransversal "1" --> "0..*" EvaluacionPracticante : mide >
+
+@enduml

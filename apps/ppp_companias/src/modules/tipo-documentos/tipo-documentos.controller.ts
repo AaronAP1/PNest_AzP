@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { TipoDocumentosService } from './tipo-documentos.service';
 import { CreateTipoDocumentoDto } from './dto/create-tipo-documento.dto';
@@ -24,6 +24,7 @@ export class TipoDocumentosController {
     return this.tipoDocumentosService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   updateHttp(@Param('id') id: string, @Body() updateTipoDocumentoDto: UpdateTipoDocumentoDto) {
     return this.tipoDocumentosService.update(id, updateTipoDocumentoDto);

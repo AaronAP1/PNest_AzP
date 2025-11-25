@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Patch,
+  Put,
   Param,
   Delete,
   HttpCode,
@@ -46,6 +47,7 @@ export class SecretariasController {
     return this.secretariasService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar una secretaria' })
   @ApiResponse({ status: 200, description: 'Secretaria actualizada' })

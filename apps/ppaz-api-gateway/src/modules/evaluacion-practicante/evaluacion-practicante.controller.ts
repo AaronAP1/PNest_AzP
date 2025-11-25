@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
@@ -61,6 +61,7 @@ export class EvaluacionPracticanteController {
       .pipe(map((response) => response.data));
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar evaluación de practicante' })
   @ApiParam({ name: 'id', description: 'UUID de la evaluación' })

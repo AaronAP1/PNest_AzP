@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch, Put } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
@@ -57,6 +57,7 @@ export class RolesController {
       .pipe(map((response) => response.data));
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar rol', description: 'Actualiza la información de un rol' })
   @ApiParam({ name: 'id', description: 'UUID del rol', type: 'string', example: '550e8400-e29b-41d4-a716-446655440000' })

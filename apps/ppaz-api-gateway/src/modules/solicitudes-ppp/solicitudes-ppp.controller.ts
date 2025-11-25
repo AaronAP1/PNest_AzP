@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
@@ -81,9 +81,12 @@ export class SolicitudesPppController {
       .pipe(map((response) => response.data));
   }
 
+  @Put(':id')
   @Patch(':id')
-  @ApiOperation({ summary: 'Actualizar solicitud' })
+  @ApiOperation({ summary: 'Actualizar una solicitud' })
   @ApiParam({ name: 'id', description: 'UUID de la solicitud' })
+  @ApiResponse({ status: 200, description: 'Solicitud actualizada' })
+  @ApiResponse({ status: 404, description: 'Solicitud no encontrada' })
   update(@Param('id') id: string, @Body() updateDto: any): Observable<any> {
     return this.httpService
       .patch(`${this.coreServiceUrl}/solicitudes-ppp/${id}`, updateDto)

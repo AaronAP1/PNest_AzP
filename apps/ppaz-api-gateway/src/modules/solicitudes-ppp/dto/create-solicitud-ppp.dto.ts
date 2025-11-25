@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID, IsNotEmpty, IsInt, IsIn, IsOptional } from 'class-validator';
+import { IsUUID, IsNotEmpty, IsInt, IsIn, IsOptional, IsDateString, IsString, Min, Max } from 'class-validator';
 import { ESTADO_SOLICITUD, VALORES_ESTADO_SOLICITUD } from '../../../constants/estados.constants';
 
 export class CreateSolicitudPppDto {
@@ -26,6 +26,67 @@ export class CreateSolicitudPppDto {
   @IsNotEmpty()
   @IsUUID()
   idEmpresa: string;
+
+  @ApiProperty({
+    description: 'Fecha de inicio de las prácticas',
+    example: '2024-03-01',
+    required: false,
+  })
+  @IsOptional()
+  @IsDateString()
+  fechaInicio?: string;
+
+  @ApiProperty({
+    description: 'Fecha de fin de las prácticas',
+    example: '2024-08-31',
+    required: false,
+  })
+  @IsOptional()
+  @IsDateString()
+  fechaFin?: string;
+
+  @ApiProperty({
+    description: 'Lugar donde se realizarán las prácticas',
+    example: 'Oficina Central - Lima',
+    required: false,
+    maxLength: 255,
+  })
+  @IsOptional()
+  @IsString()
+  lugarRealizacion?: string;
+
+  @ApiProperty({
+    description: 'Horario de trabajo del practicante',
+    example: 'Lunes a Viernes 8:00 AM - 5:00 PM',
+    required: false,
+    maxLength: 100,
+  })
+  @IsOptional()
+  @IsString()
+  horarioTrabajo?: string;
+
+  @ApiProperty({
+    description: 'Cantidad de horas semanales de práctica',
+    example: 40,
+    required: false,
+    minimum: 1,
+    maximum: 168,
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(168)
+  horasPorSemana?: number;
+
+  @ApiProperty({
+    description: 'Área específica donde el practicante realizará sus actividades',
+    example: 'Desarrollo de Software - Backend',
+    required: false,
+    maxLength: 255,
+  })
+  @IsOptional()
+  @IsString()
+  areaPracticante?: string;
 
   @ApiProperty({
     description: 'Estado de la solicitud',

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { PreguntaLineaService } from './pregunta-linea.service';
@@ -39,6 +39,7 @@ export class PreguntaLineaController {
     return this.preguntaLineaService.findByEvaluacionPracticante(idEvaluacionPracticante);
   }
 
+  @Put(':id')
   @Patch(':id')
   updateHttp(@Param('id') id: string, @Body() updateDto: UpdatePreguntaLineaDto) {
     return this.preguntaLineaService.update(id, updateDto);

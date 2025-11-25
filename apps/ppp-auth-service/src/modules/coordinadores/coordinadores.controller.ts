@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Patch,
+  Put,
   Param,
   Delete,
   HttpCode,
@@ -46,6 +47,7 @@ export class CoordinadoresController {
     return this.coordinadoresService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar un coordinador' })
   @ApiResponse({ status: 200, description: 'Coordinador actualizado' })

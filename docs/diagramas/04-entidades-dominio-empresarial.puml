@@ -1,0 +1,140 @@
+@startuml Dominio_Empresarial
+!define Table(name,desc) class name as "desc" << (T,#AAFFAA) >>
+!define primary_key(x) <b><u>x</u></b>
+!define foreign_key(x) <i>x</i>
+
+title Diagrama de Entidades - Dominio Empresarial (Compañías Service)
+
+' ===========================
+' DOMINIO EMPRESARIAL
+' ===========================
+
+entity "Empresa" as empresa {
+  primary_key(id): UUID
+  --
+  nombre: VARCHAR(255)
+  nombre_representante: VARCHAR(255)
+  ruc: CHAR(11) UNIQUE
+  sector: VARCHAR(100)
+  grado_academico: VARCHAR(100)
+  cargo_representante: VARCHAR(100)
+  telefono: VARCHAR(15)
+  direccion: TEXT
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "SolicitudPpp" as solicitud {
+  primary_key(id): UUID
+  --
+  foreign_key(id_supervisor): UUID
+  foreign_key(id_alumno): UUID
+  foreign_key(id_empresa): UUID
+  fecha_inicio: DATE
+  fecha_fin: DATE
+  lugar_realizacion: VARCHAR(255)
+  horario_trabajo: VARCHAR(100)
+  horas_por_semana: INT
+  area_practicante: VARCHAR(255)
+  estado: INT
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "CartaPresentacion" as carta {
+  primary_key(id): UUID
+  --
+  foreign_key(id_alumno): UUID
+  foreign_key(id_empresa): UUID
+  foreign_key(id_secretaria): UUID
+  area_practica: VARCHAR(255)
+  fecha_inicio: DATE
+  archivo: TEXT
+  motivo_rechazo: TEXT
+  estado: INT
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "TipoDocumento" as tipo_doc {
+  primary_key(id): UUID
+  --
+  nombre: VARCHAR(100)
+  descripcion: TEXT
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "Documento" as documento {
+  primary_key(id): UUID
+  --
+  foreign_key(id_tipodocumento): UUID
+  foreign_key(id_solicitud_ppp): UUID
+  nombre_archivo: VARCHAR(255)
+  ruta_archivo: TEXT
+  foreign_key(subido_por): UUID
+  foreign_key(generado_por): UUID
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+entity "Reunion" as reunion {
+  primary_key(id): UUID
+  --
+  foreign_key(id_solicitud): UUID
+  estado: INT
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+}
+
+' Relaciones principales
+empresa ||--o{ solicitud : "recibe"
+empresa ||--o{ carta : "destinataria"
+solicitud ||--o{ documento : "adjunta"
+solicitud ||--o{ reunion : "programa"
+tipo_doc ||--o{ documento : "clasifica"
+
+' Estados
+note right of solicitud
+  **Estados:**
+  0 = EN_PROCESO
+  1 = ASIGNADO
+  5 = FINALIZADO
+  99 = RECHAZADO
+  
+  Referencias externas:
+  - id_supervisor → Auth Service
+  - id_alumno → Auth Service
+end note
+
+note right of carta
+  **Estados:**
+  0 = PENDIENTE
+  1 = EN_PROCESO
+  5 = ENTREGADO
+  99 = RECHAZADO
+  
+  Generada por secretaria
+  para presentar alumno
+end note
+
+note bottom of reunion
+  **Estados:**
+  0 = PENDIENTE
+  5 = REALIZADA
+  99 = CANCELADA
+end note
+
+note top of empresa
+  Datos de empresas
+  que ofrecen prácticas
+  RUC único validado
+end note
+
+note right of documento
+  Almacena documentos
+  relacionados con solicitudes
+  Referencias a Azure Storage
+end note
+
+@enduml

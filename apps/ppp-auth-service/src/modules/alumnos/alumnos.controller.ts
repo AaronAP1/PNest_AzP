@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Patch,
+  Put,
   Param,
   Delete,
   HttpCode,
@@ -56,6 +57,7 @@ export class AlumnosController {
     return this.alumnosService.findByUsuarioId(usuarioId);
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar un alumno' })
   @ApiResponse({ status: 200, description: 'Alumno actualizado' })

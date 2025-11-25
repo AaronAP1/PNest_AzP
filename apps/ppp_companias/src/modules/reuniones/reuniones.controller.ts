@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ReunionesService } from './reuniones.service';
-import { CreateReunionDto, EstadoReunion } from './dto/create-reunion.dto';
+import { CreateReunionDto } from './dto/create-reunion.dto';
 import { UpdateReunionDto } from './dto/update-reunion.dto';
+import type { EstadoReunionType } from '../../constants/estados.constants';
 
 @Controller('reuniones')
 export class ReunionesController {
@@ -30,8 +31,8 @@ export class ReunionesController {
   }
 
   @Get('estado/:estado')
-  findByEstadoHttp(@Param('estado') estado: EstadoReunion) {
-    return this.reunionesService.findByEstado(estado);
+  findByEstadoHttp(@Param('estado') estado: string) {
+    return this.reunionesService.findByEstado(+estado);
   }
 
   @Get('count/by-estado')
@@ -39,6 +40,7 @@ export class ReunionesController {
     return this.reunionesService.countByEstado();
   }
 
+  @Put(':id')
   @Patch(':id')
   updateHttp(@Param('id') id: string, @Body() updateDto: UpdateReunionDto) {
     return this.reunionesService.update(id, updateDto);
@@ -71,7 +73,7 @@ export class ReunionesController {
   }
 
   @MessagePattern({ cmd: 'find-reuniones-by-estado' })
-  findByEstado(@Payload() estado: EstadoReunion) {
+  findByEstado(@Payload() estado: number) {
     return this.reunionesService.findByEstado(estado);
   }
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { EvaluacionSupervisorService } from './evaluacion-supervisor.service';
@@ -51,6 +51,7 @@ export class EvaluacionSupervisorController {
     return this.evaluacionSupervisorService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar una evaluación' })
   @ApiParam({ name: 'id', description: 'UUID de la evaluación' })

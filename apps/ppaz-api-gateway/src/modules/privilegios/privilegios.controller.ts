@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Patch,
+  Put,
   Param,
   Delete,
 } from '@nestjs/common';
@@ -64,6 +65,7 @@ export class PrivilegiosController {
       .pipe(map((response) => response.data));
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar un privilegio' })
   @ApiParam({ name: 'id', description: 'UUID del privilegio', type: 'string' })

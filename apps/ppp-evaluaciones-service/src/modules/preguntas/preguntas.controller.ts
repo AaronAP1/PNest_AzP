@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { PreguntasService } from './preguntas.service';
@@ -37,6 +37,7 @@ export class PreguntasController {
     return this.preguntasService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   @MessagePattern({ cmd: 'update-pregunta' })
   update(@Param('id') id: string, @Body() @Payload() updateDto: UpdatePreguntaDto) {

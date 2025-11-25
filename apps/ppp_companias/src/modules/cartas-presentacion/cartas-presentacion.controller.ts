@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CartasPresentacionService } from './cartas-presentacion.service';
 import { CreateCartaPresentacionDto, UpdateCartaPresentacionDto } from './dto';
-import { CartaEstado } from '.prisma/client-companias';
+import type { EstadoCartaType } from '../../constants/estados.constants';
 
 @ApiTags('Cartas de Presentación')
 @Controller('cartas-presentacion')
@@ -44,12 +44,20 @@ export class CartasPresentacionController {
     return this.cartasPresentacionService.findByEmpresa(idEmpresa);
   }
 
+  @Get('secretaria/:idSecretaria')
+  @ApiOperation({ summary: 'Obtener cartas por secretaria' })
+  @ApiParam({ name: 'idSecretaria', description: 'UUID de la secretaria (referencia a ppp_auth.secretarias)' })
+  @ApiResponse({ status: 200, description: 'Lista de cartas asignadas a la secretaria' })
+  findBySecretariaHttp(@Param('idSecretaria') idSecretaria: string) {
+    return this.cartasPresentacionService.findBySecretaria(idSecretaria);
+  }
+
   @Get('estado/:estado')
   @ApiOperation({ summary: 'Obtener cartas por estado' })
-  @ApiParam({ name: 'estado', description: 'Estado (borrador, presentada, en_revision, aprobada, rechazada, cancelada)' })
+  @ApiParam({ name: 'estado', description: 'Estado (0: pendiente, 1: en_proceso, 5: entregado, 99: rechazado)' })
   @ApiResponse({ status: 200, description: 'Lista de cartas con el estado especificado' })
-  findByEstadoHttp(@Param('estado') estado: CartaEstado) {
-    return this.cartasPresentacionService.findByEstado(estado);
+  findByEstadoHttp(@Param('estado') estado: string) {
+    return this.cartasPresentacionService.findByEstado(+estado);
   }
 
   @Get(':id')
@@ -61,6 +69,7 @@ export class CartasPresentacionController {
     return this.cartasPresentacionService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar una carta' })
   @ApiParam({ name: 'id', description: 'UUID de la carta' })
@@ -155,8 +164,8 @@ export class CartasPresentacionController {
     return this.cartasPresentacionService.findByEmpresa(idEmpresa);
   }
 
-  @MessagePattern({ cmd: 'find_cartas_by_estado' })
-  findByEstado(@Payload() estado: CartaEstado) {
+  @MessagePattern({ cmd: 'find-cartas-by-estado' })
+  findByEstado(@Payload() estado: number) {
     return this.cartasPresentacionService.findByEstado(estado);
   }
 

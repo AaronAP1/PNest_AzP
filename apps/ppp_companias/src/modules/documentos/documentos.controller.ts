@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { DocumentosService } from './documentos.service';
 import { CreateDocumentoDto, UpdateDocumentoDto } from './dto';
@@ -38,6 +38,7 @@ export class DocumentosController {
     return this.documentosService.findByGeneradoPor(generadoPor);
   }
 
+  @Put(':id')
   @Patch(':id')
   updateHttp(@Param('id') id: string, @Body() updateDocumentoDto: UpdateDocumentoDto) {
     return this.documentosService.update(id, updateDocumentoDto);

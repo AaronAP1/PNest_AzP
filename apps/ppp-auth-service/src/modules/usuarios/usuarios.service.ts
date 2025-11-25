@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, ConflictException } from '@nestjs/common
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { AsignarUsuarioEntidadDto, TipoEntidad } from './dto/asignar-usuario-entidad.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -185,5 +186,96 @@ export class UsuariosService {
 
     const { contraseña, ...result } = usuario;
     return result;
+  }
+
+  async asignarUsuarioEntidad(asignarDto: AsignarUsuarioEntidadDto) {
+    const { usuarioId, tipoEntidad, idEscuela, codigo, ciclo, año } = asignarDto;
+
+    // Verificar que el usuario existe
+    const usuario = await this.prisma.usuario.findUnique({
+      where: { id: usuarioId },
+    });
+
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con ID ${usuarioId} no encontrado`);
+    }
+
+    // Crear la entidad según el tipo
+    switch (tipoEntidad) {
+      case TipoEntidad.ALUMNO: {
+        // Verificar si el usuario ya está asignado como alumno
+        const existente = await this.prisma.alumno.findUnique({
+          where: { usuarioId },
+        });
+
+        if (existente) {
+          throw new ConflictException('El usuario ya está asignado como Alumno');
+        }
+
+        return await this.prisma.alumno.create({
+          data: {
+            usuarioId,
+            idEscuela,
+            codigo: codigo ?? '',
+            ciclo: ciclo ?? '',
+            año: año ?? '',
+          },
+        });
+      }
+
+      case TipoEntidad.SECRETARIA: {
+        const existente = await this.prisma.secretaria.findUnique({
+          where: { usuarioId },
+        });
+
+        if (existente) {
+          throw new ConflictException('El usuario ya está asignado como Secretaria');
+        }
+
+        return await this.prisma.secretaria.create({
+          data: {
+            usuarioId,
+            idEscuela,
+          },
+        });
+      }
+
+      case TipoEntidad.SUPERVISOR: {
+        const existente = await this.prisma.supervisor.findUnique({
+          where: { usuarioId },
+        });
+
+        if (existente) {
+          throw new ConflictException('El usuario ya está asignado como Supervisor');
+        }
+
+        return await this.prisma.supervisor.create({
+          data: {
+            usuarioId,
+            idEscuela,
+          },
+        });
+      }
+
+      case TipoEntidad.COORDINADOR: {
+        const existente = await this.prisma.coordinador.findUnique({
+          where: { usuarioId },
+        });
+
+        if (existente) {
+          throw new ConflictException('El usuario ya está asignado como Coordinador');
+        }
+
+        return await this.prisma.coordinador.create({
+          data: {
+            usuarioId,
+            idEscuela,
+          },
+        });
+      }
+
+      default:
+        throw new ConflictException(`Tipo de entidad ${tipoEntidad} no válido`);
+    }
   }
 }

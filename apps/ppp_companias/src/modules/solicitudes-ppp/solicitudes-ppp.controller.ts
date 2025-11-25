@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SolicitudesPppService } from './solicitudes-ppp.service';
@@ -45,10 +45,10 @@ export class SolicitudesPppController {
 
   @Get('estado/:estado')
   @ApiOperation({ summary: 'Obtener solicitudes por estado' })
-  @ApiParam({ name: 'estado', description: 'Estado de la solicitud (pendiente, en_proceso, aprobado, rechazado, cancelado)' })
+  @ApiParam({ name: 'estado', description: 'Estado de la solicitud (0: en_proceso, 1: asignado, 5: finalizado, 99: rechazado)' })
   @ApiResponse({ status: 200, description: 'Lista de solicitudes con el estado especificado' })
   findByEstadoHttp(@Param('estado') estado: string) {
-    return this.solicitudesPppService.findByEstado(estado);
+    return this.solicitudesPppService.findByEstado(+estado);
   }
 
   @Get('count/by-estado')
@@ -67,6 +67,7 @@ export class SolicitudesPppController {
     return this.solicitudesPppService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar una solicitud' })
   @ApiParam({ name: 'id', description: 'UUID de la solicitud' })
@@ -113,7 +114,7 @@ export class SolicitudesPppController {
   }
 
   @MessagePattern({ cmd: 'find-solicitudes-by-estado' })
-  findByEstado(@Payload() estado: string) {
+  findByEstado(@Payload() estado: number) {
     return this.solicitudesPppService.findByEstado(estado);
   }
 

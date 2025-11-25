@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { DimensionTransversalService } from './dimension-transversal.service';
@@ -42,6 +42,7 @@ export class DimensionTransversalController {
     return this.dimensionTransversalService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar dimensión transversal' })
   @ApiParam({ name: 'id', description: 'UUID de la dimensión transversal' })

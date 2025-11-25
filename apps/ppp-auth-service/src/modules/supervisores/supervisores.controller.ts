@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Patch,
+  Put,
   Param,
   Delete,
   HttpCode,
@@ -46,6 +47,7 @@ export class SupervisoresController {
     return this.supervisoresService.findOne(id);
   }
 
+  @Put(':id')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar un supervisor' })
   @ApiResponse({ status: 200, description: 'Supervisor actualizado' })

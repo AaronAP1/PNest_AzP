@@ -34,13 +34,19 @@ model Empresa {
 ///    SOLICITUD PPP
 /// =========================
 model SolicitudPpp {
-  id           String          @id @default(uuid()) @db.Uuid
-  idSupervisor String          @map("id_supervisor") @db.Uuid // Referencia a ppp_auth.supervisores (sin @relation)
-  idAlumno     String          @map("id_alumno") @db.Uuid // Referencia a ppp_auth.alumnos (sin @relation)
-  idEmpresa    String          @map("id_empresa") @db.Uuid
-  estado       Int             @default(0) // 0=EN_PROCESO, 1=ASIGNADO, 5=FINALIZADO, 99=RECHAZADO
-  createdAt    DateTime        @default(now()) @map("created_at")
-  updatedAt    DateTime        @updatedAt @map("updated_at")
+  id                    String          @id @default(uuid()) @db.Uuid
+  idSupervisor          String          @map("id_supervisor") @db.Uuid // Referencia a ppp_auth.supervisores (sin @relation)
+  idAlumno              String          @map("id_alumno") @db.Uuid // Referencia a ppp_auth.alumnos (sin @relation)
+  idEmpresa             String          @map("id_empresa") @db.Uuid
+  fechaInicio           DateTime?       @map("fecha_inicio") @db.Date
+  fechaFin              DateTime?       @map("fecha_fin") @db.Date
+  lugarRealizacion      String?         @map("lugar_realizacion") @db.VarChar(255)
+  horarioTrabajo        String?         @map("horario_trabajo") @db.VarChar(100)
+  horasPorSemana        Int?            @map("horas_por_semana")
+  areaPracticante       String?         @map("area_practicante") @db.VarChar(255)
+  estado                Int             @default(0) // 0=EN_PROCESO, 1=ASIGNADO, 5=FINALIZADO, 99=RECHAZADO
+  createdAt             DateTime        @default(now()) @map("created_at")
+  updatedAt             DateTime        @updatedAt @map("updated_at")
 
   empresa             Empresa             @relation(fields: [idEmpresa], references: [id], onDelete: Restrict)
   documentos          Documento[]
