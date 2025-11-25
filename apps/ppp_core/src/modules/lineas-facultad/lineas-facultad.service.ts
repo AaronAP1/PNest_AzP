@@ -56,7 +56,7 @@ export class LineasFacultadService {
 
   async findByEscuela(idEscuela: string) {
     return this.prisma.lineaFacultad.findMany({
-      where: { idEscuela, estado: true },
+      where: { idEscuela, estado: 'ACTIVO' },
       include: {
         escuela: {
           include: {

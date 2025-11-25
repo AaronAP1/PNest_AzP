@@ -34,7 +34,7 @@ export class EscuelasService {
       include: {
         facultad: true,
         lineasFacultad: {
-          where: { estado: true },
+          where: { estado: 'ACTIVO' },
         },
       },
       orderBy: {
@@ -49,7 +49,7 @@ export class EscuelasService {
       include: {
         facultad: true,
         lineasFacultad: {
-          where: { estado: true },
+          where: { estado: 'ACTIVO' },
         },
       },
     });
@@ -67,7 +67,7 @@ export class EscuelasService {
       include: {
         facultad: true,
         lineasFacultad: {
-          where: { estado: true },
+          where: { estado: 'ACTIVO' },
         },
       },
       orderBy: {

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsUUID, IsBoolean, IsOptional, MaxLength, IsNotEmpty } from 'class-validator';
+import { IsString, IsUUID, IsIn, IsOptional, MaxLength, IsNotEmpty } from 'class-validator';
 
 export class CreateLineaFacultadDto {
   @ApiProperty({
@@ -31,12 +31,13 @@ export class CreateLineaFacultadDto {
   codigo: string;
 
   @ApiProperty({
-    description: 'Estado de la línea (activo/inactivo)',
-    example: true,
+    description: 'Estado de la línea (ACTIVO/INACTIVO)',
+    example: 'ACTIVO',
     required: false,
-    default: true,
+    default: 'ACTIVO',
   })
   @IsOptional()
-  @IsBoolean()
-  estado?: boolean;
+  @IsString()
+  @IsIn(['ACTIVO', 'INACTIVO'])
+  estado?: string;
 }

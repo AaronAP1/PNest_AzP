@@ -55,7 +55,7 @@ export class FacultadesService {
         escuelas: {
           include: {
             lineasFacultad: {
-              where: { estado: true },
+              where: { estado: 'ACTIVO' },
             },
           },
         },

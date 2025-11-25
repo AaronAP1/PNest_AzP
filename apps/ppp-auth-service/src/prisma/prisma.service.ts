@@ -10,7 +10,7 @@ export class PrismaService
     super({
       datasources: {
         db: {
-          url: process.env.DATABASE_URL_AUTH + '?connection_limit=10&pool_timeout=20',
+          url: process.env.DATABASE_URL_AUTH + '&connection_limit=3&pool_timeout=20',
         },
       },
     });
