@@ -9,15 +9,15 @@ Write-Host "================================================`n" -ForegroundColor
 
 # Variables
 $ACR_NAME = "pppcontainersregistry01"
-$RESOURCE_GROUP = "ppp-containers-rg"
+$RESOURCE_GROUP = "ppp-brazil-rg"
 
 # Servicios a actualizar (imagen => nombre-containerapp)
 $services = @{
-    "ppaz-api-gateway" = @{ Dockerfile = "apps/ppaz-api-gateway/Dockerfile"; AppName = "ppp-gateway" }
+    "ppp-evaluaciones-service" = @{ Dockerfile = "apps/ppp-evaluaciones-service/Dockerfile"; AppName = "ppp-evaluaciones" }
+    "ppp-gateway" = @{ Dockerfile = "apps/ppaz-api-gateway/Dockerfile"; AppName = "ppp-gateway" }
     "ppp-auth-service" = @{ Dockerfile = "apps/ppp-auth-service/Dockerfile"; AppName = "ppp-auth" }
     "ppp-core" = @{ Dockerfile = "apps/ppp_core/Dockerfile"; AppName = "ppp-core" }
     "ppp-companias" = @{ Dockerfile = "apps/ppp_companias/Dockerfile"; AppName = "ppp-companias" }
-    "ppp-evaluaciones" = @{ Dockerfile = "apps/ppp-evaluaciones-service/Dockerfile"; AppName = "ppp-evaluaciones" }
 }
 
 Write-Host "Servicios a actualizar:" -ForegroundColor Yellow
