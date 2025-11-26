@@ -1,12 +1,12 @@
-@startuml Dominio_Academico
+@startuml Dominio_Core
 !define Table(name,desc) class name as "desc" << (T,#FFAAAA) >>
 !define primary_key(x) <b><u>x</u></b>
 !define foreign_key(x) <i>x</i>
 
-title Diagrama de Entidades - Dominio Académico (Core Service)
+title Diagrama de Entidades - Dominio Core Service (Estructura Académica)
 
 ' ===========================
-' DOMINIO ACADÉMICO
+' DOMINIO CORE - SOLO ESTRUCTURA ORGANIZACIONAL
 ' ===========================
 
 entity "Facultad" as facultad {
@@ -43,73 +43,80 @@ entity "LineaFacultad" as linea {
   updated_at: TIMESTAMP
 }
 
-entity "Alumno" as alumno {
-  primary_key(id): UUID
-  --
-  foreign_key(usuario_id): UUID
-  foreign_key(id_escuela): UUID
-  codigo: VARCHAR(30) UNIQUE
-  ciclo: VARCHAR(20)
-  año: VARCHAR(4)
-  created_at: TIMESTAMP
-  updated_at: TIMESTAMP
-}
-
-entity "Secretaria" as secretaria {
-  primary_key(id): UUID
-  --
-  foreign_key(usuario_id): UUID
-  foreign_key(id_escuela): UUID
-  created_at: TIMESTAMP
-  updated_at: TIMESTAMP
-}
-
-entity "Supervisor" as supervisor {
-  primary_key(id): UUID
-  --
-  foreign_key(usuario_id): UUID
-  foreign_key(id_escuela): UUID
-  created_at: TIMESTAMP
-  updated_at: TIMESTAMP
-}
-
-entity "Coordinador" as coordinador {
-  primary_key(id): UUID
-  --
-  foreign_key(usuario_id): UUID
-  foreign_key(id_escuela): UUID
-  created_at: TIMESTAMP
-  updated_at: TIMESTAMP
-}
-
 ' Relaciones
 facultad ||--o{ escuela : "contiene"
 escuela ||--o{ linea : "tiene"
-escuela ||--o{ alumno : "pertenece"
-escuela ||--o{ secretaria : "asignada"
-escuela ||--o{ supervisor : "asignado"
-escuela ||--o{ coordinador : "coordina"
 
 note right of facultad
+  **Facultad**
   Representa las facultades
   de la universidad
-  Estado: activo/inactivo
+  
+  Ejemplos:
+  - FIA (Ing. y Arquitectura)
+  - Ciencias de la Salud
+  - Ciencias Empresariales
+  
+  Estado: 
+  - true = activo
+  - false = inactivo
 end note
 
 note right of escuela
-  Escuelas profesionales
-  asociadas a facultades
+  **Escuela Profesional**
+  Carreras específicas
+  dentro de facultades
+  
+  Ejemplos (FIA):
+  - Ingeniería de Sistemas
+  - Ingeniería Civil
+  - Arquitectura
+  
+  Estado:
+  - true = activo
+  - false = inactivo
 end note
 
 note right of linea
+  **Línea Facultad**
   Líneas de investigación
   o especialización por escuela
+  
+  Ejemplos (Ing. Sistemas):
+  - Desarrollo de Software
+  - Redes y Comunicaciones
+  - Inteligencia Artificial
+  - Ciberseguridad
+  
+  Estado:
+  - true = activo
+  - false = inactivo
 end note
 
-note bottom of alumno
-  Estudiantes matriculados
-  Referencias a usuario_id
-  de Auth Service
+note bottom of linea
+  **IMPORTANTE:**
+  Los usuarios (Alumno, Supervisor, 
+  Secretaria, Coordinador) están en 
+  el AUTH SERVICE, no en Core Service.
+  
+  Solo almacenan referencia a 
+  id_escuela como dato externo.
 end note
+
+legend right
+  **Base de Datos:** ppp_core
+  
+  **Responsabilidad:**
+  Gestión de estructura organizacional
+  académica de la universidad
+  
+  **No incluye:**
+  Usuarios especializados (están en ppp_auth)
+  
+  **Relación con otros servicios:**
+  - Auth Service consulta id_escuela
+  - Compañías Service consulta id_escuela
+  - Evaluaciones Service consulta id_linea_facultad
+endlegend
 
 @enduml

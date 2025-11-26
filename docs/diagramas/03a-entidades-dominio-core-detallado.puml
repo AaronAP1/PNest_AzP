@@ -1,0 +1,237 @@
+@startuml Dominio_Core_Detallado
+!define Table(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define primary_key(x) <b><u>x</u></b>
+!define foreign_key(x) <i>x</i>
+!define unique(x) <u>x</u>
+
+title Diagrama de Entidades - Dominio Core Service - Detallado
+
+' ===========================
+' ESTRUCTURA ORGANIZACIONAL (SOLO EN CORE SERVICE)
+' ===========================
+
+entity "Facultad" as facultad {
+  primary_key(id): UUID
+  ==
+  nombre: VARCHAR(255)
+  unique(codigo): VARCHAR(50)
+  descripcion: TEXT
+  estado: BOOLEAN
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+  ==
+  **Métodos:**
+  + crear()
+  + actualizar()
+  + activar/desactivar()
+  + listarEscuelas()
+}
+
+entity "Escuela" as escuela {
+  primary_key(id): UUID
+  ==
+  foreign_key(id_facultad): UUID
+  nombre: VARCHAR(255)
+  unique(codigo): VARCHAR(50)
+  descripcion: TEXT
+  estado: BOOLEAN
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+  ==
+  **Métodos:**
+  + crear()
+  + actualizar()
+  + activar/desactivar()
+  + listarLineas()
+  + listarAlumnos()
+  + listarPersonal()
+}
+
+entity "LineaFacultad" as linea {
+  primary_key(id): UUID
+  ==
+  foreign_key(id_escuela): UUID
+  nombre: VARCHAR(255)
+  codigo: VARCHAR(50)
+  estado: BOOLEAN
+  created_at: TIMESTAMP
+  updated_at: TIMESTAMP
+  ==
+  **Métodos:**
+  + crear()
+  + actualizar()
+  + activar/desactivar()
+  + asociarPreguntas()
+}
+
+' ===========================
+' RELACIONES (SOLO DENTRO DE CORE)
+' ===========================
+
+facultad ||--o{ escuela : "contiene"
+escuela ||--o{ linea : "define"
+
+' ===========================
+' NOTAS EXPLICATIVAS
+' ===========================
+
+note right of facultad
+  **Facultad**
+  Representa las facultades de la UPeU
+  
+  Ejemplos:
+  - FIA (Facultad de Ingeniería y Arquitectura)
+  - Ciencias de la Salud
+  - Ciencias Empresariales
+  
+  Estado:
+  - true: Activa
+  - false: Inactiva (no acepta nuevos alumnos)
+end note
+
+note right of escuela
+  **Escuela Profesional**
+  Carreras específicas dentro de facultades
+  
+  Ejemplos (FIA):
+  - Ingeniería de Sistemas
+  - Ingeniería Civil
+  - Arquitectura
+  
+  Cada escuela tiene:
+  - Coordinador(es)
+  - Secretaria(s)
+  - Supervisor(es)
+  - Alumnos
+  - Líneas de especialización
+end note
+
+note bottom of linea
+  **Línea Facultad**
+  Especialización o línea de investigación
+  
+  Ejemplos (Ing. Sistemas):
+  - Desarrollo de Software
+  - Redes y Comunicaciones
+  - Inteligencia Artificial
+  - Ciberseguridad
+  
+  Uso:
+  - Define preguntas específicas para evaluaciones
+  - Orienta las prácticas profesionales
+  - Agrupa proyectos y trabajos
+end note
+
+note bottom of alumno
+  **Alumno**
+  Estudiante matriculado en una escuela
+  
+  Datos clave:
+  - Código único (ej: 2020123456)
+  - Ciclo actual (ej: "VIII")
+  - Año de ingreso
+  
+  Referencia:
+  - usuario_id → ppp_auth.usuario
+  - Información personal en Auth Service
+  
+  Restricciones:
+  - Solo puede estar en una escuela
+  - Código único en toda la universidad
+end note
+
+note bottom of supervisor
+  **Supervisor**
+  Docente que supervisa prácticas
+  
+  Responsabilidades:
+  - Aprobar solicitudes de prácticas
+  - Realizar seguimiento de alumnos
+  - Evaluar desempeño
+  - Programar reuniones
+  
+  Asignación:
+  - Puede supervisar múltiples alumnos
+  - Asignado a una escuela específica
+end note
+
+note bottom of secretaria
+  **Secretaria**
+  Personal administrativo de escuela
+  
+  Responsabilidades:
+  - Generar cartas de presentación
+  - Validar documentos
+  - Gestionar solicitudes administrativas
+  
+  Asignación:
+  - Una o más por escuela
+end note
+
+note bottom of coordinador
+  **Coordinador**
+  Coordina prácticas de la escuela
+  
+  Responsabilidades:
+  - Gestionar líneas académicas
+  - Supervisar proceso de prácticas
+  - Generar reportes estadísticos
+  - Asignar supervisores
+  
+  Asignación:
+  - Típicamente uno por escuela
+  - Puede haber coordinadores adjuntos
+end note
+
+' ===========================
+' LEYENDA DE ESTADOS
+' ===========================
+
+legend right
+  **Base de Datos:** ppp_core (PostgreSQL)
+  
+  **Estados del Dominio Core:**
+  • activo (true) - Operativa, visible
+  • inactivo (false) - No operativa, oculta
+  
+  **Índices:**
+  • Códigos únicos tienen índice único
+  • id_facultad indexado en escuela
+  • id_escuela indexado en linea_facultad
+  
+  **Servicios que consultan Core:**
+  • Auth Service - Para validar id_escuela en usuarios
+  • Compañías Service - Para validar escuelas
+  • Evaluaciones Service - Para validar id_linea_facultad
+  
+  **NO incluye:**
+  • Usuarios (están en Auth Service)
+  • Solicitudes (están en Compañías Service)
+  • Evaluaciones (están en Evaluaciones Service)
+endlegend
+
+' ===========================
+' CARDINALIDAD ESPERADA
+note as N1
+  **Cardinalidad Esperada (UPeU):**
+  
+  **Estructura Organizacional:**
+  • Facultades: 5-10
+  • Escuelas por Facultad: 3-8
+  • Líneas por Escuela: 2-5
+  
+  **Total Estimado en Core Service:**
+  • ~10 Facultades
+  • ~50 Escuelas
+  • ~150 Líneas Facultad
+  
+  **Usuarios (NO en Core, están en Auth):**
+  • ~3,000 Alumnos activos
+  • ~200 Supervisores
+  • ~50 Secretarias
+  • ~50 Coordinadores
+end noteSecretarias
+  • ~50 Coordinadores
+end note
+
+@enduml

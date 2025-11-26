@@ -302,37 +302,71 @@ Cada microservicio sigue una arquitectura modular basada en NestJS:
 
 ## 2. Diagrama de Entidades / Estados
 
-### 2.1 Dominio Académico
+### 2.1 Dominio Core (Académico)
 
-El dominio académico gestiona la estructura organizacional de la universidad:
+El **Core Service** gestiona **únicamente la estructura organizacional académica** de la universidad:
 
 #### Entidades Principales
 
-- **Facultad**: Representa las facultades de la universidad
-- **Escuela**: Escuelas profesionales asociadas a facultades
-- **LineaFacultad**: Líneas de investigación o especialización
-- **Alumno**: Estudiantes matriculados
-- **Supervisor**: Docentes supervisores
-- **Secretaria**: Personal administrativo
-- **Coordinador**: Coordinadores de prácticas
+| Entidad | Descripción | Atributos Clave |
+|---------|-------------|-----------------|
+| **Facultad** | Facultades de la universidad | nombre, código único, descripción, estado |
+| **Escuela** | Escuelas profesionales | nombre, código único, id_facultad, estado |
+| **LineaFacultad** | Líneas de investigación/especialización | nombre, código, id_escuela, estado |
 
 #### Relaciones
 
 ```
 Facultad (1) ──< Escuela (N)
+    │
+    └──> Una facultad contiene múltiples escuelas profesionales
+    
 Escuela (1) ──< LineaFacultad (N)
-Escuela (1) ──< Alumno (N)
-Escuela (1) ──< Supervisor (N)
-Escuela (1) ──< Secretaria (N)
-Escuela (1) ──< Coordinador (N)
+    │
+    └──> Una escuela define múltiples líneas de especialización
 ```
 
-**Ver diagrama completo:** [`docs/diagramas/03-entidades-dominio-academico.puml`](./diagramas/03-entidades-dominio-academico.puml)
+**Ver diagrama UML completo:** [`docs/diagramas/03-entidades-dominio-academico.puml`](./diagramas/03-entidades-dominio-academico.puml)
 
-#### Estados de Entidades
+**Ver diagrama UML detallado con métodos:** [`docs/diagramas/03a-entidades-dominio-core-detallado.puml`](./diagramas/03a-entidades-dominio-core-detallado.puml)
 
-- **Facultad/Escuela**: `activo` | `inactivo`
-- **Usuario Especializado**: Todos los usuarios especializados heredan del usuario base en Auth Service
+#### Características del Dominio Core
+
+1. **Separación de Responsabilidades**:
+   - ⚠️ **IMPORTANTE**: Core Service **NO almacena usuarios**
+   - Los usuarios especializados (Alumno, Supervisor, Secretaria, Coordinador) están en **Auth Service**
+   - Auth Service almacena `id_escuela` como referencia externa (sin FK física)
+
+2. **Estados de Entidades**:
+   - **Facultad/Escuela/LineaFacultad**: `activo` (true) | `inactivo` (false)
+   - Solo controla la estructura organizacional, no usuarios
+
+3. **Jerarquía Organizacional**:
+   ```
+   Universidad
+       └─ Facultad (FIA, Ciencias de la Salud, etc.)
+           └─ Escuela (Ing. Sistemas, Ing. Civil, etc.)
+               └─ Línea Facultad (Software, Redes, etc.)
+   ```
+
+4. **Casos de Uso Principales**:
+   - ✅ Gestionar estructura académica (CRUD de facultades/escuelas/líneas)
+   - ✅ Consultar jerarquía organizacional
+   - ✅ Validar existencia de escuelas (consultado por Auth Service)
+   - ✅ Validar existencia de líneas (consultado por Evaluaciones Service)
+
+5. **Servicios que Consultan Core**:
+   - **Auth Service**: Valida `id_escuela` al registrar usuarios especializados
+   - **Compañías Service**: Consulta información de escuelas para reportes
+   - **Evaluaciones Service**: Valida `id_linea_facultad` para preguntas específicas
+
+6. **Contenido de la Base de Datos `ppp_core`**:
+   ```sql
+   -- SOLO estas 3 tablas
+   facultad (id, nombre, codigo, descripcion, estado, ...)
+   escuela (id, id_facultad, nombre, codigo, descripcion, estado, ...)
+   linea_facultad (id, id_escuela, nombre, codigo, estado, ...)
+   ```
 
 ### 2.2 Dominio Empresarial
 
