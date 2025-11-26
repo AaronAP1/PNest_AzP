@@ -9,17 +9,17 @@ import { CreateCoordinadorDto } from './dto/create-coordinador.dto';
 @ApiTags('coordinadores')
 @Controller('coordinadores')
 export class CoordinadoresController {
-  private readonly academicServiceUrl: string;
+  private readonly authServiceUrl: string;
 
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    const host = this.configService.get<string>('PPP_CORE_HOST');
-    const port = this.configService.get<number>('PPP_CORE_PORT');
+    const host = this.configService.get<string>('PPP_AUTH_HOST');
+    const port = this.configService.get<number>('PPP_AUTH_PORT');
     const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
     
-    this.academicServiceUrl = isProduction 
+    this.authServiceUrl = isProduction 
       ? `https://${host}` 
       : `http://${host}:${port}`;
   }
@@ -30,7 +30,7 @@ export class CoordinadoresController {
   @ApiResponse({ status: 201, description: 'Coordinador creado exitosamente' })
   create(@Body() createDto: CreateCoordinadorDto): Observable<any> {
     return this.httpService
-      .post(`${this.academicServiceUrl}/coordinadores`, createDto)
+      .post(`${this.authServiceUrl}/coordinadores`, createDto)
       .pipe(map((response) => response.data));
   }
 
@@ -39,7 +39,7 @@ export class CoordinadoresController {
   @ApiResponse({ status: 200, description: 'Lista de coordinadores obtenida exitosamente' })
   findAll(): Observable<any> {
     return this.httpService
-      .get(`${this.academicServiceUrl}/coordinadores`)
+      .get(`${this.authServiceUrl}/coordinadores`)
       .pipe(map((response) => response.data));
   }
 
@@ -50,7 +50,7 @@ export class CoordinadoresController {
   @ApiResponse({ status: 404, description: 'Coordinador no encontrado' })
   findOne(@Param('id') id: string): Observable<any> {
     return this.httpService
-      .get(`${this.academicServiceUrl}/coordinadores/${id}`)
+      .get(`${this.authServiceUrl}/coordinadores/${id}`)
       .pipe(map((response) => response.data));
   }
 
@@ -60,7 +60,7 @@ export class CoordinadoresController {
   @ApiParam({ name: 'id', description: 'UUID del coordinador' })
   update(@Param('id') id: string, @Body() updateDto: any): Observable<any> {
     return this.httpService
-      .patch(`${this.academicServiceUrl}/coordinadores/${id}`, updateDto)
+      .patch(`${this.authServiceUrl}/coordinadores/${id}`, updateDto)
       .pipe(map((response) => response.data));
   }
 
@@ -69,7 +69,7 @@ export class CoordinadoresController {
   @ApiParam({ name: 'id', description: 'UUID del coordinador' })
   remove(@Param('id') id: string): Observable<any> {
     return this.httpService
-      .delete(`${this.academicServiceUrl}/coordinadores/${id}`)
+      .delete(`${this.authServiceUrl}/coordinadores/${id}`)
       .pipe(map((response) => response.data));
   }
 }
