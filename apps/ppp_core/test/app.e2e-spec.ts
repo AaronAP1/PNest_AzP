@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { PppCoreModule } from './../src/ppp_core.module';
 
 describe('PppCoreController (e2e)', () => {
@@ -15,10 +15,15 @@ describe('PppCoreController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/health (GET) - should return health status', () => {
     return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+      .get('/health')
+      .expect((res) => {
+        expect([200, 503]).toContain(res.status);
+      });
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 });

@@ -85,7 +85,7 @@ export class AlumnosController {
   @ApiResponse({ status: 200, description: 'Lista de alumnos obtenida' })
   findByEscuela(@Param('idEscuela') idEscuela: string): Observable<any> {
     return this.httpService
-      .get(`${this.authServiceUrl}/alumnos/escuela/${idEscuela}`)
+      .get(`${this.authServiceUrl}/alumnos?escuela=${idEscuela}`)
       .pipe(map((response) => response.data));
   }
 

@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { PpazApiGatewayModule } from './../src/ppaz-api-gateway.module';
+import { PppAuthServiceModule } from './../src/ppp-auth-service.module';
 
-describe('PpazApiGatewayController (e2e)', () => {
+describe('PppAuthServiceController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [PpazApiGatewayModule],
+      imports: [PppAuthServiceModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();

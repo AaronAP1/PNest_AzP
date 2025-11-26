@@ -62,7 +62,7 @@ export class SecretariasController {
   @ApiResponse({ status: 200, description: 'Lista de secretarias obtenida' })
   findByEscuela(@Param('idEscuela') idEscuela: string): Observable<any> {
     return this.httpService
-      .get(`${this.authServiceUrl}/secretarias/escuela/${idEscuela}`)
+      .get(`${this.authServiceUrl}/secretarias?escuela=${idEscuela}`)
       .pipe(map((response) => response.data));
   }
 
